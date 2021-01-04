@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipChildren="false" >
+
+
+    <!-- 白色背景 -->
+    <View
+        android:id="@+id/view_line"
+        android:elevation="5px"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_50"
+        android:layout_alignBottom="@id/bottom_layout"
+        android:background="@color/white" />
+
+
+
+    <RelativeLayout
+        android:id="@+id/bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:elevation="5px" >
+
+        <LinearLayout
+            android:id="@+id/ll_bottom_item_mycenter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/ll_bottom_item_oil_code"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@id/ll_bottom_item_oil_code"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingBottom="4px">
+
+            <ImageView
+                android:layout_width="@dimen/menu_bottom_size"
+                android:layout_height="@dimen/menu_bottom_size"
+                android:src="@drawable/menu_mycenter_selecter" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4px"
+                android:text="@string/str_bottom_item_first"
+                android:textColor="@color/color_tab_text"
+                android:textSize="@dimen/dp_11" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_bottom_item_oil_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:gravity="center_horizontal|bottom"
+            android:orientation="vertical"
+            android:paddingBottom="4px">
+
+            <ImageView
+                android:layout_width="50px"
+                android:layout_height="50px"
+                android:src="@mipmap/tab_code_normal" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4px"
+                android:text="@string/str_bottom_item_oil_code"
+                android:textColor="@color/color_tab_code_text"
+                android:textSize="@dimen/dp_11" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_bottom_item_station_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/ll_bottom_item_oil_code"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@id/ll_bottom_item_oil_code"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingBottom="4dp">
+
+            <ImageView
+                android:layout_width="@dimen/menu_bottom_size"
+                android:layout_height="@dimen/menu_bottom_size"
+                android:src="@drawable/menu_bottom_third" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4px"
+                android:text="@string/str_bottom_item_station_list"
+                android:textColor="@color/color_tab_text"
+                android:textSize="@dimen/dp_11" />
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

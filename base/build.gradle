@@ -1,0 +1,117 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            //选择要添加的对应 cpu 类型的 .so 库。
+            abiFilters 'armeabi-v7a'
+//            abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86'
+            // 还可以添加 'x86', 'x86_64', 'mips', 'mips64'
+        }
+    }
+    sourceSets {
+        main {
+            assets.srcDirs = ['assets']
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+    buildTypes {
+        debug {
+            // 显示Log
+            buildConfigField "boolean", "LOG_DEBUG", "true"
+        }
+        release {
+            // 不显示Log
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+        }
+    }
+    useLibrary 'org.apache.http.legacy'
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
+
+}
+configurations.all {
+//    resolutionStrategy {
+//        force 'com.android.support:support-v4:26.0.2'
+//    }
+}
+dependencies {
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    api 'androidx.appcompat:appcompat:1.2.0'
+    api project(path: ':banner')
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.1.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+    api 'androidx.legacy:legacy-support-v4:1.0.0'
+    api 'com.google.android.material:material:1.2.1'
+    api 'androidx.constraintlayout:constraintlayout:2.0.4'
+    //微信
+    //    api 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
+    //图片加载
+    api 'com.github.bumptech.glide:glide:4.9.0'
+    //    annotationProcessor 'com.github.bumptech.glide:compiler:4.2.0'
+    // Retrofit库
+    api 'com.squareup.retrofit2:retrofit:2.6.0'
+    api 'com.squareup.retrofit2:converter-gson:2.6.0'
+    api 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
+    // Okhttp库
+    api 'com.squareup.okhttp3:okhttp:3.12.1'
+    api 'com.squareup.okhttp3:logging-interceptor:3.12.1'
+    // RxAndroid
+//    api 'io.reactivex:rxandroid:1.2.1'
+    api 'com.jakewharton.rxbinding2:rxbinding:2.0.0'
+
+    //rxjava2
+    api 'io.reactivex.rxjava2:rxandroid:2.1.0'
+    api 'io.reactivex.rxjava2:rxjava:2.2.5'
+    //  rxjava配套解绑工具
+    api 'com.uber.autodispose:autodispose-android-archcomponents:1.0.0-RC2'
+    //加载框
+    api 'com.kaopiz:kprogresshud:1.2.0'
+    //适配库autosize
+    api 'me.jessyan:autosize:1.1.2'
+    //注解
+    api 'androidx.annotation:annotation:1.1.0'
+    //权限
+//    api 'com.tbruyelle.rxpermissions:rxpermissions:0.9.4@aar'
+    api 'com.github.tbruyelle:rxpermissions:0.10.2'
+    //事件传递
+    api 'org.greenrobot:eventbus:3.0.0'
+//    api 'com.android.support:design:28.0.0'
+    api 'com.android.support.constraint:constraint-layout:2.0.4'
+    //widget--recyclerview
+    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.45'
+    // widget--   列表recyclerview
+    api 'androidx.recyclerview:recyclerview:1.1.0'
+    //沉浸式状态栏
+    api 'com.gyf.barlibrary:barlibrary:2.3.0'
+    //黄油刀
+    api 'com.jakewharton:butterknife:10.2.1'
+    //下拉刷新
+    api  'com.scwang.smart:refresh-layout-kernel:2.0.1'      //核心必须依赖
+    api  'com.scwang.smart:refresh-header-classics:2.0.1'    //经典刷新头
+    api  'com.scwang.smart:refresh-footer-classics:2.0.1'    //经典加载
+    //tablayout
+    api 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
+    api 'com.google.zxing:core:3.3.0'
+    //    implementation files('libs/AMap3DMap_6.7.0_AMapSearch_6.5.0_AMapLocation_4.4.0_20190213.jar')
+    api project(':PickerView')
+//    api project(':umeng')
+    //动态url 更换
+//    api 'me.jessyan:retrofit-url-manager:1.4.0'
+//    api files('libs/Msc.jar')
+//    api project(path: ':appbarspring')
+    api files('libs/tbs_sdk_thirdapp_v4.3.0.39_43939_sharewithdownloadwithfile_withoutGame_obfs_20200713_223411.jar')
+    api project(path: ':loadingbox')
+
+}

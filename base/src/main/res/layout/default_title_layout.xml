@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_default_title_layout"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/px_50"
+    android:background="@color/white"
+    android:elevation="0.1px"
+    android:gravity="center_vertical">
+
+    <RelativeLayout
+        android:id="@+id/rl_left"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:minWidth="@dimen/px_45">
+
+        <ImageView
+            android:id="@+id/iv_left"
+            android:layout_width="@dimen/px_16"
+            android:layout_height="@dimen/px_16"
+            android:layout_centerVertical="true"
+            android:minWidth="@dimen/px_20"
+            android:src="@mipmap/icon_arrow_black_back" />
+    </RelativeLayout>
+    <!--title-->
+    <TextView
+        android:id="@+id/tv_center_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textColor="@color/color_333333"
+        android:textSize="16sp"
+        tools:text="中间文字" />
+    <!--右侧按钮-->
+    <RelativeLayout
+        android:id="@+id/rl_right"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:minWidth="@dimen/px_45">
+
+
+        <TextView
+            android:id="@+id/tv_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dp_15"
+            android:gravity="center"
+            android:minWidth="@dimen/px_50"
+            android:minHeight="@dimen/px_30"
+            android:textColor="@color/color_333333"
+            android:textSize="14sp"
+            tools:text="右侧文字" />
+
+        <ImageView
+            android:id="@+id/iv_right"
+            android:layout_width="@dimen/px_16"
+            android:layout_height="@dimen/px_16"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/px_10"
+            android:layout_toRightOf="@id/tv_right"
+            android:visibility="gone" />
+    </RelativeLayout>
+</RelativeLayout>

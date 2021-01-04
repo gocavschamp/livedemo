@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="DialogStyle2" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item> <!-- 边框 -->
+        <item name="android:windowIsFloating">true</item> <!-- 是否浮现在activity之上 -->
+        <item name="android:windowNoTitle">true</item> <!-- 无标题 -->
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="md_divider">@color/color_f5f5f5</item>
+        <item name="md_title_color">@color/black</item>
+        <item name="md_content_color">@color/black</item>
+        <item name="md_positive_color">@color/color_333333</item>
+        <item name="md_neutral_color">@color/color_333333</item>
+        <item name="md_negative_color">@color/color_333333</item>
+    </style>
+
+    <style name="DialogStyle3" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <style name="dialogAnim" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/dialog_show</item>
+        <item name="android:windowExitAnimation">@anim/dialog_dismiss</item>
+    </style>
+
+    <style name="divider_style">
+        <item name="android:layout_height">0.2dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">@color/color_b3b3b3</item>
+    </style>
+    <!-- 自定义加载框样式-->
+    <style name="customMainDialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@color/transparent_60</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowFrame">@null</item> <!-- 边框 -->
+    </style>
+
+    <!-- 自定义加载框样式-->
+    <style name="customDialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:background">@color/transparent</item>
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:colorBackground">#BF000000</item>
+        <item name="android:windowFrame">@null</item> <!-- 边框 -->
+    </style>
+</resources>

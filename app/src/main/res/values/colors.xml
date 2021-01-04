@@ -1,6 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <!-- QRCode scanner color begin -->
+    <color name="viewfinder_mask">#60000000</color>
+    <color name="result_view">#B0000000</color>
+    <color name="viewfinder_frame">#90FFFFFF</color>
+    <color name="result_point_color">#C0FFFF00</color>
+    <color name="laser_color">#0F0</color>
+    <color name="corner_color">#00FF00</color>
+    <color name="black_80">#b8000000</color>
+    <color name="black_20">#33000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="black_60">#96000000</color>
+    <color name="main_color_10">#25FF5800</color>
+    <color name="color_ffaaaeb3">#FFAAAEB3</color>
+    <color name="color_f5001e">#FFF5001E</color>
+    <color name="color_f6f6f6">#f6f6f6</color>
+    <color name="color_f8f8f8">#f8f8f8</color>
+    <color name="color_253237">#253237</color>
+    <color name="color_f9f9f9">#f9f9f9</color>
+    <color name="color_dcdcdc">#dcdcdc</color>
+    <color name="color_ff409eff">#ff409eff</color>
+    <color name="color_fff04a39">#FFFF5800</color>
+    <color name="color_drak_ff242831">#FF242831</color>
+    <color name="color_gray_aaaeb3">#aaaeb3</color>
+    <color name="color_484a4e">#484a4e</color>
+    <color name="color_b1bbc7">#b1bbc7</color>
+    <color name="color_494949">#494949</color>
+    <color name="color_ff484a4e">#FF484A4E</color>
+    <color name="color_ff3d4353">#ff3d4353</color>
+    <color name="color_ffeaecee">#ffeaecee</color>
+    <color name="color_f9fafa">#F9FAFA</color>
+    <color name="color_ff484d5b">#ff484d5b</color>
+    <color name="color_ff9c9faa">#ff9c9faa</color>
+    <color name="color_f5a623">#f5a623</color>
+    <color name="color_fcfcfc">#fcfcfc</color>
+    <color name="color_f2f2f2">#f2f2f2</color>
+    <color name="black_50">#80000000</color>
+    <color name="white">#ffffff</color>
+    <color name="blue">#0997F7</color>
+    <color name="green">#11EE96</color>
+    <!-- QRCode scanner color end -->
 </resources>

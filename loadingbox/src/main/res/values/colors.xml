@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Exceptions colors -->
+    <color name="dynamicbox_exception_button_color">#5fcf80</color>
+    <color name="dynamicbox_exception_button_color_second">#35c460</color>
+    <color name="dynamicbox_exception_title_color">#ff6a7983</color>
+    <color name="dynamicbox_exception_message_color">#8c989e</color>
+    <color name="color_mainred">#ff1d3e</color>
+    <color name="color_eb1010">#eb1010</color>
+    <color name="white">#ffffff</color>
+    <color name="color_f5f5f5">#f5f5f5</color>
+</resources>

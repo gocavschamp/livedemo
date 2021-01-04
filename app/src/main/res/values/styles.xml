@@ -1,11 +1,90 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialSheetFab.Base">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/transparent</item>
+        <item name="colorPrimaryDark">@color/transparent</item>
+        <item name="colorAccent">@color/main_color</item>
+        <item name="android:windowBackground">@color/color_eeeeee</item>
+    </style>
+    <style name="SplashTheme" parent="Theme.MaterialSheetFab.Base">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/transparent</item>
+        <item name="colorPrimaryDark">@color/transparent</item>
+        <item name="colorAccent">@color/main_color</item>
+        <item name="android:windowBackground">@drawable/ic_launcher_background</item>
     </style>
 
+    <style name="FullScreen" parent="AppTheme">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+    <style name="AppBarLayoutStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+    </style>
+<!--    <string name="appbar_spring_behavior" translatable="false">acom.google.android.material.appbar.AppBarLayoutSpringBehavior</string>-->
+<!--    <style name="CollapsingToolbarLayoutStyle">-->
+<!--        <item name="android:layout_width">match_parent</item>-->
+<!--        <item name="android:layout_height">wrap_content</item>-->
+<!--        <item name="android:elevation" tools:ignore="NewApi">4dp</item>-->
+<!--        <item name="expandedTitleGravity">center_horizontal|top</item>-->
+<!--        <item name="expandedTitleTextAppearance">@style/Text1Style</item>-->
+<!--        <item name="contentScrim">?attr/colorPrimary</item>-->
+<!--        <item name="layout_scrollFlags">scroll|exitUntilCollapsed</item>-->
+<!--        <item name="collapsedTitleGravity">center</item>-->
+<!--        <item name="collapsedTitleTextAppearance">@style/Text1Style</item>-->
+<!--    </style>-->
+    <style name="ToolBarStyleCenter" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">45dp</item>
+        <item name="android:theme">@style/Center_ActionBarStyle</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="android:elevation" tools:ignore="NewApi">20dp</item>
+        <item name="actionMenuTextColor">@color/white</item>
+        <item name="layout_collapseMode">pin</item>
+        <item name="contentInsetStart">0dp</item>
+    </style>
+    <style name="Center_ActionBarStyle" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="colorControlNormal">@android:color/white</item>
+        <item name="colorControlHighlight">#8fff</item>
+        <item name="colorControlActivated">@android:color/white</item>
+    </style>
+    <style name="CommunityFragment_TabLayout" parent="">
+        <!--Customize your theme here. -->
+        <item name="android:layout_width">match_parent</item>
+        <item name="tabSelectedTextColor">@color/black_60</item>
+        <item name="tabTextAppearance">@style/CommunityFragment_TabText</item>
+        <item name="tabTextColor">@color/black</item>
+        <item name="tabIndicatorHeight">4dp</item>
+        <item name="tabIndicatorColor">@color/main_color</item>
+        <item name="rippleColor">#00000000</item>
+        <item name="android:layout_height">45dp</item>
+        <item name="android:background">@color/color_f6f6f6</item>
+        <item name="android:theme">@style/AppTheme</item>
+        <item name="android:elevation" tools:ignore="NewApi">0.5dp</item>
+        <item name="tabMode">fixed</item>
+        <item name="tabGravity">fill</item>
+    </style>
+    <style name="CommunityFragment_TabText" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">15sp</item>
+        <item name="textAllCaps">false</item>
+    </style>
+    <style name="Text1Style">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+    <style name="AppTheme.NoActionBar.FullScreen" parent="FullScreen"></style>
+
+    <style name="Theme.MaterialSheetFab.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowNoTitle">true</item>
+<!--        <item name="android:windowIsTranslucent">true</item>-->
+    </style>
+
+    <color name="color_eeeeee">#eeeeee</color>
+    <color name="main_color">#ff5850</color>
 </resources>

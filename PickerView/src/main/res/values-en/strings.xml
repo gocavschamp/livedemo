@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ExtraTranslation">
+
+    <string name="pickerview_cancel" translatable="false">Cancel</string>
+    <string name="pickerview_submit" translatable="false">Sure</string>
+    <string name="pickerview_year" translatable="false">Year</string>
+    <string name="pickerview_month" translatable="false">Month</string>
+    <string name="pickerview_day" translatable="false">Day</string>
+    <string name="pickerview_hours" translatable="false">Hours</string>
+    <string name="pickerview_minutes" translatable="false">Minutes</string>
+    <string name="pickerview_seconds" translatable="false">Seconds</string>
+</resources>

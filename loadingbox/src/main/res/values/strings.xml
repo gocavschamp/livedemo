@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">loadingbox</string>
+    <string name="empty_string" translatable="false">empty</string>
+    <string name="dynamicbox_retry" translatable="false">Retry</string>
+
+    <string name="dynamicbox_loading_title" translatable="false"></string>
+    <string name="dynamicbox_loading_message" translatable="false"></string>
+
+    <string name="dynamicbox_internet_off_title" translatable="false">Error</string>
+    <string name="dynamicbox_internet_off_message" translatable="false">Internet is off, please enable it</string>
+
+    <string name="dynamicbox_exception_title" translatable="false">Error</string>
+    <string name="dynamicbox_exception_message" translatable="false">An error has occurred, retry again</string>
+    <string name="no_new_activity" translatable="false">暂无最新活动</string>
+    <string name="no_history_activity" translatable="false">暂无历史活动</string>
+    <string name="is_loading" translatable="false">正在载入...</string>
+    <string name="str_nei_rong_bei_shan_chu">该内容已被删除</string>
+    <string name="str_wang_luo_lian_jie_yi_chang">网络连接异常</string>
+    <string name="str_jian_cha_wang_luo_dian_ji_chong_shi">请检查网络后点击屏幕重试</string>
+    <string name="str_yu_fu_wu_qi_lian_jie_shi_bai">与服务器连接失败</string>
+    <string name="str_qing_dian_ji_ping_mu_chong_shi">请点击屏幕重试</string>
+    <string name="str_jin_ru_fang_jian_shi_bai">进入房间失败</string>
+    <string name="str_jia_ru_liao_tian_shi_bai">加入聊天失败</string>
+    <string name="str_hua_mian_lian_jie_shi_bai">画面连接失败</string>
+    <string name="str_hai_mei_you_guan_zhu_de_ren">您还没有关注的人~</string>
+    <string name="str_wei_tian_jai_huo_jiang_ji_lu">您还未添加任何获奖记录</string>
+    <string name="str_zan_wu_nei_rong">暂无内容</string>
+    <string name="str_zan_wu_shu_ju">暂无数据</string>
+    <string name="str_wu_shu_ju_qing_liu_lan_qi_ta_ye_mian">暂无数据显示~请先浏览其它页面</string>
+    <string name="str_hai_wei_bao_cun_cao_gao">您还没有保存过任何草稿哦~</string>
+    <string name="str_nin_hai_mei_you_fen_si">您还没有粉丝~</string>
+    <string name="str_wang_luo_wei_lian_jie">网络未连接</string>
+    <string name="str_nin_hai_mei_you_deng_lu">您还没有登录~</string>
+    <string name="str_dian_ji_deng_lu">点击登录</string>
+    <string name="str_deng_lu">登录</string>
+    <string name="str_deng_lu_cha_kan_guan_zhu_nei_rong">登录查看关注内容</string>
+    <string name="str_nin_xian_zai_mei_you_ji_lu">您现在还没有记录~</string>
+    <string name="str_wu_xiang_guan_yong_hu">无相关用户</string>
+    <string name="str_zhu_chi_ren_zai_hua_zhuang_qing_deng_dai">主持人在化妆,请小主们稍安勿躁</string>
+    <string name="str_shang_pin_wei_gui_">该拍品因为违规已被下架\n请查看其它拍品</string>
+    <string name="str_cha_kan_xiang_qing">查看详情</string>
+</resources>

@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':PickerView', ':umeng', ':base', ':banner', ':loadingbox', ':appbarspring'
 rootProject.name='live'
