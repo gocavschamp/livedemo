@@ -11,9 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.gyf.barlibrary.ImmersionBar;
+import com.nucarf.base.ui.mvp.BaseMvpActivity;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.Nullable;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -58,6 +61,19 @@ public abstract class BaseLazyFragment extends Fragment {
         unbinder = ButterKnife.bind(this, mRootView);
         return mRootView;
     }
+    /**
+     * 注册EventBus通信组件
+     */
+    protected void registerEventBus() {
+        EventBus.getDefault().register(this);
+    }
+
+    /**
+     * 取消注册EventBus通信组件
+     */
+    protected void unRegisterEventBus() {
+        EventBus.getDefault().unregister(this);
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -79,6 +95,11 @@ public abstract class BaseLazyFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        dismissDialog();
+        unRegisterEventBus();
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
         if (mImmersionBar != null)
             mImmersionBar.destroy();
     }
@@ -169,6 +190,62 @@ public abstract class BaseLazyFragment extends Fragment {
     protected void onInvisible() {
 
     }
+
+    /**
+     * show loading view
+     */
+    protected void showDialog() {
+        if (mActivity != null) {
+            if (mActivity instanceof BaseActivity) {
+                ((BaseActivity) mActivity).showDialog();
+
+            } else if (mActivity instanceof BaseActivityWithTitle) {
+                ((BaseActivityWithTitle) mActivity).showDialog();
+
+            } else if (mActivity instanceof BaseMvpActivity) {
+                ((BaseMvpActivity) mActivity).showDialog();
+            }
+        }
+    }
+
+    /**
+     * show loading view
+     */
+    protected boolean isDialogLoading() {
+        if (mActivity != null) {
+            if (mActivity instanceof BaseActivity) {
+                return ((BaseActivity) mActivity).isDialogShowing();
+
+            } else if (mActivity instanceof BaseActivityWithTitle) {
+                return ((BaseActivityWithTitle) mActivity).isDialogShowing();
+
+            } else if (mActivity instanceof BaseMvpActivity) {
+                return ((BaseMvpActivity) mActivity).isDialogShowing();
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * hide loading view
+     */
+    protected void dismissDialog() {
+        if (mActivity != null) {
+            if (mActivity instanceof BaseActivity) {
+                ((BaseActivity) mActivity).dismissDialog();
+
+            } else if (mActivity instanceof BaseActivityWithTitle) {
+                ((BaseActivityWithTitle) mActivity).dismissDialog();
+
+            } else if (mActivity instanceof BaseMvpActivity) {
+                ((BaseMvpActivity) mActivity).dismissDialog();
+            }
+        }
+    }
+
 
     /**
      * 找到activity的控件

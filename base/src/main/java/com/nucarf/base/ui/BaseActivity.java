@@ -1,14 +1,16 @@
 package com.nucarf.base.ui;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gyf.barlibrary.ImmersionBar;
 import com.nucarf.base.R;
-import com.umeng.analytics.MobclickAgent;
+import com.nucarf.base.utils.DialogUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -26,6 +28,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private Unbinder unbinder;
     private CompositeDisposable mCompositeDisposable;
+    private AlertDialog alertDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -107,13 +110,56 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        MobclickAgent.onResume(this);
+//        MobclickAgent.onResume(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        MobclickAgent.onPause(this);
+//        MobclickAgent.onPause(this);
+    }
+
+    /**
+     * show loading view
+     */
+    protected void showDialog() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            if (isDestroyed()) {
+                return;
+            }
+        } else {
+            if (isFinishing()) {
+                return;
+            }
+        }
+        if (alertDialog != null) {
+            if (!alertDialog.isShowing()) {
+                alertDialog.show();
+            }
+        } else {
+            alertDialog = DialogUtils.dialogPro(mContext, "请稍后...", false);
+            alertDialog.show();
+        }
+    }
+
+    /**
+     * is show loading view
+     */
+    protected boolean isDialogShowing() {
+        if (alertDialog != null) {
+            return alertDialog.isShowing();
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * hide loading view
+     */
+    protected void dismissDialog() {
+        if (alertDialog != null) {
+            alertDialog.dismiss();
+        }
     }
     @Override
     protected void onDestroy() {

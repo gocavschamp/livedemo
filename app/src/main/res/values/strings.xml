@@ -1,13 +1,31 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!--    <string name="app_name" tools:ignore="MissingTranslation">daily note</string>-->
-    <string name="kakaluot" tools:ignore="MissingTranslation">https://gss0.baidu.com/-Po3dSag_xI4khGko9WTAnF6hhy/zhidao/wh%3D600%2C800/sign=80a2f877f2039245a1e0e909b7a488fa/e61190ef76c6a7ef8d77a69cf3faaf51f3de6632.jpg</string>
-    <string name="wufan" tools:ignore="MissingTranslation">https://gss0.baidu.com/94o3dSag_xI4khGko9WTAnF6hhy/zhidao/wh%3D600%2C800/sign=463ab43bc51349547e4be062667ebe60/3bf33a87e950352adeb929b25d43fbf2b3118bab.jpg</string>
-    <string name="app_ll" tools:ignore="MissingTranslation">daily note</string>
-    <string name="tenankesi" tools:ignore="MissingTranslation">https://gss0.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/zhidao/wh%3D600%2C800/sign=c670cb899f8fa0ec7f926c0b16a775d6/d043ad4bd11373f026a26625aa0f4bfbfaed04ee.jpg</string>
-    <string name="beijita" tools:ignore="MissingTranslation">https://gss0.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/zhidao/wh%3D600%2C800/sign=de9b6d85d7f9d72a1731181be41a040c/f9198618367adab48e3a12f985d4b31c8601e4a6.jpg</string>
-    <string name="kelin" tools:ignore="MissingTranslation">https://gss0.baidu.com/7Po3dSag_xI4khGko9WTAnF6hhy/zhidao/wh%3D600%2C800/sign=1accda9b9eef76c6d087f32dad26d1c2/f7246b600c33874414e927c65f0fd9f9d72aa058.jpg</string>
-    <string name="bike" tools:ignore="MissingTranslation">https://gss0.baidu.com/-fo3dSag_xI4khGko9WTAnF6hhy/zhidao/wh%3D600%2C800/sign=9933924977310a55c471d6f287756f91/314e251f95cad1c8c983f49d713e6709c93d514b.jpg</string>
-    <string name="item_example_pager_left" translatable="false">Left Pager</string>
-    <string name="item_example_pager_right" translatable="false">Right Pager</string>
-
+<resources xmlns:tools="http://schemas.android.com/tools"  translatable="false" tools:ignore="ExtraTranslation" >
+    <string name="app_name" >live test</string>
+    <string name="kakaluot" >https://gss0.baidu.com/-Po3dSag_xI4khGko9WTAnF6hhy/zhidao/wh%3D600%2C800/sign=80a2f877f2039245a1e0e909b7a488fa/e61190ef76c6a7ef8d77a69cf3faaf51f3de6632.jpg</string>
+    <string name="wufan" >https://gss0.baidu.com/94o3dSag_xI4khGko9WTAnF6hhy/zhidao/wh%3D600%2C800/sign=463ab43bc51349547e4be062667ebe60/3bf33a87e950352adeb929b25d43fbf2b3118bab.jpg</string>
+    <string name="app_ll" >daily note</string>
+    <string name="tenankesi">https://gss0.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/zhidao/wh%3D600%2C800/sign=c670cb899f8fa0ec7f926c0b16a775d6/d043ad4bd11373f026a26625aa0f4bfbfaed04ee.jpg</string>
+    <string name="beijita">https://gss0.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/zhidao/wh%3D600%2C800/sign=de9b6d85d7f9d72a1731181be41a040c/f9198618367adab48e3a12f985d4b31c8601e4a6.jpg</string>
+    <string name="kelin">https://gss0.baidu.com/7Po3dSag_xI4khGko9WTAnF6hhy/zhidao/wh%3D600%2C800/sign=1accda9b9eef76c6d087f32dad26d1c2/f7246b600c33874414e927c65f0fd9f9d72aa058.jpg</string>
+    <string name="bike" >https://gss0.baidu.com/-fo3dSag_xI4khGko9WTAnF6hhy/zhidao/wh%3D600%2C800/sign=9933924977310a55c471d6f287756f91/314e251f95cad1c8c983f49d713e6709c93d514b.jpg</string>
+    <string name="item_example_pager_left">Left Pager</string>
+    <string name="item_example_pager_right" >Right Pager</string>
+    <string name="exit_app" >再按一次返回键退出</string>
+    <string name="call_service">联系客服</string>
+    <string name="newer_guide">新手引导</string>
+    <string name="str_chu_cun_ka_cuo_wu">储存卡错误</string>
+    <string name="str_xia_yi_bu">下一步</string>
+    <string name="str_zan_wu_wai_bu_cun_chu">暂无外部存储</string>
+    <string name="str_gong">共</string>
+    <string name="str_zhang">张</string>
+    <string name="str_ninzui_duo_zhi_neng_xuan_ze">你最多只能选择</string>
+    <string name="str_zhao_pian">照片</string>
+    <string name="str_wancheng">完成</string>
+    <string name="str_wo_zhi_dao_le">我知道了</string>
+    <string name="once_max_money">本次最多可用</string>
+    <string name="no_money_call_company">您当前没有可用余额，请联系公司!</string>
+    <string name="lock_card_money_call_company">您当前卡被冻结，请联系公司!</string>
+    <string name="recomment_station_empty">暂无推荐油站</string>
+    <string name="title_activity_nearby_station">NearbyStationActivity</string>
+    <string name="exchange_protical"> 《转油协议》 </string>
+    <string name="check_station"> *转出资金只可在以下油站消费，查看油站 >> </string>
 </resources>

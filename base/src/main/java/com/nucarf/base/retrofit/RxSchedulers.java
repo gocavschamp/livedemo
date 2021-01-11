@@ -67,6 +67,21 @@ public class RxSchedulers {
     }
 
     /**
+     * 统一线程处理
+     *
+     * @param <T>
+     * @return
+     */
+    public static <T> ObservableTransformer<T, T> rxSchedulerHelper() {    //compose简化线程
+        return new ObservableTransformer<T, T>() {
+            @Override
+            public Observable<T> apply(Observable<T> observable) {
+                return observable.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+            }
+        };
+    }
+    /**
      * 统一返回结果处理
      *
      * @param <T>
