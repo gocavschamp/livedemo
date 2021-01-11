@@ -16,6 +16,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.annotations.Nullable;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by yuwenmingon 2019/1/17
@@ -34,6 +36,7 @@ public abstract class BaseMvpActivity<T extends BasePersenter> extends AppCompat
     protected Unbinder unbinder;
     protected Context mContext;
     private Dialog alertDialog;
+    private CompositeDisposable mCompositeDisposable;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -149,10 +152,23 @@ public abstract class BaseMvpActivity<T extends BasePersenter> extends AppCompat
 
     }
 
+    public void unSubscribe() {
+        if (mCompositeDisposable != null) {
+            mCompositeDisposable.clear();
+        }
+    }
+
+    public void addSubscribe(Disposable subscription) {
+        if (mCompositeDisposable == null) {
+            mCompositeDisposable = new CompositeDisposable();
+        }
+        mCompositeDisposable.add(subscription);
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unRegisterEventBus();
+        unSubscribe();
         dismissDialog();
         if (mPresenter != null) {
             mPresenter.detachView();

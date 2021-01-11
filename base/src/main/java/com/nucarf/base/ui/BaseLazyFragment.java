@@ -20,6 +20,8 @@ import org.greenrobot.eventbus.EventBus;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by Administrator on 2018/5/5.
@@ -47,6 +49,7 @@ public abstract class BaseLazyFragment extends Fragment {
 
     protected ImmersionBar mImmersionBar;
     private Unbinder unbinder;
+    private CompositeDisposable mCompositeDisposable;
 
     @Override
     public void onAttach(Context context) {
@@ -258,10 +261,23 @@ public abstract class BaseLazyFragment extends Fragment {
     protected <T extends View> T findActivityViewById(@IdRes int id) {
         return (T) mActivity.findViewById(id);
     }
+    protected void unSubscribe() {
+        if (mCompositeDisposable != null) {
+            mCompositeDisposable.clear();
+        }
+    }
+
+    protected void addSubscribe(Disposable subscription) {
+        if (mCompositeDisposable == null) {
+            mCompositeDisposable = new CompositeDisposable();
+        }
+        mCompositeDisposable.add(subscription);
+    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        unSubscribe();
         if (unbinder != null) {
             unbinder.unbind();
         }

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".login.LoginActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textColor="#333333"
+        android:textSize="20sp"
+        tools:layout_editor_absoluteX="90dp"
+        tools:layout_editor_absoluteY="47dp"
+        tools:text="欢迎来到xx直播"
+        tools:ignore="MissingConstraints" />
+
+    <EditText
+        android:id="@+id/editTextPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请输入手机号码"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginRight="@dimen/dp_15"
+        android:inputType="number"
+        android:textColor="@color/color_333333"
+        tools:layout_editor_absoluteX="63dp"
+        tools:layout_editor_absoluteY="150dp"
+        tools:textColorHint="@color/color_484a4e"
+        tools:ignore="MissingConstraints" />
+    <EditText
+        android:id="@+id/editTextPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="密码"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginRight="@dimen/dp_15"
+        android:inputType="number"
+        android:textColor="@color/color_333333"
+        app:layout_constraintTop_toBottomOf="@id/editTextPhone"
+        android:layout_marginTop="@dimen/dp_20"
+        tools:textColorHint="@color/color_484a4e"
+        tools:ignore="MissingConstraints" />
+
+    <com.deadline.statebutton.StateButton
+        android:id="@+id/button"
+        android:layout_width="@dimen/dp_150"
+        android:layout_height="wrap_content"
+        android:text="登录"
+        app:statebutton_radius="25dp"
+        app:normalBackgroundColor="@color/blue"
+        app:normalTextColor="@android:color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editTextPassword"
+        android:layout_marginTop="@dimen/dp_50"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

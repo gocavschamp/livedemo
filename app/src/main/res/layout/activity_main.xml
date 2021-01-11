@@ -1,18 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".home.MainActivity">
+    <!--tl_indicator_color：指示器的颜色-->
+    <!--tl_indicator_height：指示器的高度-->
+    <!--tl_indicator_width：指示器的宽度-->
+    <!--tl_textUnselectColor：Tab未选中时字体的颜色-->
+    <!--tl_textSelectColor：Tab选中时字体的颜色-->
+    <!--tl_textsize：字体大小-->
+    <!--tl_indicator_width_equal_title：设置指示器宽度与文本宽度一致-->
+    <!--tl_tab_space_equal：设置Tab大小等分-->
+    <!--tl_divider_color：分割线的颜色-->
+    <!--tl_divider_width：分割线的宽度-->
+    <com.flyco.tablayout.SlidingTabLayout
+        android:id="@+id/stl_main"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/white"
+        app:tl_indicator_color="@color/main_color"
+        app:tl_indicator_height="2dp"
+        app:tl_indicator_margin_top="@dimen/dp_15"
+        app:tl_indicator_width="@dimen/dp_30"
+        app:tl_indicator_width_equal_title="true"
+        app:tl_tab_space_equal="true"
+        app:tl_textBold="BOTH"
+        app:tl_textSelectColor="@color/main_color"
+        app:tl_textUnselectColor="@color/color_333333"
+        app:tl_textsize="16sp"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.nucarf.base.widget.ViewPagerSlide
+        android:id="@+id/vp_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_f5f5f5" />
+</LinearLayout>

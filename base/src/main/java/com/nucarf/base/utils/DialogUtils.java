@@ -1,7 +1,6 @@
 package com.nucarf.base.utils;
 
-import android.app.Activity;
-import android.app.AlertDialog;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -9,16 +8,16 @@ import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import android.view.View.OnClickListener;
+import android.widget.LinearLayout.LayoutParams;
 import com.nucarf.base.R;
 
 import java.util.ArrayList;
@@ -89,7 +88,31 @@ public class DialogUtils {
         dialog.setCanceledOnTouchOutside(isoutside);
         return dialog;
     }
-
+    /**
+     * 自定义Dialog内容 背景透明
+     *
+     * @param context
+     * @param view
+     * @return
+     */
+    public static Dialog showCustomCenterTransformDialog(Context context, View view, boolean isoutside) {
+        Dialog dialog = new Dialog(context, R.style.customTransformDialog);
+//        ViewGroup.LayoutParams layoutParams =new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+        dialog.setContentView(view);
+        WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+        // 设置宽高为match_parent，不要去算出来屏幕宽高再赋值哦，因为有些 // 有虚拟按键的手机上计算出来的高度不一定准确，所以dialog不会全屏
+//         设置dialog距屏幕的边距都为0
+        dialog.getWindow().setBackgroundDrawableResource(R.color.transparent);
+        dialog.getWindow().setDimAmount(0f);
+        dialog.getWindow().getDecorView().setPadding(0, 0, 0, 0);
+        params.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        params.gravity = Gravity.CENTER;
+        dialog.getWindow().setAttributes(params);
+        dialog.setCancelable(isoutside);
+        dialog.setCanceledOnTouchOutside(isoutside);
+        return dialog;
+    }
     /**
      * 自定义Dialog内容 背景颜色 60 黑
      *
@@ -196,7 +219,7 @@ public class DialogUtils {
         TextView mOk = (TextView) view.findViewById(R.id.ok);
         mOk.setText(okbtn);
 
-        view.findViewById(R.id.ok).setOnClickListener(new OnClickListener() {
+        view.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 dialog.dismiss();
@@ -268,7 +291,7 @@ public class DialogUtils {
             mConfim.setVisibility(View.GONE);
 
         }
-        mLeftBtn.setOnClickListener(new OnClickListener() {
+        mLeftBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 dialog.dismiss();
@@ -280,7 +303,7 @@ public class DialogUtils {
                 }, 200);
             }
         });
-        mRightBtn.setOnClickListener(new OnClickListener() {
+        mRightBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 dialog.dismiss();
@@ -292,7 +315,7 @@ public class DialogUtils {
                 }, 200);
             }
         });
-        mConfim.setOnClickListener(new OnClickListener() {
+        mConfim.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 dialog.dismiss();
@@ -367,7 +390,7 @@ public class DialogUtils {
             mConfim.setVisibility(View.GONE);
 
         }
-        mLeftBtn.setOnClickListener(new OnClickListener() {
+        mLeftBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 dialog.dismiss();
@@ -379,7 +402,7 @@ public class DialogUtils {
                 }, 200);
             }
         });
-        mRightBtn.setOnClickListener(new OnClickListener() {
+        mRightBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 dialog.dismiss();
@@ -391,7 +414,7 @@ public class DialogUtils {
                 }, 200);
             }
         });
-        mConfim.setOnClickListener(new OnClickListener() {
+        mConfim.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 dialog.dismiss();
@@ -474,7 +497,7 @@ public class DialogUtils {
                 tv.setBackgroundResource(R.drawable.menudialog_center_selector);
             }
 
-            tv.setOnClickListener(new OnClickListener() {
+            tv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View arg0) {
                     dialog.dismiss();
@@ -581,26 +604,15 @@ public class DialogUtils {
         void onClickSend(String content, String tag);
     }
 
-    public static AlertDialog dialogPro(Context pContext, String msg, boolean pCanAancelable) {
+    public static Dialog dialogPro(Context pContext, String msg, boolean pCanAancelable) {
         LayoutInflater inflater = (LayoutInflater) pContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.layout_nobtn_dialog, null);
-        AlertDialog myDialog = new AlertDialog.Builder(pContext, R.style.DialogStyle3).create();
-        myDialog.setView(((Activity) pContext).getLayoutInflater().inflate(R.layout.layout_nobtn_dialog, null));
-        myDialog.show();
-        myDialog.getWindow().setContentView(layout);
         TextView mTextView = (TextView) layout.findViewById(R.id.dialog_msg);
         mTextView.setText(msg);
         RelativeLayout mRootLayout = (RelativeLayout) layout.findViewById(R.id.dialog_root_layout);
         mRootLayout.setVisibility(View.VISIBLE);
-        myDialog.setCancelable(pCanAancelable);
-        Window dialogWindow = myDialog.getWindow();
-        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
-        dialogWindow.setGravity(Gravity.CENTER);
-        dialogWindow.setBackgroundDrawableResource(R.color.transparent);
-        lp.width = ScreenUtil.dip2px(200);
-        lp.height = ScreenUtil.dip2px(200);
-        dialogWindow.setAttributes(lp);
-        return myDialog;
+        Dialog dialog = DialogUtils.showCustomCenterTransformDialog(pContext, layout, pCanAancelable);
+        return dialog;
     }
 
 }

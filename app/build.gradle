@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 28
@@ -119,6 +121,8 @@ repositories {
     flatDir {
         dirs 'libs'
     }
+    maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
+    mavenCentral()
 }
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -141,4 +145,6 @@ dependencies {
     implementation 'org.jetbrains:annotations:15.0'
 
     implementation 'com.tencent.liteavsdk:LiteAVSDK_Smart:latest.release'
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

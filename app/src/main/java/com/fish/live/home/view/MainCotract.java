@@ -13,9 +13,6 @@ public interface MainCotract {
 
         void getMoneySuccess();
 
-        void getMoneyFail(String message);
-
-        void closeMoneyDialog();
     }
 
     interface Presenter extends BasePersenter<View> {

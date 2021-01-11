@@ -1,6 +1,7 @@
 package com.nucarf.base.ui;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Build;
@@ -28,7 +29,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private Unbinder unbinder;
     private CompositeDisposable mCompositeDisposable;
-    private AlertDialog alertDialog;
+    private Dialog alertDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

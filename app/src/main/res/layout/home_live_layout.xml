@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_1"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/dp_15"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_30"
+            android:layout_weight="1"
+            android:text="近期直播"
+            android:textColor="@color/color_333333"
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/more"
+            android:drawablePadding="@dimen/dp_5"
+            android:text="更多"
+            android:textColor="@color/color_333333"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/ll_content"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_105"
+        android:background="@color/white"
+        android:gravity="center_vertical">
+
+        <com.nucarf.base.widget.RoundImageView
+            android:id="@+id/iv_pic"
+            android:layout_width="@dimen/dp_112"
+            android:layout_height="@dimen/dp_76"
+            android:layout_marginRight="@dimen/dp_12"
+            android:src="@color/color_f5f5f5"
+            app:bottom_left="true"
+            app:bottom_right="true"
+            app:round_radius="@dimen/dp_10"
+            app:top_left="true"
+            app:top_right="true" />
+
+        <TextView
+            android:id="@+id/tv_to_start_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@id/iv_pic"
+            android:layout_alignBottom="@id/iv_pic"
+            android:background="@color/black_20"
+            android:gravity="center"
+            android:padding="@dimen/dp_2"
+            android:text="距离开播1小时"
+            android:textColor="@color/white"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/iv_pic"
+            android:gravity="center"
+            android:padding="@dimen/dp_2"
+            android:text="精神分裂症为什么要用药？"
+            android:textColor="@color/color_333333"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_title"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_toRightOf="@id/iv_pic"
+            android:gravity="center"
+            android:padding="@dimen/dp_2"
+            android:text="朱麒 | 中山大学附属第三医院"
+            android:textColor="@color/color_333333"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_name"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_toRightOf="@id/iv_pic"
+            android:gravity="center"
+            android:padding="@dimen/dp_2"
+            android:text="01月11日  18:00"
+            android:textColor="#777777"
+            android:textSize="12sp" />
+
+        <com.deadline.statebutton.StateButton
+            android:id="@+id/button"
+            android:layout_width="@dimen/dp_68"
+            android:layout_height="@dimen/dp_22"
+            android:layout_alignBottom="@id/tv_time"
+            android:text="直播中"
+            android:textSize="12sp"
+            android:layout_alignParentRight="true"
+            app:normalBackgroundColor="@color/white"
+            app:normalStrokeWidth="1dp"
+            app:normalStrokeColor="#5d9ef7"
+            app:normalTextColor="#5d9ef7"
+            app:statebutton_radius="15dp" />
+
+    </RelativeLayout>
+</LinearLayout>

@@ -1,5 +1,7 @@
 package com.nucarf.base.ui.mvp;
 
+import io.reactivex.disposables.Disposable;
+
 /**
  * Created by yuwenmingon 2019/1/23
  * BaseView
@@ -7,6 +9,8 @@ package com.nucarf.base.ui.mvp;
  * @author yuwenming
  */
 public interface BaseView {
+    //解绑rxjava
+    void addSubscribe(Disposable subscription);
 
     /**
      * 显示加载框

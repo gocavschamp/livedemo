@@ -20,15 +20,15 @@
             android:layout_height="60dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:indeterminateDrawable="@drawable/rotate_loading_360"
+            android:indeterminateDrawable="@drawable/rotate_loading"
             android:indeterminateDuration="2000"
 
             />
 
         <TextView
             android:id="@+id/dialog_msg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_below="@id/aa"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="3dp"

@@ -1,6 +1,7 @@
 package com.nucarf.base.ui;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -31,7 +32,7 @@ public abstract class BaseActivityWithTitle extends AppCompatActivity {
     protected Context mContext;
 
     private Unbinder unbinder;
-    private AlertDialog alertDialog;
+    private Dialog alertDialog;
     protected FrameLayout fl_root_content;
     protected TitleLayout titlelayout;
     protected LinearLayout ll_bar;
