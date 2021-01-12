@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="str_shi_fang_jia_zai_geng_duo">释放加载更多</string>
+    <string name="str_shang_la_jia_zai_geng_duo">上拉加载更多</string>
+    <string name="str_jia_zai_zhong__">加载中...</string>
+    <string name="str_jia_zai_wan_cheng">加载完成</string>
+</resources>
