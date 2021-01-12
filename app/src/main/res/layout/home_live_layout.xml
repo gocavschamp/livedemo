@@ -30,7 +30,7 @@
             android:drawablePadding="@dimen/dp_5"
             android:text="更多"
             android:textColor="@color/color_333333"
-            android:textSize="18sp" />
+            android:textSize="12sp" />
 
     </LinearLayout>
 

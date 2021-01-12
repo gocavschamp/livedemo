@@ -18,6 +18,7 @@ import com.liys.doubleclicklibrary.ViewDoubleHelper;
 import com.nucarf.base.utils.ActivityHelper;
 import com.nucarf.base.utils.BaseAppCache;
 import com.nucarf.base.utils.LogUtils;
+import com.tencent.rtmp.TXLiveBase;
 import com.tencent.smtt.sdk.QbSdk;
 
 import java.lang.reflect.Constructor;
@@ -57,6 +58,8 @@ public class LiveApplication extends Application {
         // 屏幕适配
         AutoSizeConfig.getInstance().setExcludeFontScale(true);
         registerActivityLifecycleCallbacks(new ActivityHelper());
+        //init tengxunlive
+        initTengxun();
         //greendao 数据库
         initGreenDao();
         //初始化x5webview
@@ -69,6 +72,12 @@ public class LiveApplication extends Application {
         }
         //防止点击抖动
         ViewDoubleHelper.init(this, 1000); //默认时间：1秒
+    }
+
+    private void initTengxun() {
+        String licenceURL = ""; // 获取到的 licence url
+        String licenceKey = ""; // 获取到的 licence key
+        TXLiveBase.getInstance().setLicence(this, licenceURL, licenceKey);
     }
 
     private void initXunFei() {

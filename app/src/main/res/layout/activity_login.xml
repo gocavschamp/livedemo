@@ -13,8 +13,8 @@
         android:text="TextView"
         android:textColor="#333333"
         android:textSize="20sp"
-        tools:layout_editor_absoluteX="90dp"
-        tools:layout_editor_absoluteY="47dp"
+        android:layout_marginLeft="@dimen/dp_50"
+        android:layout_marginTop="@dimen/dp_50"
         tools:text="欢迎来到xx直播"
         tools:ignore="MissingConstraints" />
 
@@ -23,6 +23,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="请输入手机号码"
+        app:layout_constraintTop_toBottomOf="@id/textView"
+        android:layout_marginTop="@dimen/dp_68"
         android:layout_marginLeft="@dimen/dp_15"
         android:layout_marginRight="@dimen/dp_15"
         android:inputType="number"

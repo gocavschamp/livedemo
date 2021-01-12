@@ -1,6 +1,8 @@
 package com.fish.live.home;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
 
 import androidx.viewpager.widget.ViewPager;
 
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.reactivex.disposables.Disposable;
 
 public class MainActivity extends BaseMvpActivity<MianPresenter> implements MainCotract.View, OnTabSelectListener, ViewPager.OnPageChangeListener {
@@ -26,6 +29,10 @@ public class MainActivity extends BaseMvpActivity<MianPresenter> implements Main
     SlidingTabLayout stlMain;
     @BindView(R.id.vp_main)
     ViewPagerSlide vpMain;
+    @BindView(R.id.add)
+    ImageView add;
+    @BindView(R.id.search)
+    ImageView search;
     private HomeViewPagerAdapter homeViewPagerAdapter;
 
     @Override
@@ -98,5 +105,22 @@ public class MainActivity extends BaseMvpActivity<MianPresenter> implements Main
     @Override
     public void addSubscribe(Disposable subscription) {
         super.addSubscribe(subscription);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
+    }
+
+    @OnClick({R.id.add, R.id.search})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.add:
+                break;
+            case R.id.search:
+                break;
+        }
     }
 }

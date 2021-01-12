@@ -11,7 +11,7 @@ class LoginActivity : BaseActivityWithTitle() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        showTitleBar(true)
+        showTitleBar(false)
     }
 
     override fun initData() {

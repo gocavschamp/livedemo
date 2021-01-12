@@ -31,6 +31,12 @@ android {
 //        因为 NDK r17 之后不再支持 mips 平台，在 build.gradle 里增加如下配置可解决
         doNotStrip '*/mips/*.so'
         doNotStrip '*/mips64/*.so'
+        //tengxun live
+        pickFirst '**/libc++_shared.so'
+        doNotStrip "*/armeabi/libYTCommon.so"
+        doNotStrip "*/armeabi-v7a/libYTCommon.so"
+        doNotStrip "*/x86/libYTCommon.so"
+        doNotStrip "*/arm64-v8a/libYTCommon.so"
     }
     lintOptions {
         checkReleaseBuilds false
@@ -143,8 +149,11 @@ dependencies {
     //防抖动
     implementation 'com.github.liys666666:DoubleClick:V1.0.4'
     implementation 'org.jetbrains:annotations:15.0'
+    //tencent
+    implementation 'com.tencent.liteavsdk:LiteAVSDK_Smart:latest.release'//移动直播
+    implementation 'com.tencent.teduboard:TEduBoardSdk:latest.release'//互动白板
+    implementation 'com.tencent.imsdk:imsdk:latest.release'//im
 
-    implementation 'com.tencent.liteavsdk:LiteAVSDK_Smart:latest.release'
     implementation "androidx.core:core-ktx:+"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
