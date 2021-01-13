@@ -57,14 +57,12 @@
     </LinearLayout>
 
     <include
-        android:id="@+id/result_layout"
         layout="@layout/search_result_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/search_layout" />
 
     <include
-        android:id="@+id/history_layout"
         layout="@layout/search_history_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

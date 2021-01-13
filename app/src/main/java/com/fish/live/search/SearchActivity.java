@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.deadline.statebutton.StateButton;
 import com.fish.live.LiveApplication;
 import com.fish.live.R;
@@ -21,6 +20,7 @@ import com.fish.live.search.adapter.SearchResultAdapter;
 import com.fish.live.search.bean.SearchHistoryBean;
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
+import com.nucarf.base.bean.StringBean;
 import com.nucarf.base.ui.BaseActivity;
 import com.nucarf.base.utils.DialogUtils;
 import com.nucarf.base.utils.KeyboardUtil;
@@ -49,6 +49,10 @@ public class SearchActivity extends BaseActivity implements OnTabSelectListener,
     StateButton tvClearAll;
     @BindView(R.id.rv_result)
     RecyclerView rvResult;
+    @BindView(R.id.result_layout)
+    LinearLayout resultLayout;
+    @BindView(R.id.history_layout)
+    LinearLayout historyLayout;
     private SearchHistoryAdapter historyAdapter;
     private SearchResultAdapter resultAdapter;
     private SearchResultAdapter resultRecommentAdapter;
@@ -71,10 +75,11 @@ public class SearchActivity extends BaseActivity implements OnTabSelectListener,
         resultRecommentAdapter = new SearchResultAdapter(R.layout.live_list_item_layout);
         rvResult.setAdapter(resultAdapter);
         tabLayout.setOnTabSelectListener(this);
+        tabLayout.setTabData(new String[]{"推荐","全部直播"});
         input.addTextChangedListener(this);
         historyAdapter.setOnItemChildClickListener((adapter, view, position) -> {
             switch (view.getId()) {
-                case R.id.delete :
+                case R.id.delete:
                     DaoSession daoSession = ((LiveApplication) getApplication()).getDaoSession();
                     SearchHistoryBeanDao searchHistoryBeanDao = daoSession.getSearchHistoryBeanDao();
                     List<SearchHistoryBean> list = searchHistoryBeanDao.queryBuilder()
@@ -83,7 +88,7 @@ public class SearchActivity extends BaseActivity implements OnTabSelectListener,
                     searchHistoryBeanDao.deleteInTx(list);
                     getRecentData();
                     break;
-                case R.id.text :
+                case R.id.text:
                     KeyboardUtil.hideSoftInput(input.getWindowToken(), SearchActivity.this);
                     input.setText(historyAdapter.getData().get(position));
 //                    searchStation(true, historyAdapter.getData().get(position));
@@ -99,6 +104,23 @@ public class SearchActivity extends BaseActivity implements OnTabSelectListener,
             case R.id.go_search:
                 //todo   search
                 addHistory();
+                ArrayList<StringBean> stringBeans = new ArrayList<>();
+                stringBeans.add(new StringBean());
+                stringBeans.add(new StringBean());
+                stringBeans.add(new StringBean());
+                stringBeans.add(new StringBean());
+                stringBeans.add(new StringBean());
+                stringBeans.add(new StringBean());
+                stringBeans.add(new StringBean());
+                stringBeans.add(new StringBean());
+                stringBeans.add(new StringBean());
+                stringBeans.add(new StringBean());
+                stringBeans.add(new StringBean());
+                stringBeans.add(new StringBean());
+                stringBeans.add(new StringBean());
+                resultAdapter.setNewData(stringBeans);
+                historyLayout.setVisibility(View.GONE);
+                resultLayout.setVisibility(View.VISIBLE);
                 break;
             case R.id.tv_clear_all:
                 //clear  history
