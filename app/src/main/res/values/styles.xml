@@ -15,7 +15,14 @@
         <item name="colorAccent">@color/main_color</item>
         <item name="android:windowBackground">@drawable/ic_launcher_background</item>
     </style>
-
+    <style name="oilCardDialogStyle">
+        <item name="android:windowFrame">@null</item> <!-- 边框 -->
+        <item name="android:windowIsFloating">true</item> <!-- 是否浮现在activity之上 -->
+        <item name="android:windowNoTitle">true</item> <!-- 无标题 -->
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
     <style name="FullScreen" parent="AppTheme">
         <item name="android:windowFullscreen">true</item>
     </style>

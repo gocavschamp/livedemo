@@ -96,6 +96,7 @@ public class SearchActivity extends BaseActivity implements OnTabSelectListener,
             }
 
         });
+        getRecentData();
     }
 
     @OnClick({R.id.go_search, R.id.tv_clear_all})

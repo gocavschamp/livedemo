@@ -16,6 +16,7 @@ import com.example.loadingbox.LoadingBox;
 import com.fish.live.R;
 import com.fish.live.home.adapter.HomeNormalAdapter;
 import com.fish.live.home.bean.HomeDataBean;
+import com.fish.live.livevideo.LiveVideoActivity;
 import com.fish.live.service.AppService;
 import com.nucarf.base.retrofit.RetrofitUtils;
 import com.nucarf.base.retrofit.api.BaseHttp;
@@ -27,6 +28,7 @@ import com.nucarf.base.utils.BaseAppCache;
 import com.nucarf.base.utils.MD5Utils;
 import com.nucarf.base.utils.NetUtils;
 import com.nucarf.base.utils.SharePreUtils;
+import com.nucarf.base.utils.UiGoto;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -103,6 +105,9 @@ public class HomeNormalFragment extends BaseLazyFragment implements OnRefreshLis
         homeAdapter = new HomeNormalAdapter(new ArrayList<HomeDataBean>());
         recycleview.setAdapter(homeAdapter);
         homeAdapter.setOnItemClickListener((adapter, view, position) -> {
+            if(position>=2) {
+                UiGoto.startAty(mActivity, LiveVideoActivity.class);
+            }
 
 
         });
@@ -191,7 +196,7 @@ public class HomeNormalFragment extends BaseLazyFragment implements OnRefreshLis
                 .subscribe(new Consumer<Long>() {
                     @Override
                     public void accept(@NonNull Long aLong) throws Exception {
-                        if (aLong == 2) {
+                        if (aLong == 1) {
                             dismissDialog();
                             loadingBox.hideAll();
                             if (!isLoadMore) {

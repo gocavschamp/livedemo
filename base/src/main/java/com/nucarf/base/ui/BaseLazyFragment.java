@@ -64,6 +64,7 @@ public abstract class BaseLazyFragment extends Fragment {
         unbinder = ButterKnife.bind(this, mRootView);
         return mRootView;
     }
+
     /**
      * 注册EventBus通信组件
      */
@@ -102,9 +103,13 @@ public abstract class BaseLazyFragment extends Fragment {
         unRegisterEventBus();
         if (unbinder != null) {
             unbinder.unbind();
+            unbinder = null;
         }
-        if (mImmersionBar != null)
+        if (mImmersionBar != null) {
             mImmersionBar.destroy();
+            mImmersionBar = null;
+        }
+
     }
 
     @Override
@@ -261,6 +266,7 @@ public abstract class BaseLazyFragment extends Fragment {
     protected <T extends View> T findActivityViewById(@IdRes int id) {
         return (T) mActivity.findViewById(id);
     }
+
     protected void unSubscribe() {
         if (mCompositeDisposable != null) {
             mCompositeDisposable.clear();

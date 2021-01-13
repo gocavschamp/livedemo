@@ -64,7 +64,16 @@ public class AndroidUtil {
 			return -1;
 		}
 	}
-
+	/**
+	 * phone型号
+	 *
+	 * @return
+	 */
+	public static String getDeviceName() {
+		String name = "";
+		name += (Build.BRAND +" "+ android.os.Build.MODEL);
+		return name;
+	}
 	public static String getVerName(Context context) {
 		try {
 			return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;

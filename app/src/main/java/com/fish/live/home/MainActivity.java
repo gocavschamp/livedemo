@@ -1,6 +1,7 @@
 package com.fish.live.home;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
@@ -18,9 +19,13 @@ import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.gyf.barlibrary.ImmersionBar;
 import com.nucarf.base.bean.StringBean;
 import com.nucarf.base.ui.mvp.BaseMvpActivity;
+import com.nucarf.base.utils.AndroidUtil;
+import com.nucarf.base.utils.LogUtils;
 import com.nucarf.base.utils.UiGoto;
 import com.nucarf.base.widget.ViewPagerSlide;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,8 +54,10 @@ public class MainActivity extends BaseMvpActivity<MianPresenter> implements Main
     @Override
     protected void initInject() {
         setTheme(R.style.AppTheme);
+        fixOppoAssetManager();
         ImmersionBar.with(this).statusBarDarkFont(false, 0.2f).init();
         mPresenter = new MianPresenter(this);
+
     }
 
     @Override
@@ -157,5 +164,29 @@ public class MainActivity extends BaseMvpActivity<MianPresenter> implements Main
         });
         cardFilterPopupWindow.showAtBottom(stlMain);
 
+    }
+
+
+    /**
+     * fix 部分OPPO机型 AssetManager.finalize() timed out
+     */
+    private void fixOppoAssetManager() {
+        String device = AndroidUtil.getDeviceName();
+        LogUtils.d(device);
+        if (!TextUtils.isEmpty(device)) {
+            if (device.contains("OPPO R9") || device.contains("OPPO A5")) {
+                try {
+                    // 关闭掉FinalizerWatchdogDaemon
+                    Class clazz = Class.forName("java.lang.Daemons$FinalizerWatchdogDaemon");
+                    Method method = clazz.getSuperclass().getDeclaredMethod("stop");
+                    method.setAccessible(true);
+                    Field field = clazz.getDeclaredField("INSTANCE");
+                    field.setAccessible(true);
+                    method.invoke(field.get(null));
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

@@ -1,29 +1,12 @@
-package com.fish.live.home.presenter;
-
-import android.annotation.SuppressLint;
-import android.text.TextUtils;
+package com.fish.live.livewatch.presenter;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LifecycleOwner;
 
-import com.fish.live.home.MainActivity;
-import com.fish.live.home.view.MainCotract;
-import com.fish.live.login.LoginActivity;
-import com.fish.live.service.AppService;
-import com.nucarf.base.retrofit.RetrofitUtils;
-import com.nucarf.base.retrofit.RxSchedulers;
-import com.nucarf.base.retrofit.api.BaseHttp;
+import com.fish.live.livewatch.view.LiveWatchCotract;
 import com.nucarf.base.ui.mvp.BasePAV;
-import com.nucarf.base.utils.SharePreUtils;
-import com.nucarf.base.utils.UiGoto;
-import com.uber.autodispose.AutoDispose;
-import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;
-
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.zip.Adler32;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -34,7 +17,7 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * Created by yuwenming on 2019/10/21.
  */
-public class MianPresenter extends BasePAV<MainCotract.View> implements MainCotract.Presenter {
+public class LiveWatchPresenter extends BasePAV<LiveWatchCotract.View> implements LiveWatchCotract.Presenter {
     private Disposable mDisposable;
 
     @Override
@@ -62,7 +45,7 @@ public class MianPresenter extends BasePAV<MainCotract.View> implements MainCotr
                 .subscribe(new Consumer<Long>() {
                     @Override
                     public void accept(@NonNull Long aLong) throws Exception {
-                        if (aLong == 1) {
+                        if (aLong == 2) {
                             mView.dismissDialog();
                            ArrayList<String> data = new ArrayList<>();
                            data.add("推荐");
@@ -80,7 +63,7 @@ public class MianPresenter extends BasePAV<MainCotract.View> implements MainCotr
     }
 
 
-    public MianPresenter(MainCotract.View view) {
+    public LiveWatchPresenter(LiveWatchCotract.View view) {
         mView = view;
     }
 }

@@ -5,12 +5,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.fish.live.R;
+import com.nucarf.base.ui.mvp.BaseMvpActivity;
 
-public class LIvePushActivity extends AppCompatActivity {
+public class LIvePushActivity extends BaseMvpActivity {
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_live_push);
+    protected int getLayout() {
+        return R.layout.activity_live_push;
+    }
+
+    @Override
+    protected void initInject() {
+
+    }
+
+    @Override
+    protected void initViewAndData() {
+
     }
 }
