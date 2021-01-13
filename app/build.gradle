@@ -166,6 +166,9 @@ dependencies {
     implementation 'com.tencent.liteavsdk:LiteAVSDK_Smart:latest.release'//移动直播
     implementation 'com.tencent.teduboard:TEduBoardSdk:latest.release'//互动白板
     implementation 'com.tencent.imsdk:imsdk:latest.release'//im
+    //tencent player
+//    implementation(name: 'LiteAVSDK_Player_8.2.9809', ext: 'aar')
+    implementation project(':superplayerkit')
 
     implementation "androidx.core:core-ktx:+"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

@@ -1,2 +1,2 @@
-include ':app', ':PickerView', ':base', ':banner', ':loadingbox', ':SwipeToLoadLayout'
+include ':app', ':PickerView', ':base', ':banner', ':loadingbox', ':SwipeToLoadLayout', ':superplayerkit'
 rootProject.name = 'live'

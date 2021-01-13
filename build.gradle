@@ -35,6 +35,9 @@ buildscript {
 
 allprojects {
     repositories {
+        flatDir {
+            dirs 'libs'
+        }
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
         maven { url 'https://maven.aliyun.com/repository/public/' }
         maven { url 'https://maven.aliyun.com/repository/google/' }
@@ -60,7 +63,6 @@ ext {
     appTargetSdkVersion = 28
     versionCode = 2021010401
     versionName = "v-190228-01"//(internalTest)
-
     sdkSourceCompatibility = 1.8
     sdkTargetCompatibility = 1.8
     appSourceCompatibility = 1.8
