@@ -12,6 +12,8 @@ import android.os.Build;
 
 import com.google.android.material.tabs.TabLayout;
 
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.DisplayMetrics;
@@ -38,6 +40,47 @@ import java.lang.reflect.Method;
  */
 
 public class ScreenUtil {
+
+    /**
+     * 解决ScrollView中卡顿
+     *
+     * @param mContext
+     * @param recycleview
+     * @param isVertical
+     */
+    public static void setRecycleviewLinearLayout(Context mContext, RecyclerView recycleview, boolean isVertical) {
+        recycleview.setFocusableInTouchMode(false);
+        recycleview.requestFocus();
+        recycleview.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+        recycleview.setHasFixedSize(false);
+        recycleview.setNestedScrollingEnabled(false);
+        if (isVertical) {
+            recycleview.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+        } else {
+            recycleview.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
+        }
+    }
+
+    /**
+     * 解决ScrollView中卡顿
+     *
+     * @param mContext
+     * @param recycleview
+     * @param isVertical
+     */
+    public static void setRecycleviewGridLayout(Context mContext, RecyclerView recycleview, int count, boolean isVertical) {
+        recycleview.setFocusableInTouchMode(false);
+        recycleview.requestFocus();
+        recycleview.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+        recycleview.setHasFixedSize(false);
+        recycleview.setNestedScrollingEnabled(false);
+        if (isVertical) {
+            recycleview.setLayoutManager(new GridLayoutManager(mContext, count, LinearLayoutManager.VERTICAL, false));
+        } else {
+            recycleview.setLayoutManager(new GridLayoutManager(mContext, count, LinearLayoutManager.HORIZONTAL, false));
+        }
+    }
+
     /**
      * 获取屏幕宽度
      *

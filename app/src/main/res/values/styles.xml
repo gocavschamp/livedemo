@@ -92,6 +92,5 @@
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowFrame">@null</item> <!-- 边框 -->
     </style>
-    <color name="color_eeeeee">#eeeeee</color>
-    <color name="main_color">#007aff</color>
+
 </resources>

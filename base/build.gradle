@@ -7,7 +7,7 @@ android {
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -121,7 +121,7 @@ dependencies {
 //    api 'me.jessyan:retrofit-url-manager:1.4.0'
 //    api files('libs/Msc.jar')
 //    api project(path: ':appbarspring')
-    api files('libs/tbs_sdk_thirdapp_v4.3.0.39_43939_sharewithdownloadwithfile_withoutGame_obfs_20200713_223411.jar')
+//    api files('libs/tbs_sdk_thirdapp_v4.3.0.39_43939_sharewithdownloadwithfile_withoutGame_obfs_20200713_223411.jar')
     api project(path: ':loadingbox')
     //state button
     api 'com.github.qwasnm789:StateButton:1.0.1'

@@ -2,7 +2,7 @@
 <resources>
     <color name="black">#000000</color>
     <color name="white">#ffffffff</color>
-    <color name="main_color">#FFF46541</color>
+    <color name="main_color">#007aff</color>
     <color name="tab_text_normal">#FFA19C99</color>
     <color name="color_ff4081">#ff4081</color>
     <color name="color_e6e6e6">#e6e6e6</color>
