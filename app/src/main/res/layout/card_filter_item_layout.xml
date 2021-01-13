@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_50"
+    android:background="@color/white">
+
+
+    <com.deadline.statebutton.StateButton
+        android:id="@+id/tv_name"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="商品大类"
+        android:textColor="@color/color_333333"
+        android:textSize="13sp"
+        app:normalBackgroundColor="@color/white"
+        app:normalStrokeColor="@color/color_eeeeee"
+        app:normalStrokeWidth="1dp"
+        app:normalTextColor="@color/color_333333"
+        app:pressedBackgroundColor="@color/main_color_20"
+        app:pressedStrokeColor="@color/main_color_20"
+        app:statebutton_radius="@dimen/dp_5" />
+
+</RelativeLayout>

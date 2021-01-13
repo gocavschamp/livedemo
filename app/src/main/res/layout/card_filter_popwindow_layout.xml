@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_50"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:gravity="center_vertical"
+        android:text="请选择您感兴趣的内容"
+        android:textColor="@color/color_333333"
+        android:textSize="15sp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycleview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:minHeight="@dimen/dp_200"
+        android:orientation="vertical"
+        android:paddingRight="@dimen/dp_10"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="4"
+        tools:itemCount="30"
+        tools:listitem="@layout/card_filter_item_layout" />
+
+    <com.deadline.statebutton.StateButton
+        android:id="@+id/save"
+        android:layout_width="@dimen/dp_150"
+        android:layout_height="@dimen/dp_45"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_50"
+        android:gravity="center"
+        android:padding="1dp"
+        android:singleLine="true"
+        android:text="保存"
+        android:textSize="20sp"
+        app:normalBackgroundColor="@color/main_color"
+        app:normalTextColor="@color/white"
+        app:statebutton_radius="@dimen/dp_25" />
+
+</LinearLayout>

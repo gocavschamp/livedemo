@@ -22,6 +22,7 @@ import com.fish.live.search.bean.SearchHistoryBean;
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.nucarf.base.ui.BaseActivity;
+import com.nucarf.base.utils.DialogUtils;
 import com.nucarf.base.utils.KeyboardUtil;
 import com.nucarf.base.utils.ScreenUtil;
 
@@ -101,16 +102,17 @@ public class SearchActivity extends BaseActivity implements OnTabSelectListener,
                 break;
             case R.id.tv_clear_all:
                 //clear  history
+                showClearAlert();
                 break;
         }
     }
 
     private void addHistory() {
         KeyboardUtil.hideSoftInput(input.getWindowToken(), this);
-        SearchHistoryBeanDao searchStationHistoryBeanDao = ((LiveApplication) getApplication()).getDaoSession().getSearchHistoryBeanDao();
-        SearchHistoryBean searchStationHistoryBean = new SearchHistoryBean();
-        searchStationHistoryBean.setName(input.getText().toString());
-        searchStationHistoryBeanDao.insertOrReplace(searchStationHistoryBean);
+        SearchHistoryBeanDao searchHistoryBeanDao = ((LiveApplication) getApplication()).getDaoSession().getSearchHistoryBeanDao();
+        SearchHistoryBean searchHistoryBean = new SearchHistoryBean();
+        searchHistoryBean.setName(input.getText().toString());
+        searchHistoryBeanDao.insertOrReplace(searchHistoryBean);
         getRecentData();
     }
 
@@ -130,6 +132,23 @@ public class SearchActivity extends BaseActivity implements OnTabSelectListener,
 //        } else {
 //            historyAdapter.removeAllFooterView();
 //        }
+    }
+
+    private void showClearAlert() {
+        DialogUtils.getInstance().showSelectDialog(mContext, "您确定要清除记录吗？", "取消", "确定", new DialogUtils.DialogClickListener() {
+            @Override
+            public void confirm() {
+                DaoSession daoSession = ((LiveApplication) getApplication()).getDaoSession();
+                List<SearchHistoryBean> list = daoSession.getSearchHistoryBeanDao().queryBuilder().build().list();
+                daoSession.getSearchHistoryBeanDao().deleteInTx(list);
+                getRecentData();
+            }
+
+            @Override
+            public void cancel() {
+
+            }
+        });
     }
 
     @Override

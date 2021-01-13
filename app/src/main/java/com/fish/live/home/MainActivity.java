@@ -3,6 +3,7 @@ package com.fish.live.home;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 
 import androidx.viewpager.widget.ViewPager;
 
@@ -10,13 +11,18 @@ import com.fish.live.R;
 import com.fish.live.home.adapter.HomeViewPagerAdapter;
 import com.fish.live.home.presenter.MianPresenter;
 import com.fish.live.home.view.MainCotract;
+import com.fish.live.search.SearchActivity;
+import com.fish.live.widget.CardFilterPopupWindow;
 import com.flyco.tablayout.SlidingTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.gyf.barlibrary.ImmersionBar;
+import com.nucarf.base.bean.StringBean;
 import com.nucarf.base.ui.mvp.BaseMvpActivity;
+import com.nucarf.base.utils.UiGoto;
 import com.nucarf.base.widget.ViewPagerSlide;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -107,20 +113,49 @@ public class MainActivity extends BaseMvpActivity<MianPresenter> implements Main
         super.addSubscribe(subscription);
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
 
     @OnClick({R.id.add, R.id.search})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.add:
+                ArrayList<StringBean> stringBeans = new ArrayList<>();
+                stringBeans.add(new StringBean());
+                stringBeans.add(new StringBean());
+                stringBeans.add(new StringBean());
+                stringBeans.add(new StringBean());
+                stringBeans.add(new StringBean());
+                stringBeans.add(new StringBean());
+                stringBeans.add(new StringBean());
+                stringBeans.add(new StringBean());
+                stringBeans.add(new StringBean());
+                stringBeans.add(new StringBean());
+                stringBeans.add(new StringBean());
+                stringBeans.add(new StringBean());
+                stringBeans.add(new StringBean());
+                showPop(stringBeans);
                 break;
             case R.id.search:
+                UiGoto.startAty(mContext, SearchActivity.class);
                 break;
         }
+    }
+
+    private void showPop(List<StringBean> list) {
+        CardFilterPopupWindow cardFilterPopupWindow = new CardFilterPopupWindow(mContext, list);
+        cardFilterPopupWindow.setOnItemClickListener(new CardFilterPopupWindow.OnItemClickListener() {
+            @Override
+            public void clickItem(int position) {
+//                category = filterlist.get(position).getCategory();
+//                tvOilType.setText(filterlist.get(position).getCategory_name());
+//                getCardList();
+            }
+        });
+        cardFilterPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+            }
+        });
+        cardFilterPopupWindow.showAtBottom(stlMain);
+
     }
 }
