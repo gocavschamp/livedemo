@@ -126,6 +126,9 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
         joinClass();
         mTicManager.addIMMessageListener(this);
         mTicManager.addEventListener(this);
+        TEduBoardController.TEduBoardTranscodeFileResult transcodeFileResult = new TEduBoardController.TEduBoardTranscodeFileResult("欢迎新同学", "https://ppt2h5-1259648581.file.myqcloud.com/ghikv1979vq1bhl3jtpb/index.html", 23, "960x540");
+        mBoard.addTranscodeFile(transcodeFileResult,true);
+
 
     }
     /**
