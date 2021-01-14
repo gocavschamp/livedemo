@@ -64,6 +64,7 @@ public class LiveApplication extends Application {
         initGreenDao();
         //初始化x5webview
         initX5WebView();
+
         // android 7.0系统解决拍照的问题
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
@@ -75,9 +76,11 @@ public class LiveApplication extends Application {
     }
 
     private void initTengxun() {
-        String licenceURL = ""; // 获取到的 licence url
-        String licenceKey = ""; // 获取到的 licence key
+        String licenceURL = "1fb9da81056d7adf3036673562de2768"; // 获取到的 licence url
+        String licenceKey = "http://license.vod2.myqcloud.com/license/v1/e80f3d197ebcc7e519d0aa7fcf18d275/TXLiveSDK.licence"; // 获取到的 licence key
         TXLiveBase.getInstance().setLicence(this, licenceURL, licenceKey);
+        TXLiveBase.setConsoleEnabled(true);
+
     }
 
     private void initXunFei() {

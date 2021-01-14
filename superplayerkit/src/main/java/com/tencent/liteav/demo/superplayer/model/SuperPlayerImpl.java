@@ -44,10 +44,10 @@ public class SuperPlayerImpl implements SuperPlayer, ITXVodPlayListener, ITXLive
     private TXCloudVideoView mVideoView;        // 腾讯云视频播放view
 
     private IPlayInfoProtocol mCurrentProtocol; // 当前视频信息协议类
-    private TXVodPlayer       mVodPlayer;       // 点播播放器
-    private TXVodPlayConfig   mVodPlayConfig;   // 点播播放器配置
-    private TXLivePlayer      mLivePlayer;      // 直播播放器
-    private TXLivePlayConfig  mLivePlayConfig;  // 直播播放器配置
+    private TXVodPlayer mVodPlayer;       // 点播播放器
+    private TXVodPlayConfig mVodPlayConfig;   // 点播播放器配置
+    private TXLivePlayer mLivePlayer;      // 直播播放器
+    private TXLivePlayConfig mLivePlayConfig;  // 直播播放器配置
 
     private SuperPlayerModel    mCurrentModel;  // 当前播放的model
     private SuperPlayerObserver mObserver;

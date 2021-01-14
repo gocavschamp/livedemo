@@ -5,6 +5,9 @@ import android.os.Bundle;
 import com.fish.live.R;
 import com.nucarf.base.ui.BaseLazyFragment;
 
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 /**
  * @Description TODO
  * @Author yuwenming
@@ -12,6 +15,7 @@ import com.nucarf.base.ui.BaseLazyFragment;
  */
 public class RoomChatFragment extends BaseLazyFragment {
     private static final String TYPE = "chat";
+    private Unbinder unbinder;
 
     public RoomChatFragment() {
     }
@@ -41,6 +45,12 @@ public class RoomChatFragment extends BaseLazyFragment {
 
     @Override
     protected void initView() {
+        unbinder = ButterKnife.bind(this, mRootView);
 
+    }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

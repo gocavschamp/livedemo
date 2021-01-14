@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * @Description TODO
@@ -43,6 +45,7 @@ public class HostInfoFragment extends BaseLazyFragment {
     ImageView imageInfo;
     private HostListAdapter hostListAdapter;
     private HostInfoDialog hostInfoDialog;
+    private Unbinder unbinder;
 
     @Override
     protected int setLayoutId() {
@@ -71,6 +74,7 @@ public class HostInfoFragment extends BaseLazyFragment {
 
     @Override
     protected void initView() {
+        unbinder = ButterKnife.bind(this, mRootView);
         rvHostList.setLayoutManager(new LinearLayoutManager(mActivity,RecyclerView.HORIZONTAL,false));
         hostListAdapter = new HostListAdapter(R.layout.item_host_info_layout);
         rvHostList.setAdapter(hostListAdapter);
@@ -93,5 +97,10 @@ public class HostInfoFragment extends BaseLazyFragment {
         hostInfoDialog.setArguments(args);
         hostInfoDialog.setStyle(DialogFragment.STYLE_NO_FRAME, R.style.oilCardDialogStyle);
         hostInfoDialog.show(getFragmentManager(), "hostinfo");
+    }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

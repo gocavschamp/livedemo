@@ -60,9 +60,19 @@ public abstract class BaseLazyFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mRootView = inflater.inflate(setLayoutId(), container, false);
-        unbinder = ButterKnife.bind(this, mRootView);
-        return mRootView;
+        if (setLayoutId() != 0) {
+            if (mRootView == null) {
+                mRootView = inflater.inflate(setLayoutId(), container, false);
+                unbinder = ButterKnife.bind(mRootView);
+            } else {
+                ViewGroup parent = (ViewGroup) mRootView.getParent();
+                if (parent != null) {
+                    parent.removeView(mRootView);
+                }
+            }
+            return mRootView;
+        }
+        return null;
     }
 
     /**
@@ -280,12 +290,4 @@ public abstract class BaseLazyFragment extends Fragment {
         mCompositeDisposable.add(subscription);
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unSubscribe();
-        if (unbinder != null) {
-            unbinder.unbind();
-        }
-    }
 }

@@ -173,6 +173,9 @@ public abstract class BaseMvpActivity<T extends BasePersenter> extends AppCompat
         if (mPresenter != null) {
             mPresenter.detachView();
         }
-        unbinder.unbind();
+        if (unbinder != null&& unbinder != Unbinder.EMPTY) {
+            unbinder.unbind();
+            unbinder = null;
+        }
     }
 }
