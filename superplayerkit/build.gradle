@@ -28,6 +28,7 @@ dependencies {
 //    compile project(':liteav_sdk')
 //    implementation 'com.tencent.liteav:LiteAVSDK_Player:latest.release'
     api 'com.github.ctiao:DanmakuFlameMaster:0.5.3'
-    api 'com.tencent.liteavsdk:LiteAVSDK_Smart:latest.release'//移动直播
+    implementation(name: 'LiteAVSDK_Player_8.2.9809', ext: 'aar')
+//    api 'com.tencent.liteavsdk:LiteAVSDK_Smart:latest.release'//移动直播
 
 }

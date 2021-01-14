@@ -11,6 +11,8 @@ import androidx.multidex.MultiDex;
 import com.fish.live.database.MySQLiteOpenHelper;
 import com.fish.live.database.db.DaoMaster;
 import com.fish.live.database.db.DaoSession;
+import com.fish.live.tencenttic.core.TICManager;
+import com.fish.live.tencenttic.core.impl.utils.SdkUtil;
 import com.github.yuweiguocn.library.greendao.MigrationHelper;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechUtility;
@@ -18,6 +20,10 @@ import com.liys.doubleclicklibrary.ViewDoubleHelper;
 import com.nucarf.base.utils.ActivityHelper;
 import com.nucarf.base.utils.BaseAppCache;
 import com.nucarf.base.utils.LogUtils;
+import com.tencent.imsdk.TIMGroupManager;
+import com.tencent.imsdk.TIMLogLevel;
+import com.tencent.imsdk.TIMManager;
+import com.tencent.imsdk.TIMSdkConfig;
 import com.tencent.rtmp.TXLiveBase;
 import com.tencent.smtt.sdk.QbSdk;
 
@@ -29,6 +35,7 @@ import me.jessyan.autosize.AutoSizeConfig;
 
 public class LiveApplication extends Application {
     private static LiveApplication application;
+    private TICManager mTIC;
 
     public static Context getContext() {
         return application;
@@ -76,11 +83,28 @@ public class LiveApplication extends Application {
     }
 
     private void initTengxun() {
+        //live
         String licenceURL = "1fb9da81056d7adf3036673562de2768"; // 获取到的 licence url
         String licenceKey = "http://license.vod2.myqcloud.com/license/v1/e80f3d197ebcc7e519d0aa7fcf18d275/TXLiveSDK.licence"; // 获取到的 licence key
         TXLiveBase.getInstance().setLicence(this, licenceURL, licenceKey);
         TXLiveBase.setConsoleEnabled(true);
+        //IM
+        TIMSdkConfig timSdkConfig = new TIMSdkConfig(Constants.IM_APPID)
+                .enableLogPrint(true)
+                .setLogLevel(BuildConfig.DEBUG ? TIMLogLevel.DEBUG : TIMLogLevel.OFF);
+        //TODO::在正式发布时，设TIMLogLevel.OFF
+        TIMManager.getInstance().init(this, timSdkConfig);
 
+        //互动白板
+        if (SdkUtil.isMainProcess(this)) {    // 仅在主线程初始化
+            //     初始化TIC
+            mTIC = TICManager.getInstance();
+            mTIC.init(this, Constants.IM_APPID);
+        }
+    }
+
+    public TICManager getTICManager() {
+        return mTIC;
     }
 
     private void initXunFei() {
@@ -92,7 +116,6 @@ public class LiveApplication extends Application {
         param.append(SpeechConstant.ENGINE_MODE + "=" + SpeechConstant.MODE_MSC);
         SpeechUtility.createUtility(this, param.toString());
     }
-
 
 
     /**
@@ -149,9 +172,9 @@ public class LiveApplication extends Application {
                 // TODO Auto-generated method stub
                 //x5內核初始化完成的回调，为true表示x5内核加载成功，否则表示x5内核加载失败，会自动切换到系统内核。
                 LogUtils.d("onViewInitFinished", " onViewInitFinished is " + arg0);
-                if(arg0){
+                if (arg0) {
                     LogUtils.d("onViewInitFinished", "腾讯X5内核加载成功");
-                }else {
+                } else {
                     LogUtils.d("onViewInitFinished", "腾讯X5内核加载失败，使用原生安卓webview");
                 }
             }
@@ -162,6 +185,6 @@ public class LiveApplication extends Application {
             }
         };
         //x5内核初始化接口
-        QbSdk.initX5Environment(getApplicationContext(),  cb);
+        QbSdk.initX5Environment(getApplicationContext(), cb);
     }
 }
