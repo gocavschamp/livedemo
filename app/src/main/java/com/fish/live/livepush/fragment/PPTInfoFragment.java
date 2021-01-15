@@ -95,9 +95,7 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
             if (imevent.isLogin()) {
                 joinClass();
             }
-
         }
-
     }
 
     @Override
@@ -119,8 +117,8 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
         //（1）鉴权配置
         mTicManager = ((LiveApplication) mActivity.getApplication()).getTICManager();
         mBoard = mTicManager.getBoardController();
-        mTicManager.addIMMessageListener(this);
-        mTicManager.addEventListener(this);
+//        mTicManager.addIMMessageListener(this);
+//        mTicManager.addEventListener(this);
 
     }
 
@@ -128,10 +126,8 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
      * 进入课堂
      */
     private void joinClass() {
-
         //1、设置白板的回调
         mBoardCallback = new MyBoardCallback(this);
-
         //2、如果用户希望白板显示出来时，不使用系统默认的参数，就需要设置特性缺省参数，如是使用默认参数，则填null。
         TEduBoardController.TEduBoardInitParam initParam = new TEduBoardController.TEduBoardInitParam();
         initParam.brushColor = new TEduBoardController.TEduBoardColor(255, 0, 0, 255);
@@ -506,7 +502,9 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
     void addBoardView() {
         View boardview = mBoard.getBoardRenderView();
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-        boardViewContainer.addView(boardview, layoutParams);
+        if(boardViewContainer!=null) {
+            boardViewContainer.addView(boardview, layoutParams);
+        }
 
         TEduBoardController.TEduBoardTranscodeFileResult transcodeFileResult = new TEduBoardController.TEduBoardTranscodeFileResult("欢迎新同学", "https://ppt2h5-1259648581.file.myqcloud.com/ghikv1979vq1bhl3jtpb/index.html", 23, "960x540");
         mBoard.addTranscodeFile(transcodeFileResult, false);

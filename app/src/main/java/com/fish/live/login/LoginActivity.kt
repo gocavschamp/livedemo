@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.fish.live.R
 import com.fish.live.home.MainActivity
 import com.nucarf.base.ui.BaseActivityWithTitle
+import com.nucarf.base.utils.SharePreUtils
 import com.nucarf.base.utils.UiGoto
 import kotlinx.android.synthetic.main.activity_login.*
 
@@ -15,7 +16,9 @@ class LoginActivity : BaseActivityWithTitle() {
     }
 
     override fun initData() {
-
-        button.setOnClickListener { UiGoto.startAty(mContext, MainActivity::class.java) }
+        button.setOnClickListener {
+        val toString = editTextPhone.text.toString();
+            SharePreUtils.setName(this,toString)
+            UiGoto.startAty(mContext, MainActivity::class.java) }
     }
 }

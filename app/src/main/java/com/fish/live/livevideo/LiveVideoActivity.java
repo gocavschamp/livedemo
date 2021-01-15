@@ -12,6 +12,7 @@ import com.fish.live.Constants;
 import com.fish.live.LiveApplication;
 import com.fish.live.R;
 import com.fish.live.home.bean.IMLoginEvent;
+import com.fish.live.home.bean.MsgEvent;
 import com.fish.live.livevideo.adapter.LivePagerAdapter;
 import com.fish.live.livevideo.presenter.LiveVideoPresenter;
 import com.fish.live.livevideo.view.LiveVideoCotract;
@@ -20,19 +21,25 @@ import com.flyco.tablayout.SlidingTabLayout;
 import com.gyf.barlibrary.ImmersionBar;
 import com.nucarf.base.ui.mvp.BaseMvpActivity;
 import com.nucarf.base.utils.LogUtils;
+import com.nucarf.base.utils.SharePreUtils;
 import com.nucarf.base.utils.ToastUtils;
 import com.nucarf.base.widget.TitleLayout;
 import com.nucarf.base.widget.ViewPagerSlide;
+import com.tencent.imsdk.TIMElem;
+import com.tencent.imsdk.TIMMessage;
 import com.tencent.liteav.demo.superplayer.SuperPlayerDef;
 import com.tencent.liteav.demo.superplayer.SuperPlayerGlobalConfig;
 import com.tencent.liteav.demo.superplayer.SuperPlayerView;
 import com.tencent.rtmp.TXLiveBase;
 import com.tencent.rtmp.TXLiveConstants;
+import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.tencent.teduboard.TEduBoardController;
+import com.tencent.trtc.TRTCCloudDef;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import me.jessyan.autosize.utils.AutoSizeUtils;
@@ -40,7 +47,7 @@ import me.jessyan.autosize.utils.AutoSizeUtils;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> implements LiveVideoCotract.View, SuperPlayerView.OnSuperPlayerViewCallback, TICManager.TICIMStatusListener {
+public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> implements LiveVideoCotract.View, SuperPlayerView.OnSuperPlayerViewCallback, TICManager.TICIMStatusListener, TICManager.TICMessageListener, TICManager.TICEventListener {
 
 
     private final String TAG = LiveVideoActivity.this.getClass().getSimpleName();
@@ -119,26 +126,28 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
         TXLiveBase.setAppID("1253131631");//官方默认id
 //        TXLiveBase.setAppID(Constants.VOD_APPID+"");//我的id
         mSuperPlayerView.play(Constants.NORMAL_PLAY_URL);
-        mUserID = "yuwenming";
-        mUserSig = "eJwtzMsKwjAUBNB-yVapt7UPLbhoFuIiLoJSENwUchMutaGkNb7w361tl3NmmA87i1Pg0bGcRQGw5ZhJoe1J08iv*wNtQ9bMZafqqm1JsTyMAeIsTrfrqcFnSw4HT5IkAoBJe2r*loaQwjCetSMzfBfS94Xwbm*uK4mX0murMiEXHcdjCZ6-lTYbfqhvopI79v0Bjpc0Aw__";
 
+        if(SharePreUtils.getName(mContext).equals("yuwenming1")) {
+            mUserID = "yuwenming1";
+            mUserSig = "eJwtzNsKgkAUheF3mVtDts7BFLorAknSsshLw0k2HjKdmiR690y9XN*C-0Pi3dF8yZZ4xDaBLMaNmawV3nDk-qllXWGdW-PbZUXaNJgRz2IAzGHCpdMj3w22cnDOuQ0Akyqs-iYsEOBwcOcK5kO821NxfWwuOlkvhYq3kdClCnpWRkV16oy7H1LDD84HGiYr8v0Bc3UzJA__";
+        }else {
+            mUserID = "yuwenming";
+            mUserSig = "eJwtzMsKwjAUBNB-yVapt7UPLbhoFuIiLoJSENwUchMutaGkNb7w361tl3NmmA87i1Pg0bGcRQGw5ZhJoe1J08iv*wNtQ9bMZafqqm1JsTyMAeIsTrfrqcFnSw4HT5IkAoBJe2r*loaQwjCetSMzfBfS94Xwbm*uK4mX0murMiEXHcdjCZ6-lTYbfqhvopI79v0Bjpc0Aw__";
+        }
         onLoginClick();
+//        initTrtc();//主播  或者 观看时看到
+
     }
 
     /**
      * 登录
      */
     public void onLoginClick() {
-        // 默认走的是云上环境·
-//        if (TextUtils.isEmpty(mUserID) || TextUtils.isEmpty(mUserSig)) {
-//            LogUtils.e("请检查账号信息是否正确");
-//            return;
-//        }
-
         mTicManager.login(mUserID, mUserSig, new TICManager.TICCallback() {
             @Override
             public void onSuccess(Object data) {
                 LogUtils.e(mUserID + ":登录成功");
+
                 onCreateClsssroomClick();
             }
 
@@ -160,6 +169,8 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
      * 创建课堂
      */
     public void onCreateClsssroomClick() {
+        mTicManager.addIMMessageListener(this);
+        mTicManager.addEventListener(this);
         final int scence = TICManager.TICClassScene.TIC_CLASS_SCENE_VIDEO_CALL; //如果使用大房间，请使用 TIC_CLASS_SCENE_LIVE
         mRoomId = 1234;
         mTicManager.createClassroom(mRoomId, scence, new TICManager.TICCallback() {
@@ -173,6 +184,7 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
             public void onError(String module, int errCode, String errMsg) {
                 if (errCode == 10021) {
                     LogUtils.e("该课堂已被他人创建，请\"加入课堂\"");
+                    EventBus.getDefault().post(new IMLoginEvent(true));
                 } else if (errCode == 10025) {
                     LogUtils.e("该课堂已创建，请\"加入课堂\"");
                     EventBus.getDefault().post(new IMLoginEvent(true));
@@ -336,13 +348,182 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
         prefs.playShiftDomain = "liteavapp.timeshift.qcloud.com";
     }
 
+    // ------------ FROM TICMessageListener ---------------------
     @Override
-    public void onTICForceOffline() {
+    public void onTICRecvTextMessage(String fromId, String text) {
+        LogUtils.e(String.format("[%s]（C2C）说: %s", fromId, text));
+    }
+
+    @Override
+    public void onTICRecvCustomMessage(String fromId, byte[] data) {
+        LogUtils.e(String.format("[%s]（C2C:Custom）说: %s", fromId, new String(data)));
+    }
+
+    @Override
+    public void onTICRecvGroupTextMessage(String fromId, String text) {
+        LogUtils.e(String.format("[%s]（Group:Custom）说: %s", fromId, text));
+        EventBus.getDefault().post(new MsgEvent(fromId+":"+text));
 
     }
 
     @Override
+    public void onTICRecvGroupCustomMessage(String fromUserId, byte[] data) {
+        LogUtils.e(String.format("[%s]（Group:Custom）说: %s", fromUserId, new String(data)));
+    }
+
+    @Override
+    public void onTICRecvMessage(TIMMessage message) {
+        handleTimElement(message);
+    }
+
+
+    private void handleTimElement(TIMMessage message) {
+
+        for (int i = 0; i < message.getElementCount(); i++) {
+            TIMElem elem = message.getElement(i);
+            switch (elem.getType()) {
+                case Text:
+                    LogUtils.e("This is Text message.");
+                    break;
+                case Custom:
+                    LogUtils.e("This is Custom message.");
+                    break;
+                case GroupTips:
+                    LogUtils.e("This is GroupTips message.");
+                    continue;
+                default:
+                    LogUtils.e("This is other message");
+                    break;
+            }
+        }
+    }
+    //---------------------- TICEventListener-----------------
+
+    @Override
+    public void onTICUserVideoAvailable(String userId, boolean available) {
+        Log.e(TAG,"onTICUserVideoAvailable:" + userId + "|" + available);
+//        if (available) {
+//            final TXCloudVideoView renderView = mTrtcRootView.onMemberEnter(userId+ TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG);
+//            if (renderView != null) {
+//                // 启动远程画面的解码和显示逻辑，FillMode 可以设置是否显示黑边
+//                mTrtcCloud.setRemoteViewFillMode(userId, TRTCCloudDef.TRTC_VIDEO_RENDER_MODE_FIT);
+//                mTrtcCloud.startRemoteView(userId, renderView);
+//                renderView.setUserId(userId+TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG);
+//            }
+//
+//        } else {
+//            mTrtcCloud.stopRemoteView(userId);
+//            mTrtcRootView.onMemberLeave(userId+TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG);
+//        }
+    }
+
+    @Override
+    public void onTICUserSubStreamAvailable(String userId, boolean available) {
+        Log.e(TAG,"onTICUserSubStreamAvailable:" + userId + "|" + available);
+//        if (available) {
+//            final TXCloudVideoView renderView = mTrtcRootView.onMemberEnter(userId+TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SUB);
+//            if (renderView != null) {
+//                renderView.setUserId(userId+TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SUB);
+//                mTrtcCloud.setRemoteViewFillMode(userId, TRTCCloudDef.TRTC_VIDEO_RENDER_MODE_FIT);
+//                mTrtcCloud.startRemoteSubStreamView(userId, renderView);
+//            }
+//        }
+//        else {
+//            mTrtcCloud.stopRemoteSubStreamView(userId);
+//            mTrtcRootView.onMemberLeave(userId+TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SUB);
+//        }
+    }
+
+    @Override
+    public void onTICUserAudioAvailable(String userId, boolean available) {
+        Log.e(TAG,"onTICUserAudioAvailable:" + userId + "|" + available);
+
+//        if (available) {
+//            final TXCloudVideoView renderView = mTrtcRootView.onMemberEnter(userId+TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG);
+//            if (renderView != null) {
+//                renderView.setVisibility(View.VISIBLE);
+//            }
+//        }
+    }
+
+    @Override
+    public void onTICMemberJoin(List<String> userList) {
+        Log.e(TAG,"onTICMemberJoin:" );
+
+//        for (String user : userList) {
+//            // 创建一个View用来显示新的一路画面，在自已进房间时，也会给这个回调
+//            if (!user.equals(mUserID)) {
+//                TXCloudVideoView renderView = mTrtcRootView.onMemberEnter(user+TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG);
+//                if (renderView != null) {
+//                    renderView.setVisibility(View.VISIBLE);
+//                }
+//                postToast(user + " join.", false);
+//            }
+//        }
+    }
+
+    @Override
+    public void onTICMemberQuit(List<String> userList) {
+        Log.e(TAG,"onTICMemberQuit:" );
+
+//        for (String user : userList) {
+//            final String userID_Big = user.equals(mUserID) ? mUserID : user+TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG;
+//            //停止观看画面
+//            mTrtcCloud.stopRemoteView(userID_Big);
+//            mTrtcRootView.onMemberLeave(userID_Big);
+//
+//            final String userID_Sub = user.equals(mUserID) ? mUserID : user+TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SUB;
+//            mTrtcCloud.stopRemoteSubStreamView(userID_Sub);
+//            mTrtcRootView.onMemberLeave(userID_Sub);
+//
+//            postToast(user + " quit.", false);
+//        }
+    }
+    @Override
+    public void onTICForceOffline() {
+        Log.e(TAG,"onTICForceOffline:" );
+
+//        //1、退出TRTC
+//        if (mTrtcCloud != null ) {
+//            mTrtcCloud.exitRoom();
+//        }
+//
+//        //2.退出房间
+//        mTicManager.quitClassroom(false, new TICManager.TICCallback() {
+//            @Override
+//            public void onSuccess(Object data) {
+//                postToast("onForceOffline##quitClassroom#onSuccess: " + data);
+//                Intent intent = new Intent(TICClassMainActivity.this, TICLoginActivity.class);
+//                startActivity(intent);
+//                finish();
+//            }
+//
+//            @Override
+//            public void onError(String module, int errCode, String errMsg) {
+//                postToast("onForceOffline##quitClassroom#onError: errCode = " + errCode + "  description " + errMsg);
+//            }
+//        });
+    }
+
+    @Override
     public void onTICUserSigExpired() {
+        Log.e(TAG,"onTICUserSigExpired:" );
+
+    }
+    @Override
+    public void onTICVideoDisconnect(int errCode, String errMsg) {
+        Log.e(TAG,"onTICVideoDisconnect:" );
+
+    }
+
+    @Override
+    public void onTICClassroomDestroy() {
+        Log.e(TAG,"onTICClassroomDestroy:" );
+
+    }
+
+    @Override
+    public void onTICSendOfflineRecordInfo(int code, String desc) {
 
     }
 }

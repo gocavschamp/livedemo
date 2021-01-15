@@ -8,9 +8,13 @@ import android.widget.TextView;
 
 import com.fish.live.LiveApplication;
 import com.fish.live.R;
+import com.fish.live.home.bean.IMLoginEvent;
+import com.fish.live.home.bean.MsgEvent;
 import com.fish.live.tencenttic.core.TICManager;
 import com.nucarf.base.ui.BaseLazyFragment;
 import com.nucarf.base.utils.LogUtils;
+
+import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -54,9 +58,16 @@ public class RoomChatFragment extends BaseLazyFragment {
     protected void initData() {
 
     }
-
+    @Subscribe
+    public void onEvent(Object event) {
+        if (event instanceof MsgEvent) {
+            MsgEvent imevent = (MsgEvent) event;
+            addLog(imevent.getTextmsg());
+        }
+    }
     @Override
     protected void initView() {
+        registerEventBus();
         unbinder = ButterKnife.bind(this, mRootView);
         send = mActivity.findViewById(R.id.btn_send);
         et_input = mActivity.findViewById(R.id.et_message_input);
