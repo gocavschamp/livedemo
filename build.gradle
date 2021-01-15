@@ -37,6 +37,7 @@ allprojects {
     repositories {
         flatDir {
             dirs 'libs'
+            dirs project(':app').file('libs')
         }
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
         maven { url 'https://maven.aliyun.com/repository/public/' }
@@ -61,6 +62,9 @@ ext {
     targetSdkVersion = 28
     buildToolsVersion = '28.0.3'
     appTargetSdkVersion = 28
+    liteavSdk = 'com.tencent.liteav:LiteAVSDK_Professional:7.6.9375'
+    imSdk = 'com.tencent.imsdk:imsdk:4.9.1'
+    ted = "com.tencent.teduboard:TEduBoardSdk:latest.release"
     versionCode = 2021010401
     versionName = "v-190228-01"//(internalTest)
     sdkSourceCompatibility = 1.8

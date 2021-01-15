@@ -119,11 +119,6 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
         //（1）鉴权配置
         mTicManager = ((LiveApplication) mActivity.getApplication()).getTICManager();
         mBoard = mTicManager.getBoardController();
-//        View boardview = mBoard.getBoardRenderView();
-//        //（3）添加到父视图中
-//        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-//        boardViewContainer.addView(boardview, layoutParams);
-//        joinClass();
         mTicManager.addIMMessageListener(this);
         mTicManager.addEventListener(this);
 
@@ -509,7 +504,6 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
     }
 
     void addBoardView() {
-        boardViewContainer = (FrameLayout) mActivity.findViewById(R.id.board_view_container);
         View boardview = mBoard.getBoardRenderView();
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
         boardViewContainer.addView(boardview, layoutParams);

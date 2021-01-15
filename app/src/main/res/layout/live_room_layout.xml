@@ -2,5 +2,51 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <!-- Message -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
+        <LinearLayout
+            android:id="@+id/ll_message_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom"
+            android:background="@color/color_f5f5f5"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/et_message_input"
+                android:layout_width="0dp"
+                android:layout_height="34dp"
+                android:layout_weight="4"
+                android:focusableInTouchMode="false"
+                android:gravity="center_vertical|left"
+                android:imeOptions="actionSend"
+                android:singleLine="true"
+                android:text="Test Message on Android"
+                android:textColor="@color/color_333333"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/btn_send"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="发送" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_log"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/ll_message_input"
+            android:scrollbars="vertical"
+            android:singleLine="false"
+            android:maxLines="13"
+            android:gravity="bottom" />
+    </RelativeLayout>
 </LinearLayout>
