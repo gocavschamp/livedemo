@@ -2,7 +2,6 @@ package com.fish.live.livevideo;
 
 import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +11,7 @@ import android.widget.FrameLayout;
 import com.fish.live.Constants;
 import com.fish.live.LiveApplication;
 import com.fish.live.R;
+import com.fish.live.home.bean.IMLoginEvent;
 import com.fish.live.livevideo.adapter.LivePagerAdapter;
 import com.fish.live.livevideo.presenter.LiveVideoPresenter;
 import com.fish.live.livevideo.view.LiveVideoCotract;
@@ -19,11 +19,10 @@ import com.fish.live.tencenttic.core.TICManager;
 import com.flyco.tablayout.SlidingTabLayout;
 import com.gyf.barlibrary.ImmersionBar;
 import com.nucarf.base.ui.mvp.BaseMvpActivity;
+import com.nucarf.base.utils.LogUtils;
 import com.nucarf.base.utils.ToastUtils;
 import com.nucarf.base.widget.TitleLayout;
 import com.nucarf.base.widget.ViewPagerSlide;
-import com.tencent.imsdk.TIMCallBack;
-import com.tencent.imsdk.TIMGroupManager;
 import com.tencent.liteav.demo.superplayer.SuperPlayerDef;
 import com.tencent.liteav.demo.superplayer.SuperPlayerGlobalConfig;
 import com.tencent.liteav.demo.superplayer.SuperPlayerView;
@@ -31,10 +30,11 @@ import com.tencent.rtmp.TXLiveBase;
 import com.tencent.rtmp.TXLiveConstants;
 import com.tencent.teduboard.TEduBoardController;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import me.jessyan.autosize.utils.AutoSizeUtils;
 
 import static android.view.View.GONE;
@@ -59,6 +59,8 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
     private boolean mVideoHasPlay;
     protected TICManager mTicManager;
     private int mRoomId;
+    private String mUserID;
+    private String mUserSig;
 
     @Override
     protected int getLayout() {
@@ -98,6 +100,7 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
         strings.add("聊天");
         livePagerAdapter.setData(strings);
         vpMain.setOffscreenPageLimit(strings.size());
+        vpMain.setSlidAble(false);
         tabLayout.setViewPager(vpMain, (String[]) strings.toArray(new String[strings.size()]));
         mSuperPlayerView = new SuperPlayerView(this);
         playerContent.addView(mSuperPlayerView, FrameLayout.LayoutParams.MATCH_PARENT, AutoSizeUtils.dp2px(mContext, 200));
@@ -116,8 +119,34 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
         TXLiveBase.setAppID("1253131631");//官方默认id
 //        TXLiveBase.setAppID(Constants.VOD_APPID+"");//我的id
         mSuperPlayerView.play(Constants.NORMAL_PLAY_URL);
+        mUserID = "yuwenming";
+        mUserSig = "eJwtzMsKwjAUBNB-yVapt7UPLbhoFuIiLoJSENwUchMutaGkNb7w361tl3NmmA87i1Pg0bGcRQGw5ZhJoe1J08iv*wNtQ9bMZafqqm1JsTyMAeIsTrfrqcFnSw4HT5IkAoBJe2r*loaQwjCetSMzfBfS94Xwbm*uK4mX0murMiEXHcdjCZ6-lTYbfqhvopI79v0Bjpc0Aw__";
 
-        onCreateClsssroomClick() ;
+        onLoginClick();
+    }
+
+    /**
+     * 登录
+     */
+    public void onLoginClick() {
+        // 默认走的是云上环境·
+//        if (TextUtils.isEmpty(mUserID) || TextUtils.isEmpty(mUserSig)) {
+//            LogUtils.e("请检查账号信息是否正确");
+//            return;
+//        }
+
+        mTicManager.login(mUserID, mUserSig, new TICManager.TICCallback() {
+            @Override
+            public void onSuccess(Object data) {
+                LogUtils.e(mUserID + ":登录成功");
+                onCreateClsssroomClick();
+            }
+
+            @Override
+            public void onError(String module, int errCode, String errMsg) {
+                LogUtils.e(mUserID + ":登录失败, err:" + errCode + "  msg: " + errMsg);
+            }
+        });
     }
 
     private void initClassRoom() {
@@ -126,30 +155,29 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
         String userSig = "eJwtzMsKwjAUBNB-yVapt7UPLbhoFuIiLoJSENwUchMutaGkNb7w361tl3NmmA87i1Pg0bGcRQGw5ZhJoe1J08iv*wNtQ9bMZafqqm1JsTyMAeIsTrfrqcFnSw4HT5IkAoBJe2r*loaQwjCetSMzfBfS94Xwbm*uK4mX0murMiEXHcdjCZ6-lTYbfqhvopI79v0Bjpc0Aw__";
 
     }
+
     /**
      * 创建课堂
      */
     public void onCreateClsssroomClick() {
-
-
         final int scence = TICManager.TICClassScene.TIC_CLASS_SCENE_VIDEO_CALL; //如果使用大房间，请使用 TIC_CLASS_SCENE_LIVE
         mRoomId = 1234;
         mTicManager.createClassroom(mRoomId, scence, new TICManager.TICCallback() {
             @Override
             public void onSuccess(Object data) {
-                ToastUtils.showShort("创建课堂 成功, 房间号："  + mRoomId, true);
+                LogUtils.e("创建课堂 成功, 房间号：" + mRoomId);
+                EventBus.getDefault().post(new IMLoginEvent(true));
             }
 
             @Override
             public void onError(String module, int errCode, String errMsg) {
                 if (errCode == 10021) {
-                    ToastUtils.showShort("该课堂已被他人创建，请\"加入课堂\"", true);
-                }
-                else if (errCode == 10025) {
-                    ToastUtils.showShort("该课堂已创建，请\"加入课堂\"", true);
-                }
-                else {
-                    ToastUtils.showShort("创建课堂失败, 房间号：" + mRoomId + " err:" + errCode + " msg:" + errMsg, true);
+                    LogUtils.e("该课堂已被他人创建，请\"加入课堂\"");
+                } else if (errCode == 10025) {
+                    LogUtils.e("该课堂已创建，请\"加入课堂\"");
+                    EventBus.getDefault().post(new IMLoginEvent(true));
+                } else {
+                    LogUtils.e("创建课堂失败, 房间号：" + mRoomId + " err:" + errCode + " msg:" + errMsg);
                 }
 
             }
@@ -161,7 +189,7 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
         mTicManager.destroyClassroom(mRoomId, new TICManager.TICCallback() {
             @Override
             public void onSuccess(Object o) {
-                ToastUtils.showShort("销毁课堂成功: " + mRoomId);
+                LogUtils.e("销毁课堂成功: " + mRoomId);
 
                 TEduBoardController board = mTicManager.getBoardController();
                 if (board != null)
@@ -170,7 +198,7 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
 
             @Override
             public void onError(String s, int errCode, String errMsg) {
-                ToastUtils.showShort("销毁课堂失败: " + mRoomId + " err:" + errCode + " msg:" + errMsg);
+                LogUtils.e("销毁课堂失败: " + mRoomId + " err:" + errCode + " msg:" + errMsg);
             }
         });
     }
@@ -178,16 +206,17 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
     /**
      * 进入课堂
      */
-    public void onJoinClsssroomClick(View v) {
+    public void onJoinClsssroomClick() {
 
-        String roomInputId = mRoomId+"";
+        String roomInputId = mRoomId + "";
         if (TextUtils.isEmpty(roomInputId) || !TextUtils.isDigitsOnly(roomInputId)) {
-            ToastUtils.showShort("创建课堂失败, 房间号为空或者非数字:"  + roomInputId, true);
+            LogUtils.e("创建课堂失败, 房间号为空或者非数字:" + roomInputId);
             return;
         }
         mRoomId = Integer.valueOf(roomInputId);
-        ToastUtils.showShort("正在进入课堂，请稍等。。。", true);
+        LogUtils.e("正在进入课堂，请稍等。。。");
     }
+
     @Override
     public void setData(ArrayList<String> data) {
 

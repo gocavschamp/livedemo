@@ -20,12 +20,18 @@ import com.liys.doubleclicklibrary.ViewDoubleHelper;
 import com.nucarf.base.utils.ActivityHelper;
 import com.nucarf.base.utils.BaseAppCache;
 import com.nucarf.base.utils.LogUtils;
-import com.tencent.imsdk.TIMGroupManager;
 import com.tencent.imsdk.TIMLogLevel;
 import com.tencent.imsdk.TIMManager;
 import com.tencent.imsdk.TIMSdkConfig;
+//import com.tencent.rtmp.TXLiveBase;
 import com.tencent.rtmp.TXLiveBase;
 import com.tencent.smtt.sdk.QbSdk;
+//import com.tencent.imsdk.TIMGroupManager;
+//import com.tencent.imsdk.TIMLogLevel;
+//import com.tencent.imsdk.TIMManager;
+//import com.tencent.imsdk.TIMSdkConfig;
+//import com.tencent.rtmp.TXLiveBase;
+//import com.tencent.smtt.sdk.QbSdk;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -86,21 +92,30 @@ public class LiveApplication extends Application {
         //live
         String licenceURL = "1fb9da81056d7adf3036673562de2768"; // 获取到的 licence url
         String licenceKey = "http://license.vod2.myqcloud.com/license/v1/e80f3d197ebcc7e519d0aa7fcf18d275/TXLiveSDK.licence"; // 获取到的 licence key
-        TXLiveBase.getInstance().setLicence(this, licenceURL, licenceKey);
-        TXLiveBase.setConsoleEnabled(true);
+//        TXLiveBase.getInstance().setLicence(this, licenceURL, licenceKey);
+//        TXLiveBase.setConsoleEnabled(true);
         //IM
-        TIMSdkConfig timSdkConfig = new TIMSdkConfig(Constants.IM_APPID)
-                .enableLogPrint(true)
-                .setLogLevel(BuildConfig.DEBUG ? TIMLogLevel.DEBUG : TIMLogLevel.OFF);
-        //TODO::在正式发布时，设TIMLogLevel.OFF
-        TIMManager.getInstance().init(this, timSdkConfig);
+//        TIMSdkConfig timSdkConfig = new TIMSdkConfig(Constants.IM_APPID)
+//                .enableLogPrint(true)
+//                .setLogLevel(BuildConfig.DEBUG ? TIMLogLevel.DEBUG : TIMLogLevel.OFF);
+//        //TODO::在正式发布时，设TIMLogLevel.OFF
+//        TIMManager.getInstance().init(this, timSdkConfig);
 
         //互动白板
         if (SdkUtil.isMainProcess(this)) {    // 仅在主线程初始化
             //     初始化TIC
+            LogUtils.d("TIC", "INIT");
+
             mTIC = TICManager.getInstance();
             mTIC.init(this, Constants.IM_APPID);
         }
+    }
+    @Override
+    public void onTerminate() {
+        if (mTIC != null)
+            mTIC.unInit();
+
+        super.onTerminate();
     }
 
     public TICManager getTICManager() {

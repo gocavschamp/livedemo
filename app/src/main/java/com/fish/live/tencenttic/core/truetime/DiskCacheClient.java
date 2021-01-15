@@ -3,10 +3,6 @@ package com.fish.live.tencenttic.core.truetime;
 import android.os.SystemClock;
 import android.util.Log;
 
-import static com.fish.live.tencenttic.core.truetime.CacheInterface.KEY_CACHED_BOOT_TIME;
-import static com.fish.live.tencenttic.core.truetime.CacheInterface.KEY_CACHED_DEVICE_UPTIME;
-import static com.fish.live.tencenttic.core.truetime.CacheInterface.KEY_CACHED_SNTP_TIME;
-
 
 class DiskCacheClient {
 
@@ -51,9 +47,9 @@ class DiskCacheClient {
                         cachedDeviceUptime,
                         bootTime));
 
-        _cacheInterface.put(KEY_CACHED_BOOT_TIME, bootTime);
-        _cacheInterface.put(KEY_CACHED_DEVICE_UPTIME, cachedDeviceUptime);
-        _cacheInterface.put(KEY_CACHED_SNTP_TIME, cachedSntpTime);
+        _cacheInterface.put(CacheInterface.KEY_CACHED_BOOT_TIME, bootTime);
+        _cacheInterface.put(CacheInterface.KEY_CACHED_DEVICE_UPTIME, cachedDeviceUptime);
+        _cacheInterface.put(CacheInterface.KEY_CACHED_SNTP_TIME, cachedSntpTime);
 
     }
 
@@ -62,7 +58,7 @@ class DiskCacheClient {
             return false;
         }
 
-        long cachedBootTime = _cacheInterface.get(KEY_CACHED_BOOT_TIME, 0L);
+        long cachedBootTime = _cacheInterface.get(CacheInterface.KEY_CACHED_BOOT_TIME, 0L);
         if (cachedBootTime == 0) {
             return false;
         }
@@ -78,7 +74,7 @@ class DiskCacheClient {
             return 0L;
         }
 
-        return _cacheInterface.get(KEY_CACHED_DEVICE_UPTIME, 0L);
+        return _cacheInterface.get(CacheInterface.KEY_CACHED_DEVICE_UPTIME, 0L);
     }
 
     long getCachedSntpTime() {
@@ -86,7 +82,7 @@ class DiskCacheClient {
             return 0L;
         }
 
-        return _cacheInterface.get(KEY_CACHED_SNTP_TIME, 0L);
+        return _cacheInterface.get(CacheInterface.KEY_CACHED_SNTP_TIME, 0L);
     }
 
     // -----------------------------------------------------------------------------------

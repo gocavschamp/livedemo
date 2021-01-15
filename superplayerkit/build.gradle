@@ -26,9 +26,11 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 //    compile project(':liteav_sdk')
-//    implementation 'com.tencent.liteav:LiteAVSDK_Player:latest.release'
-    api 'com.github.ctiao:DanmakuFlameMaster:0.5.3'
-    implementation(name: 'LiteAVSDK_Player_8.2.9809', ext: 'aar')
+//    compileOnly  'com.tencent.liteav:LiteAVSDK_Player:8.3.9875'
+    implementation 'com.github.ctiao:DanmakuFlameMaster:0.5.3'
+    implementation rootProject.ext.liteavSdk
+
+//    api(name: 'LiteAVSDK_Player_8.2.9809', ext: 'aar')
 //    api 'com.tencent.liteavsdk:LiteAVSDK_Smart:latest.release'//移动直播
 
 }

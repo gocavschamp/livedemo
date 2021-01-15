@@ -1,7 +1,7 @@
 package com.fish.live.tencenttic.core.impl.observer;
 
-import com.fish.live.tencenttic.core.TICManager;
 import com.fish.live.tencenttic.core.impl.TICReporter;
+import com.fish.live.tencenttic.core.TICManager;
 import com.tencent.imsdk.TIMUserStatusListener;
 import java.lang.ref.WeakReference;
 import java.util.Iterator;

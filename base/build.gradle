@@ -129,6 +129,13 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     api project(path: ':SwipeToLoadLayout')
 
+    //tencent
+    api rootProject.ext.liteavSdk
+    //TRTC
+    api rootProject.ext.ted//互动白板
+    //IM
+    api rootProject.ext.imSdk
+
 }
 repositories {
     maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }

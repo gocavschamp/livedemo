@@ -6,41 +6,14 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 
-//import com.fish.live.tencenttic.core.TICClassroomOption;
-//import com.fish.live.tencenttic.core.TICManager;
-//import com.fish.live.tencenttic.core.impl.observer.TICEventObservable;
-//import com.fish.live.tencenttic.core.impl.observer.TICIMStatusObservable;
-//import com.fish.live.tencenttic.core.impl.observer.TICMessageObservable;
-//import com.fish.live.tencenttic.core.impl.utils.CallbackUtil;
-//import com.tencent.imsdk.TIMCallBack;
-//import com.tencent.imsdk.TIMConversation;
-//import com.tencent.imsdk.TIMConversationType;
-//import com.tencent.imsdk.TIMCustomElem;
-//import com.tencent.imsdk.TIMElem;
-//import com.tencent.imsdk.TIMElemType;
-//import com.tencent.imsdk.TIMGroupAddOpt;
-//import com.tencent.imsdk.TIMGroupEventListener;
-//import com.tencent.imsdk.TIMGroupManager;
-//import com.tencent.imsdk.TIMGroupSystemElem;
-//import com.tencent.imsdk.TIMGroupSystemElemType;
-//import com.tencent.imsdk.TIMGroupTipsElem;
-//import com.tencent.imsdk.TIMGroupTipsType;
-//import com.tencent.imsdk.TIMLogLevel;
-//import com.tencent.imsdk.TIMManager;
-//import com.tencent.imsdk.TIMMessage;
-//import com.tencent.imsdk.TIMMessageListener;
-//import com.tencent.imsdk.TIMSdkConfig;
-//import com.tencent.imsdk.TIMTextElem;
-//import com.tencent.imsdk.TIMValueCallBack;
-//import com.tencent.liteav.basic.log.TXCLog;
-//import com.tencent.teduboard.TEduBoardController;
-
+import com.fish.live.Constants;
 import com.fish.live.tencenttic.core.TICClassroomOption;
 import com.fish.live.tencenttic.core.TICManager;
 import com.fish.live.tencenttic.core.impl.observer.TICEventObservable;
 import com.fish.live.tencenttic.core.impl.observer.TICIMStatusObservable;
 import com.fish.live.tencenttic.core.impl.observer.TICMessageObservable;
 import com.fish.live.tencenttic.core.impl.utils.CallbackUtil;
+import com.nucarf.base.utils.LogUtils;
 import com.tencent.imsdk.TIMCallBack;
 import com.tencent.imsdk.TIMConversation;
 import com.tencent.imsdk.TIMConversationType;
@@ -63,14 +36,19 @@ import com.tencent.imsdk.TIMTextElem;
 import com.tencent.imsdk.TIMValueCallBack;
 import com.tencent.liteav.basic.log.TXCLog;
 import com.tencent.teduboard.TEduBoardController;
+import com.tencent.trtc.TRTCCloud;
+import com.tencent.trtc.TRTCCloudDef;
+import com.tencent.trtc.TRTCCloudListener;
+import com.tencent.trtc.TRTCStatistics;
 
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TICManagerImpl  extends TICManager {
+public class TICManagerImpl extends TICManager {
 
     private final static String TAG = "TICManager";
     private final static String SYNCTIME = "syncTime";
@@ -81,8 +59,8 @@ public class TICManagerImpl  extends TICManager {
     int mDisableModule = TICDisableModule.TIC_DISABLE_MODULE_NONE;
 
     //TRTC
-//    private TRTCCloud mTrtcCloud;              /// TRTC SDK 实例对象
-//    private TRTCCloudListener mTrtcListener;    /// TRTC SDK 回调监听
+    private TRTCCloud mTrtcCloud;              /// TRTC SDK 实例对象
+    private TRTCCloudListener mTrtcListener;    /// TRTC SDK 回调监听
 
     //IM
     private TIMMessageListener mTIMListener;
@@ -144,6 +122,7 @@ public class TICManagerImpl  extends TICManager {
     public int init(Context context, int appId, int disableModule) {
 
         TXCLog.i(TAG, "TICManager: init, context:" + context + " appid:" + appId);
+        LogUtils.d("TIC", "APPID"+appId);
         TICReporter.updateAppId(appId);
         TICReporter.report(TICReporter.EventId.initSdk_start);
 
@@ -152,7 +131,7 @@ public class TICManagerImpl  extends TICManager {
         mAppContext = context.getApplicationContext();
 
         //1、 TIM SDK初始化
-        TIMSdkConfig timSdkConfig = new TIMSdkConfig(appId)
+        TIMSdkConfig timSdkConfig = new TIMSdkConfig(Constants.IM_APPID)
                 .enableLogPrint(true)
                 .setLogLevel(TIMLogLevel.DEBUG); //TODO::在正式发布时，设置TIMLogLevel.OFF
         TIMManager.getInstance().init(context, timSdkConfig);
@@ -173,19 +152,21 @@ public class TICManagerImpl  extends TICManager {
         };
 
         //2. TRTC SDK初始化
-//        if ((disableModule & TICDisableModule.TIC_DISABLE_MODULE_TRTC) == 0) {
-//            if (mTrtcCloud == null) {
-//                mTrtcListener = new TRTCCloudListenerImpl();
-//                mTrtcCloud = TRTCCloud.sharedInstance(mAppContext);
-//                mTrtcCloud.setListener(mTrtcListener);
-//            }
-//        }
+        if ((disableModule & TICDisableModule.TIC_DISABLE_MODULE_TRTC) == 0) {
+            if (mTrtcCloud == null) {
+                mTrtcListener = new TRTCCloudListenerImpl();
+                mTrtcCloud = TRTCCloud.sharedInstance(mAppContext);
+                mTrtcCloud.setListener(mTrtcListener);
+            }
+        }
 
         //3. TEdu Board
         if (mBoard == null) {
             mBoard = new TEduBoardController(mAppContext);
             mBoardCallback = new BoardCallback();
             mBoard.addCallback(mBoardCallback);
+            LogUtils.d("TIC", "board");
+
         }
 
         //4. Recorder
@@ -201,22 +182,22 @@ public class TICManagerImpl  extends TICManager {
         TXCLog.i(TAG, "TICManager: unInit");
 
         //1、销毁trtc
-//        if (mTrtcCloud != null) {
-//            //TRTCCloud.destroySharedInstance();
-//            mTrtcCloud = null;
-//        }
+        if (mTrtcCloud != null) {
+            //TRTCCloud.destroySharedInstance();
+            mTrtcCloud = null;
+        }
 
         return 0;
     }
 
 
-//    public TRTCCloud getTRTCClound() {
-//        if (mTrtcCloud == null) {
-//            TXCLog.e(TAG, "TICManager: getTRTCClound null, Do you call init?");
-//        }
-//
-//        return mTrtcCloud;
-//    }
+    public TRTCCloud getTRTCClound() {
+        if (mTrtcCloud == null) {
+            TXCLog.e(TAG, "TICManager: getTRTCClound null, Do you call init?");
+        }
+
+        return mTrtcCloud;
+    }
 
     public TEduBoardController getBoardController() {
         if (mBoard == null) {
@@ -227,9 +208,9 @@ public class TICManagerImpl  extends TICManager {
 
     public void switchRole(int role) {
 
-//        if (mTrtcCloud != null) {
-//            mTrtcCloud.switchRole(role);
-//        }
+        if (mTrtcCloud != null) {
+            mTrtcCloud.switchRole(role);
+        }
 
         if (classroomOption.classScene == TICClassScene.TIC_CLASS_SCENE_LIVE
                 && role == TICRoleType.TIC_ROLE_TYPE_ANCHOR) {
@@ -254,8 +235,7 @@ public class TICManagerImpl  extends TICManager {
     }
 
     void sendSyncTimeBySEI() {
-//        if (mTrtcCloud != null && mBoard != null) {
-        if ( mBoard != null) {
+        if (mTrtcCloud != null && mBoard != null) {
 
             if (mIsSendSyncTime) {
 
@@ -271,7 +251,7 @@ public class TICManagerImpl  extends TICManager {
                         e.printStackTrace();
                     }
                     if (!TextUtils.isEmpty(result)) {
-//                        mTrtcCloud.sendSEIMsg(result.getBytes(), 1);
+                        mTrtcCloud.sendSEIMsg(result.getBytes(), 1);
                     }
                 }
 
@@ -549,8 +529,8 @@ public class TICManagerImpl  extends TICManager {
 
         TICReporter.report(TICReporter.EventId.quitGroup_start);
         //1.trtc退房间
-//        if (mTrtcCloud != null)
-//            mTrtcCloud.exitRoom();
+        if (mTrtcCloud != null)
+            mTrtcCloud.exitRoom();
 
         //2、如果clearBoard= true, 清除board中所有的历史数据，下次进来时看到的都是全新白板
         unitTEduBoard(clearBoard);
@@ -613,19 +593,19 @@ public class TICManagerImpl  extends TICManager {
         //TRTC进房
         mEnterRoomCallback = callback;
 
-//        if (mTrtcCloud != null) {
-//            TICReporter.report(TICReporter.EventId.enterRoom_start);
-//            TRTCCloudDef.TRTCParams trtcParams = new TRTCCloudDef.TRTCParams(sdkAppId, userInfo.getUserId(), userInfo.getUserSig(), classroomOption.getClassId(), "", "");     /// TRTC SDK 视频通话房间进入所必须的参数
-//            if (classroomOption.classScene == TICClassScene.TIC_CLASS_SCENE_LIVE) {
-//                trtcParams.role = classroomOption.roleType;
-//            }
-//            mTrtcCloud.enterRoom(trtcParams, classroomOption.classScene);
-//        }
-//        else if ((mDisableModule & TICDisableModule.TIC_DISABLE_MODULE_TRTC) == 0) { //TRTC不需要进入房间.
-//            if (mEnterRoomCallback != null) {
-//                mEnterRoomCallback.onSuccess("succ");
-//            }
-//        }
+        if (mTrtcCloud != null) {
+            TICReporter.report(TICReporter.EventId.enterRoom_start);
+            TRTCCloudDef.TRTCParams trtcParams = new TRTCCloudDef.TRTCParams(sdkAppId, userInfo.getUserId(), userInfo.getUserSig(), classroomOption.getClassId(), "", "");     /// TRTC SDK 视频通话房间进入所必须的参数
+            if (classroomOption.classScene == TICClassScene.TIC_CLASS_SCENE_LIVE) {
+                trtcParams.role = classroomOption.roleType;
+            }
+            mTrtcCloud.enterRoom(trtcParams, classroomOption.classScene);
+        }
+        else if ((mDisableModule & TICDisableModule.TIC_DISABLE_MODULE_TRTC) == 0) { //TRTC不需要进入房间.
+            if (mEnterRoomCallback != null) {
+                mEnterRoomCallback.onSuccess("succ");
+            }
+        }
 
         //Board进行初始化
         initTEduBoard();
@@ -959,150 +939,150 @@ public class TICManagerImpl  extends TICManager {
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-//    class TRTCCloudListenerImpl extends TRTCCloudListener {
-//        @Override
-//        public void onEnterRoom(long elapsed) {
-//            TXCLog.i(TAG, "TICManager: TRTC onEnterRoom elapsed: " + elapsed);
-//            TICReporter.report(TICReporter.EventId.enterRoom_end);
-//            if (mEnterRoomCallback != null) {
-//                //
-//                mEnterRoomCallback.onSuccess("succ");
+    class TRTCCloudListenerImpl extends TRTCCloudListener {
+        @Override
+        public void onEnterRoom(long elapsed) {
+            TXCLog.i(TAG, "TICManager: TRTC onEnterRoom elapsed: " + elapsed);
+            TICReporter.report(TICReporter.EventId.enterRoom_end);
+            if (mEnterRoomCallback != null) {
+                //
+                mEnterRoomCallback.onSuccess("succ");
+            }
+            sendOfflineRecordInfo();
+
+            if (classroomOption != null && classroomOption.classScene == TICClassScene.TIC_CLASS_SCENE_LIVE
+                    && classroomOption.roleType == TICRoleType.TIC_ROLE_TYPE_ANCHOR) {
+                startSyncTimer();
+            }
+        }
+
+        @Override
+        public void onExitRoom(int reason) {
+            TXCLog.i(TAG, "TICManager: TRTC onExitRoom :" + reason);
+        }
+
+        @Override
+        public void onUserVideoAvailable(final String userId, boolean available) {
+            TXCLog.i(TAG, "TICManager: onUserVideoAvailable->render userId: " + userId + ", available:" + available);
+            TICReporter.report(TICReporter.EventId.onUserVideoAvailable, "userId:" + userId + ",available:" + available);
+            mEventListner.onTICUserVideoAvailable(userId, available);
+        }
+
+        @Override
+        public void onUserSubStreamAvailable(String userId, boolean available) {
+            TXCLog.i(TAG, "TICManager: onUserSubStreamAvailable :" + userId + "|" + available);
+            TICReporter.report(TICReporter.EventId.onUserSubStreamAvailable, "userId:" + userId + ",available:" + available);
+            mEventListner.onTICUserSubStreamAvailable(userId, available);
+        }
+
+        @Override
+        public void onUserAudioAvailable(String userId, boolean available) {
+            TXCLog.i(TAG, "TICManager: onUserAudioAvailable :" + userId + "|" + available);
+            TICReporter.report(TICReporter.EventId.onUserAudioAvailable, "userId:" + userId + ",available:" + available);
+            mEventListner.onTICUserAudioAvailable(userId, available);
+        }
+
+        @Override
+        public void onUserEnter(String userId) {
+            TXCLog.i(TAG, "onUserEnter: " + userId);
+        }
+
+        @Override
+        public void onUserExit(String userId, int reason) {
+            TXCLog.i(TAG, "TICManager: onUserExit: " + userId);
+            mEventListner.onTICUserVideoAvailable(userId, false);
+            mEventListner.onTICUserAudioAvailable(userId, false);
+            mEventListner.onTICUserSubStreamAvailable(userId, false);
+        }
+
+        /**
+         * 1.1 错误回调: SDK不可恢复的错误，一定要监听，并分情况给用户适当的界面提示
+         *
+         * @param errCode   错误码 TRTCErrorCode
+         * @param errMsg    错误信息
+         * @param extraInfo 额外信息，如错误发生的用户，一般不需要关注，默认是本地错误
+         */
+        @Override
+        public void onError(int errCode, String errMsg, Bundle extraInfo) {
+            TXCLog.i(TAG, "TICManager: sdk callback onError:" + errCode + "|" + errMsg);
+
+//            if(errCode == ERR_ROOM_ENTER_FAIL
+//                    || errCode == ERR_ENTER_ROOM_PARAM_NULL
+//                    || errCode == ERR_SDK_APPID_INVALID
+//                    || errCode == ERR_ROOM_ID_INVALID
+//                    || errCode == ERR_USER_ID_INVALID
+//                    || errCode == ERR_USER_SIG_INVALID){
+//            [[TRTCCloud sharedInstance] exitRoom];
+//                TICBLOCK_SAFE_RUN(self->_enterCallback, kTICMODULE_TRTC, errCode, errMsg);
 //            }
-//            sendOfflineRecordInfo();
-//
-//            if (classroomOption != null && classroomOption.classScene == TICClassScene.TIC_CLASS_SCENE_LIVE
-//                    && classroomOption.roleType == TICRoleType.TIC_ROLE_TYPE_ANCHOR) {
-//                startSyncTimer();
-//            }
-//        }
-//
-//        @Override
-//        public void onExitRoom(int reason) {
-//            TXCLog.i(TAG, "TICManager: TRTC onExitRoom :" + reason);
-//        }
-//
-//        @Override
-//        public void onUserVideoAvailable(final String userId, boolean available) {
-//            TXCLog.i(TAG, "TICManager: onUserVideoAvailable->render userId: " + userId + ", available:" + available);
-//            TICReporter.report(TICReporter.EventId.onUserVideoAvailable, "userId:" + userId + ",available:" + available);
-//            mEventListner.onTICUserVideoAvailable(userId, available);
-//        }
-//
-//        @Override
-//        public void onUserSubStreamAvailable(String userId, boolean available) {
-//            TXCLog.i(TAG, "TICManager: onUserSubStreamAvailable :" + userId + "|" + available);
-//            TICReporter.report(TICReporter.EventId.onUserSubStreamAvailable, "userId:" + userId + ",available:" + available);
-//            mEventListner.onTICUserSubStreamAvailable(userId, available);
-//        }
-//
-//        @Override
-//        public void onUserAudioAvailable(String userId, boolean available) {
-//            TXCLog.i(TAG, "TICManager: onUserAudioAvailable :" + userId + "|" + available);
-//            TICReporter.report(TICReporter.EventId.onUserAudioAvailable, "userId:" + userId + ",available:" + available);
-//            mEventListner.onTICUserAudioAvailable(userId, available);
-//        }
-//
-//        @Override
-//        public void onUserEnter(String userId) {
-//            TXCLog.i(TAG, "onUserEnter: " + userId);
-//        }
-//
-//        @Override
-//        public void onUserExit(String userId, int reason) {
-//            TXCLog.i(TAG, "TICManager: onUserExit: " + userId);
-//            mEventListner.onTICUserVideoAvailable(userId, false);
-//            mEventListner.onTICUserAudioAvailable(userId, false);
-//            mEventListner.onTICUserSubStreamAvailable(userId, false);
-//        }
-//
-//        /**
-//         * 1.1 错误回调: SDK不可恢复的错误，一定要监听，并分情况给用户适当的界面提示
-//         *
-//         * @param errCode   错误码 TRTCErrorCode
-//         * @param errMsg    错误信息
-//         * @param extraInfo 额外信息，如错误发生的用户，一般不需要关注，默认是本地错误
-//         */
-//        @Override
-//        public void onError(int errCode, String errMsg, Bundle extraInfo) {
-//            TXCLog.i(TAG, "TICManager: sdk callback onError:" + errCode + "|" + errMsg);
-//
-////            if(errCode == ERR_ROOM_ENTER_FAIL
-////                    || errCode == ERR_ENTER_ROOM_PARAM_NULL
-////                    || errCode == ERR_SDK_APPID_INVALID
-////                    || errCode == ERR_ROOM_ID_INVALID
-////                    || errCode == ERR_USER_ID_INVALID
-////                    || errCode == ERR_USER_SIG_INVALID){
-////            [[TRTCCloud sharedInstance] exitRoom];
-////                TICBLOCK_SAFE_RUN(self->_enterCallback, kTICMODULE_TRTC, errCode, errMsg);
-////            }
-//        }
-//
-//        /**
-//         * 1.2 警告回调
-//         *
-//         * @param warningCode 错误码 TRTCWarningCode
-//         * @param warningMsg  警告信息
-//         * @param extraInfo   额外信息，如警告发生的用户，一般不需要关注，默认是本地错误
-//         */
-//        @Override
-//        public void onWarning(int warningCode, String warningMsg, Bundle extraInfo) {
-//            TXCLog.i(TAG, "TICManager: sdk callback onWarning:" + warningCode + "|" + warningMsg);
-//        }
-//
-//        @Override
-//        public void onUserVoiceVolume(ArrayList<TRTCCloudDef.TRTCVolumeInfo> var1, int var2) {
-//        }
-//        @Override
-//        public void onNetworkQuality(TRTCCloudDef.TRTCQuality var1, ArrayList<TRTCCloudDef.TRTCQuality> var2) {
-//
-//        }
-//        @Override
-//        public void onStatistics(TRTCStatistics var1) {
-//        }
-//        @Override
-//        public void onFirstAudioFrame(String var1) {
-//        }
-//        @Override
-//        public void onConnectionLost() {
-//        }
-//        @Override
-//        public void onTryToReconnect() {
-//        }
-//        @Override
-//        public void onConnectionRecovery() {
-//        }
-//        @Override
-//        public void onSpeedTest(TRTCCloudDef.TRTCSpeedTestResult var1, int var2, int var3) {
-//        }
-//        @Override
-//        public void onCameraDidReady() {
-//        }
-//        @Override
-//        public void onAudioRouteChanged(int var1, int var2) {
-//        }
-//
-//        @Override
-//        public void onRecvSEIMsg(String userid, byte[] bytes) {
-//            super.onRecvSEIMsg(userid, bytes);
-//            try {
-//                String str = new String(bytes);
-//                JSONObject jsonObject = new JSONObject(str);
-//                boolean isSyncTime = jsonObject.has(SYNCTIME);
-//                //TXCLog.i(TAG, "TICManager: onRecvSEIMsg  synctime 1: " + isSyncTime);
-//                if (isSyncTime) {
-//                    long time =  jsonObject.getLong(SYNCTIME);
-//                    //TXCLog.i(TAG, "TICManager: onRecvSEIMsg  synctime 2: " + userid +  "|" + time);
-//                    if (mBoard != null) {
-//                        mBoard.syncRemoteTime(userid, time);
-//                    }
-//                }
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//
-//        }
-//    }
+        }
+
+        /**
+         * 1.2 警告回调
+         *
+         * @param warningCode 错误码 TRTCWarningCode
+         * @param warningMsg  警告信息
+         * @param extraInfo   额外信息，如警告发生的用户，一般不需要关注，默认是本地错误
+         */
+        @Override
+        public void onWarning(int warningCode, String warningMsg, Bundle extraInfo) {
+            TXCLog.i(TAG, "TICManager: sdk callback onWarning:" + warningCode + "|" + warningMsg);
+        }
+
+        @Override
+        public void onUserVoiceVolume(ArrayList<TRTCCloudDef.TRTCVolumeInfo> var1, int var2) {
+        }
+        @Override
+        public void onNetworkQuality(TRTCCloudDef.TRTCQuality var1, ArrayList<TRTCCloudDef.TRTCQuality> var2) {
+
+        }
+        @Override
+        public void onStatistics(TRTCStatistics var1) {
+        }
+        @Override
+        public void onFirstAudioFrame(String var1) {
+        }
+        @Override
+        public void onConnectionLost() {
+        }
+        @Override
+        public void onTryToReconnect() {
+        }
+        @Override
+        public void onConnectionRecovery() {
+        }
+        @Override
+        public void onSpeedTest(TRTCCloudDef.TRTCSpeedTestResult var1, int var2, int var3) {
+        }
+        @Override
+        public void onCameraDidReady() {
+        }
+        @Override
+        public void onAudioRouteChanged(int var1, int var2) {
+        }
+
+        @Override
+        public void onRecvSEIMsg(String userid, byte[] bytes) {
+            super.onRecvSEIMsg(userid, bytes);
+            try {
+                String str = new String(bytes);
+                JSONObject jsonObject = new JSONObject(str);
+                boolean isSyncTime = jsonObject.has(SYNCTIME);
+                //TXCLog.i(TAG, "TICManager: onRecvSEIMsg  synctime 1: " + isSyncTime);
+                if (isSyncTime) {
+                    long time =  jsonObject.getLong(SYNCTIME);
+                    //TXCLog.i(TAG, "TICManager: onRecvSEIMsg  synctime 2: " + userid +  "|" + time);
+                    if (mBoard != null) {
+                        mBoard.syncRemoteTime(userid, time);
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
 
     /////////////////
     @Override
