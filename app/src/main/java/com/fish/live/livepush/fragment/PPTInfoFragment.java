@@ -1,29 +1,40 @@
 package com.fish.live.livepush.fragment;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.fish.live.Constants;
 import com.fish.live.LiveApplication;
 import com.fish.live.R;
 import com.fish.live.home.bean.IMLoginEvent;
 import com.fish.live.tencenttic.core.TICClassroomOption;
 import com.fish.live.tencenttic.core.TICManager;
+import com.fish.live.tencenttic.core.impl.TICManagerImpl;
 import com.nucarf.base.ui.BaseLazyFragment;
 import com.nucarf.base.utils.BaseAppCache;
 import com.nucarf.base.utils.LogUtils;
+import com.nucarf.base.utils.SharePreUtils;
+import com.nucarf.base.utils.StringUtils;
 import com.nucarf.base.utils.ToastUtils;
 import com.tencent.imsdk.TIMElem;
+import com.tencent.imsdk.TIMGroupManager;
 import com.tencent.imsdk.TIMMessage;
+import com.tencent.imsdk.TIMValueCallBack;
+import com.tencent.imsdk.ext.group.TIMGroupSelfInfo;
+import com.tencent.imsdk.v2.V2TIMGroupMemberFullInfo;
 import com.tencent.rtmp.TXLog;
+import com.tencent.smtt.sdk.TbsReaderView;
 import com.tencent.teduboard.TEduBoardController;
 
 import org.greenrobot.eventbus.Subscribe;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -66,6 +77,14 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
     boolean mCanUndo = false;
     private MyBoardCallback mBoardCallback;
     private int mRoomId;
+    private static String taskid;
+    private int currentIndex;
+    private int totalPage1;
+    private boolean isdrawable;
+    private boolean isSyncable;
+    private String mUserID;
+    private String mUserSig;
+    private int mRomotCurrentIndex;
 
     public PPTInfoFragment() {
     }
@@ -94,6 +113,19 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
             IMLoginEvent imevent = (IMLoginEvent) event;
             if (imevent.isLogin()) {
                 joinClass();
+//                getUserRoomInfo();
+            }
+        } else if (event instanceof String) {
+            String ppt = (String) event;
+            if (ppt.startsWith("ppt")) {
+                String ppt1 = ppt.replaceFirst("ppt", "");
+                String toUTF8 = StringUtils.toUTF8(ppt1);
+                TEduBoardController.TEduBoardTranscodeConfig transcodeConfig = new TEduBoardController.TEduBoardTranscodeConfig();
+                transcodeConfig.isStaticPPT = true;
+                mBoard.applyFileTranscode(toUTF8, transcodeConfig);
+
+
+//                mBoard.getFileTranscodeProgress(taskid);
             }
         }
     }
@@ -106,6 +138,11 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
     @Override
     public void onDestroy() {
         super.onDestroy();
+//        unInitTrtc();
+        removeBoardView();
+        mTicManager.removeIMMessageListener(this);
+        mTicManager.removeEventListener(this);
+        quitClass();
 //        mTicManager.removeIMStatusListener(this);
     }
 
@@ -117,6 +154,8 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
         //（1）鉴权配置
         mTicManager = ((LiveApplication) mActivity.getApplication()).getTICManager();
         mBoard = mTicManager.getBoardController();
+        mBoard.setDrawEnable(false);
+        mBoard.setDataSyncEnable(false);
 //        mTicManager.addIMMessageListener(this);
 //        mTicManager.addEventListener(this);
 
@@ -126,23 +165,25 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
      * 进入课堂
      */
     private void joinClass() {
+        mRoomId = 1234;
         //1、设置白板的回调
         mBoardCallback = new MyBoardCallback(this);
+        mBoard = mTicManager.getBoardController();
         //2、如果用户希望白板显示出来时，不使用系统默认的参数，就需要设置特性缺省参数，如是使用默认参数，则填null。
         TEduBoardController.TEduBoardInitParam initParam = new TEduBoardController.TEduBoardInitParam();
         initParam.brushColor = new TEduBoardController.TEduBoardColor(255, 0, 0, 255);
         initParam.smoothLevel = 0; //用于指定笔迹平滑级别，默认值0.1，取值[0, 1]
-
-        mRoomId = 1234;
+        initParam.dataSyncEnable = false;
+        initParam.drawEnable = false;
         TICClassroomOption classroomOption = new TICClassroomOption();
-        classroomOption.classId = 1234;
+        classroomOption.classId = mRoomId;
         classroomOption.boardCallback = mBoardCallback;
         classroomOption.boardInitPara = initParam;
-
         mTicManager.joinClassroom(classroomOption, new TICManager.TICCallback() {
             @Override
             public void onSuccess(Object data) {
                 LogUtils.e("进入课堂成功:" + mRoomId);
+                getUserRoomInfo();
             }
 
             @Override
@@ -152,6 +193,24 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
                 } else {
                     LogUtils.e("进入课堂失败:" + mRoomId + " err:" + errCode + " msg:" + errMsg);
                 }
+            }
+        });
+    }
+
+    private void getUserRoomInfo() {
+        TIMGroupManager.getInstance().getSelfInfo(mRoomId + "", new TIMValueCallBack<TIMGroupSelfInfo>() {
+            @Override
+            public void onError(int i, String s) {
+                LogUtils.e(TAG, s);
+            }
+
+            @Override
+            public void onSuccess(TIMGroupSelfInfo timGroupSelfInfo) {
+                LogUtils.e(TAG, timGroupSelfInfo.toString());
+                if (timGroupSelfInfo.getRole() == V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_ROLE_ADMIN || timGroupSelfInfo.getRole() == 400) {
+                } else {
+                }
+
             }
         });
     }
@@ -199,16 +258,50 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
                 llPageControl.setVisibility(llPageControl.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
                 break;
             case R.id.last_page:
-                TEduBoardController.TEduBoardTranscodeFileResult transcodeFileResult = new TEduBoardController.TEduBoardTranscodeFileResult("欢迎新同学", "https://ppt2h5-1259648581.file.myqcloud.com/ghikv1979vq1bhl3jtpb/index.html", 23, "960x540");
-                mBoard.addTranscodeFile(transcodeFileResult, false);
+                mBoard.prevStep();
+                currentIndex--;
+                if (currentIndex < 0) {
+                    currentIndex = 0;
+                    return;
+                }
+                this.totalPage.setText((currentIndex + 1) + "/" + totalPage1);
                 break;
             case R.id.total_page:
+                TEduBoardController.TEduBoardTranscodeFileResult t = new TEduBoardController.TEduBoardTranscodeFileResult("腾讯课堂介绍", "https://transcode-result-1259648581.file.myqcloud.com/g6lcd5qcpqrgit7mopob/", 9, "1766x987");
+                mBoard.addTranscodeFile(t, true);
+                totalPage1 = t.pages;
+                currentIndex = 1;
+                this.totalPage.setText(totalPage1 + "/" + currentIndex);
                 break;
             case R.id.next_page:
-                TEduBoardController.TEduBoardTranscodeFileResult t = new TEduBoardController.TEduBoardTranscodeFileResult("欢迎新同学", "https://ppt2h5-1259648581.file.myqcloud.com/ghikv1979vq1bhl3jtpb/index.html", 23, "960x540");
-                mBoard.addTranscodeFile(t, true);
+                mBoard.nextStep();
+                if (currentIndex >= mRomotCurrentIndex) {
+                    return;
+                }
+                currentIndex++;
+                if (currentIndex >= totalPage1 - 1) {
+                    currentIndex = totalPage1 - 1;
+                    return;
+                }
+                this.totalPage.setText((currentIndex + 1) + "/" + totalPage1);
+
                 break;
         }
+    }
+
+    private void openFile(String path) {
+        Bundle bundle = new Bundle();
+        //文件路径
+        bundle.putString("filePath", path);
+        //临时文件的路径，必须设置，否则会报错
+        bundle.putString("tempPath", Environment.getExternalStorageDirectory().getAbsolutePath() + "腾讯文件TBS");
+        //准备
+        TbsReaderView tbsReaderView = new TbsReaderView(mActivity, null);
+//        boolean result =(TbsReaderView) mBoard.getBoardRenderView().(getFileType(path), false);
+//        if (result) {
+        //预览文件
+        tbsReaderView.openFile(bundle);
+//        }
     }
 
     private final static String TAG = "PPT FRAGMENT";
@@ -264,7 +357,7 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
 
     @Override
     public void onTICUserVideoAvailable(String userId, boolean available) {
-        Log.i(TAG, "onTICUserVideoAvailable:" + userId + "|" + available);
+        Log.e(TAG, "onTICUserVideoAvailable:" + userId + "|" + available);
 //        if (available) {
 //            final TXCloudVideoView renderView = mTrtcRootView.onMemberEnter(userId+ TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG);
 //            if (renderView != null) {
@@ -337,16 +430,17 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
 
         @Override
         public void onTEBError(int code, String msg) {
-            Log.i(TAG, "onTEBError:" + code + "|" + msg);
+            Log.e(TAG, "onTEBError:" + code + "|" + msg);
         }
 
         @Override
         public void onTEBWarning(int code, String msg) {
-            Log.i(TAG, "onTEBWarning:" + code + "|" + msg);
+            Log.e(TAG, "onTEBWarning:" + code + "|" + msg);
         }
 
         @Override
         public void onTEBInit() {
+            Log.e(TAG, "onTEBInit:");
             PPTInfoFragment activity = mActivityRef.get();
             if (activity != null) {
                 activity.addBoardView();
@@ -355,6 +449,8 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
 
         @Override
         public void onTEBHistroyDataSyncCompleted() {
+            Log.e(TAG, "onTEBHistroyDataSyncCompleted:");
+
             PPTInfoFragment activityEx = mActivityRef.get();
             if (activityEx != null) {
                 activityEx.onTEBHistroyDataSyncCompleted();
@@ -363,38 +459,43 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
 
         @Override
         public void onTEBSyncData(String data) {
+            Log.e(TAG, "onTEBSyncData:" + data);
 
         }
 
 
         @Override
         public void onTEBAddBoard(List<String> boardId, final String fileId) {
-            Log.i(TAG, "onTEBAddBoard:" + fileId);
+            Log.e(TAG, "onTEBAddBoard:" + fileId);
         }
 
         @Override
         public void onTEBDeleteBoard(List<String> boardId, final String fileId) {
-            Log.i(TAG, "onTEBDeleteBoard:" + fileId + "|" + boardId);
+            Log.e(TAG, "onTEBDeleteBoard:" + fileId + "|" + boardId);
         }
 
         @Override
         public void onTEBGotoBoard(String boardId, final String fileId) {
-            Log.i(TAG, "onTEBGotoBoard:" + fileId + "|" + boardId);
+            Log.e(TAG, "onTEBGotoBoard:" + fileId + "|" + boardId);
+            TEduBoardController.TEduBoardFileInfo mBoardFileInfo = mActivityRef.get().mBoard.getFileInfo(fileId);
+            mActivityRef.get().currentIndex = mBoardFileInfo.pageIndex;
+            mActivityRef.get().mRomotCurrentIndex = mBoardFileInfo.pageIndex;
+            mActivityRef.get().totalPage.setText((mBoardFileInfo.pageIndex + 1) + "/" + mBoardFileInfo.pageCount);
         }
 
         @Override
         public void onTEBGotoStep(int currentStep, int total) {
-            Log.i(TAG, "onTEBGotoStep:" + currentStep + "|" + total);
+            Log.e(TAG, "onTEBGotoStep:" + currentStep + "|" + total);
         }
 
         @Override
         public void onTEBRectSelected() {
-            Log.i(TAG, "onTEBRectSelected:");
+            Log.e(TAG, "onTEBRectSelected:");
         }
 
         @Override
         public void onTEBRefresh() {
-            Log.i(TAG, "onTEBRefresh:");
+            Log.e(TAG, "onTEBRefresh:");
         }
 
         @Override
@@ -403,11 +504,12 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
 
         @Override
         public void onTEBSwitchFile(String fileId) {
+            Log.e(TAG, "onTEBSwitchFile:" + fileId);
         }
 
         @Override
         public void onTEBAddTranscodeFile(String s) {
-            Log.i(TAG, "onTEBAddTranscodeFile:" + s);
+            Log.e(TAG, "onTEBAddTranscodeFile:" + s);
         }
 
         @Override
@@ -428,34 +530,42 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
 
         @Override
         public void onTEBFileUploadProgress(final String path, int currentBytes, int totalBytes, int uploadSpeed, float percent) {
-            Log.i(TAG, "onTEBFileUploadProgress:" + path + " percent:" + percent);
+            Log.e(TAG, "onTEBFileUploadProgress:" + path + " percent:" + percent);
         }
 
         @Override
         public void onTEBFileUploadStatus(final String path, int status, int code, String statusMsg) {
-            Log.i(TAG, "onTEBFileUploadStatus:" + path + " status:" + status);
+            Log.e(TAG, "onTEBFileUploadStatus:" + path + " status:" + status);
         }
 
         @Override
         public void onTEBFileTranscodeProgress(String s, String s1, String s2, TEduBoardController.TEduBoardTranscodeFileResult tEduBoardTranscodeFileResult) {
+            Log.e(TAG, "onTEBFileTranscodeProgress:" + tEduBoardTranscodeFileResult.progress);
+            Log.e(TAG, "onTEBFileTranscodeProgress:" + s + 00 + s1 + 00 + s2);
 
+            taskid = tEduBoardTranscodeFileResult.taskid;
+            if (tEduBoardTranscodeFileResult.progress >= 100) {
+                PPTInfoFragment activityEx = mActivityRef.get();
+                activityEx.mBoard.addTranscodeFile(tEduBoardTranscodeFileResult, true);
+            }
         }
 
         @Override
         public void onTEBH5FileStatusChanged(String fileId, int status) {
+            Log.e(TAG, "onTEBH5FileStatusChanged:" + fileId);
 
         }
 
         @Override
         public void onTEBAddImagesFile(String fileId) {
-            Log.i(TAG, "onTEBAddImagesFile:" + fileId);
+            Log.e(TAG, "onTEBAddImagesFile:" + fileId);
             PPTInfoFragment activityEx = mActivityRef.get();
             TEduBoardController.TEduBoardFileInfo fileInfo = activityEx.mBoard.getFileInfo(fileId);
         }
 
         @Override
         public void onTEBVideoStatusChanged(String fileId, int status, float progress, float duration) {
-            Log.i(TAG, "onTEBVideoStatusChanged:" + fileId + " | " + status + "|" + progress);
+            Log.e(TAG, "onTEBVideoStatusChanged:" + fileId + " | " + status + "|" + progress);
         }
 
         @Override
@@ -475,39 +585,40 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
 
         @Override
         public void onTEBImageStatusChanged(String boardId, String url, int status) {
-            Log.i(TAG, "onTEBImageStatusChanged:" + boardId + "|" + url + "|" + status);
+            Log.e(TAG, "onTEBImageStatusChanged:" + boardId + "|" + url + "|" + status);
         }
 
         @Override
         public void onTEBSetBackgroundImage(final String url) {
-            Log.i(TAG, "onTEBSetBackgroundImage:" + url);
+            Log.e(TAG, "onTEBSetBackgroundImage:" + url);
         }
 
         @Override
         public void onTEBAddImageElement(final String url) {
-            Log.i(TAG, "onTEBAddImageElement:" + url);
+            Log.e(TAG, "onTEBAddImageElement:" + url);
         }
 
         @Override
         public void onTEBAddElement(String s, String s1) {
+            Log.e(TAG, "onTEBAddElement:");
 
         }
 
         @Override
         public void onTEBBackgroundH5StatusChanged(String boardId, String url, int status) {
-            Log.i(TAG, "onTEBBackgroundH5StatusChanged:" + boardId + " url:" + boardId + " status:" + status);
+            Log.e(TAG, "onTEBBackgroundH5StatusChanged:" + boardId + " url:" + boardId + " status:" + status);
         }
     }
 
     void addBoardView() {
         View boardview = mBoard.getBoardRenderView();
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-        if(boardViewContainer!=null) {
+        if (boardViewContainer != null) {
             boardViewContainer.addView(boardview, layoutParams);
         }
 
-        TEduBoardController.TEduBoardTranscodeFileResult transcodeFileResult = new TEduBoardController.TEduBoardTranscodeFileResult("欢迎新同学", "https://ppt2h5-1259648581.file.myqcloud.com/ghikv1979vq1bhl3jtpb/index.html", 23, "960x540");
-        mBoard.addTranscodeFile(transcodeFileResult, false);
+//        TEduBoardController.TEduBoardTranscodeFileResult transcodeFileResult = new TEduBoardController.TEduBoardTranscodeFileResult("欢迎新同学", "https://ppt2h5-1259648581.file.myqcloud.com/ghikv1979vq1bhl3jtpb/index.html", 23, "960x540");
+//        mBoard.addTranscodeFile(transcodeFileResult, false);
         //设置透明
         //boardview.setBackgroundColor(Color.TRANSPARENT);
         //boardview.getBackground().setAlpha(0); // 设置填充透明度 范围：0-255
@@ -528,6 +639,12 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
 
     private void onTEBHistroyDataSyncCompleted() {
         mHistroyDataSyncCompleted = true;
+        String currentBoard = mBoard.getCurrentFile();
+        TEduBoardController.TEduBoardFileInfo fileInfo = mBoard.getFileInfo(currentBoard);
+        this.totalPage.setText((fileInfo.pageIndex + 1) + "/" + fileInfo.pageCount);
+        totalPage1 = fileInfo.pageCount;
+        currentIndex = fileInfo.pageIndex;
+        mRomotCurrentIndex = fileInfo.pageIndex;
         LogUtils.e("历史数据同步完成");
     }
 

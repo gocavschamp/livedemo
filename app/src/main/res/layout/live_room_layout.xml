@@ -12,10 +12,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_gravity="bottom"
             android:background="@color/color_f5f5f5"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
             android:orientation="horizontal">
 
             <EditText
@@ -37,6 +34,12 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="发送" />
+            <Button
+                android:id="@+id/btn_more"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="更多" />
         </LinearLayout>
 
         <TextView

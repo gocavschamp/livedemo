@@ -118,7 +118,6 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
     @Override
     protected void initViewAndData() {
         mDefaultVideo = getIntent().getBooleanExtra(Constants.PLAYER_DEFAULT_VIDEO, true);
-
         initSuperVodGlobalSetting();
         mVideoHasPlay = false;
         mVideoCount = 0;
@@ -127,10 +126,10 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
 //        TXLiveBase.setAppID(Constants.VOD_APPID+"");//我的id
         mSuperPlayerView.play(Constants.NORMAL_PLAY_URL);
 
-        if(SharePreUtils.getName(mContext).equals("yuwenming1")) {
+        if (SharePreUtils.getName(mContext).equals("yuwenming1")) {
             mUserID = "yuwenming1";
             mUserSig = "eJwtzNsKgkAUheF3mVtDts7BFLorAknSsshLw0k2HjKdmiR690y9XN*C-0Pi3dF8yZZ4xDaBLMaNmawV3nDk-qllXWGdW-PbZUXaNJgRz2IAzGHCpdMj3w22cnDOuQ0Akyqs-iYsEOBwcOcK5kO821NxfWwuOlkvhYq3kdClCnpWRkV16oy7H1LDD84HGiYr8v0Bc3UzJA__";
-        }else {
+        } else {
             mUserID = "yuwenming";
             mUserSig = "eJwtzMsKwjAUBNB-yVapt7UPLbhoFuIiLoJSENwUchMutaGkNb7w361tl3NmmA87i1Pg0bGcRQGw5ZhJoe1J08iv*wNtQ9bMZafqqm1JsTyMAeIsTrfrqcFnSw4HT5IkAoBJe2r*loaQwjCetSMzfBfS94Xwbm*uK4mX0murMiEXHcdjCZ6-lTYbfqhvopI79v0Bjpc0Aw__";
         }
@@ -147,7 +146,6 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
             @Override
             public void onSuccess(Object data) {
                 LogUtils.e(mUserID + ":登录成功");
-
                 onCreateClsssroomClick();
             }
 
@@ -275,8 +273,12 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mTicManager != null)
+        if (mTicManager != null) {
             mTicManager.removeIMStatusListener(this);
+            mTicManager.quitClassroom(false, null);
+            mTicManager.removeIMMessageListener(this);
+            mTicManager.removeEventListener(this);
+        }
         if (mSuperPlayerView != null)
             mSuperPlayerView.release();
         if (mSuperPlayerView.getPlayerMode() != SuperPlayerDef.PlayerMode.FLOAT) {
@@ -362,7 +364,7 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
     @Override
     public void onTICRecvGroupTextMessage(String fromId, String text) {
         LogUtils.e(String.format("[%s]（Group:Custom）说: %s", fromId, text));
-        EventBus.getDefault().post(new MsgEvent(fromId+":"+text));
+        EventBus.getDefault().post(new MsgEvent(fromId + ":" + text));
 
     }
 
@@ -401,7 +403,7 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
 
     @Override
     public void onTICUserVideoAvailable(String userId, boolean available) {
-        Log.e(TAG,"onTICUserVideoAvailable:" + userId + "|" + available);
+        Log.e(TAG, "onTICUserVideoAvailable:" + userId + "|" + available);
 //        if (available) {
 //            final TXCloudVideoView renderView = mTrtcRootView.onMemberEnter(userId+ TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG);
 //            if (renderView != null) {
@@ -419,7 +421,7 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
 
     @Override
     public void onTICUserSubStreamAvailable(String userId, boolean available) {
-        Log.e(TAG,"onTICUserSubStreamAvailable:" + userId + "|" + available);
+        Log.e(TAG, "onTICUserSubStreamAvailable:" + userId + "|" + available);
 //        if (available) {
 //            final TXCloudVideoView renderView = mTrtcRootView.onMemberEnter(userId+TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SUB);
 //            if (renderView != null) {
@@ -436,7 +438,7 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
 
     @Override
     public void onTICUserAudioAvailable(String userId, boolean available) {
-        Log.e(TAG,"onTICUserAudioAvailable:" + userId + "|" + available);
+        Log.e(TAG, "onTICUserAudioAvailable:" + userId + "|" + available);
 
 //        if (available) {
 //            final TXCloudVideoView renderView = mTrtcRootView.onMemberEnter(userId+TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG);
@@ -448,7 +450,7 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
 
     @Override
     public void onTICMemberJoin(List<String> userList) {
-        Log.e(TAG,"onTICMemberJoin:" );
+        Log.e(TAG, "onTICMemberJoin:");
 
 //        for (String user : userList) {
 //            // 创建一个View用来显示新的一路画面，在自已进房间时，也会给这个回调
@@ -464,7 +466,7 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
 
     @Override
     public void onTICMemberQuit(List<String> userList) {
-        Log.e(TAG,"onTICMemberQuit:" );
+        Log.e(TAG, "onTICMemberQuit:");
 
 //        for (String user : userList) {
 //            final String userID_Big = user.equals(mUserID) ? mUserID : user+TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG;
@@ -479,9 +481,10 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
 //            postToast(user + " quit.", false);
 //        }
     }
+
     @Override
     public void onTICForceOffline() {
-        Log.e(TAG,"onTICForceOffline:" );
+        Log.e(TAG, "onTICForceOffline:");
 
 //        //1、退出TRTC
 //        if (mTrtcCloud != null ) {
@@ -507,18 +510,19 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
 
     @Override
     public void onTICUserSigExpired() {
-        Log.e(TAG,"onTICUserSigExpired:" );
+        Log.e(TAG, "onTICUserSigExpired:");
 
     }
+
     @Override
     public void onTICVideoDisconnect(int errCode, String errMsg) {
-        Log.e(TAG,"onTICVideoDisconnect:" );
+        Log.e(TAG, "onTICVideoDisconnect:");
 
     }
 
     @Override
     public void onTICClassroomDestroy() {
-        Log.e(TAG,"onTICClassroomDestroy:" );
+        Log.e(TAG, "onTICClassroomDestroy:");
 
     }
 

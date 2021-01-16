@@ -34,6 +34,8 @@ import com.tencent.imsdk.TIMMessageListener;
 import com.tencent.imsdk.TIMSdkConfig;
 import com.tencent.imsdk.TIMTextElem;
 import com.tencent.imsdk.TIMValueCallBack;
+import com.tencent.imsdk.ext.group.TIMGroupSelfInfo;
+import com.tencent.imsdk.v2.V2TIMGroupMemberFullInfo;
 import com.tencent.liteav.basic.log.TXCLog;
 import com.tencent.teduboard.TEduBoardController;
 import com.tencent.trtc.TRTCCloud;
@@ -618,6 +620,27 @@ public class TICManagerImpl extends TICManager {
                 mBoard.addCallback(classroomOption.boardCallback);
             }
         }
+        TIMGroupManager.getInstance().getSelfInfo(classroomOption.getClassId()+"", new TIMValueCallBack<TIMGroupSelfInfo>() {
+            @Override
+            public void onError(int i, String s) {
+                classroomOption.boardInitPara.drawEnable =false;
+                classroomOption.boardInitPara.dataSyncEnable =false;
+            }
+
+            @Override
+            public void onSuccess(TIMGroupSelfInfo timGroupSelfInfo) {
+                if (timGroupSelfInfo.getRole() == V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_ROLE_ADMIN || timGroupSelfInfo.getRole() == 400) {
+                    List<String> list = new ArrayList<>();
+                    list.add(timGroupSelfInfo.getUser());
+                    mBoard.setAccessibleUsers(list);
+                    classroomOption.boardInitPara.drawEnable =true;
+                    classroomOption.boardInitPara.dataSyncEnable =true;
+                }else {
+                    classroomOption.boardInitPara.drawEnable =false;
+                    classroomOption.boardInitPara.dataSyncEnable =false;
+                }
+            }
+        });
         TICReporter.report(TICReporter.EventId.initBoard_start);
         //调用初始化函数
         TEduBoardController.TEduBoardAuthParam authParam = new TEduBoardController.TEduBoardAuthParam(sdkAppId, userInfo.getUserId(), userInfo.getUserSig());
@@ -1099,6 +1122,9 @@ public class TICManagerImpl extends TICManager {
     public void setUserInfo(final String userId, final String userSig) {
         userInfo.setUserInfo(userId, userSig);
     }
+    public UserInfo getUserInfo() {
+       return userInfo;
+    }
 
     public void trigleOffLineRecordCallback(int code, final String msg) {
         mEventListner.onTICSendOfflineRecordInfo(code, msg);
@@ -1125,6 +1151,7 @@ public class TICManagerImpl extends TICManager {
         @Override
         public void onTEBHistroyDataSyncCompleted() {
             TICReporter.report(TICReporter.EventId.syncBoardHistory_end);
+
         }
 
         @Override
