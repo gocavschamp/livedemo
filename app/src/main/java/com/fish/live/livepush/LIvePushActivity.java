@@ -28,6 +28,7 @@ import com.fish.live.livevideo.LiveVideoActivity;
 import com.fish.live.livevideo.adapter.LivePagerAdapter;
 import com.fish.live.tencenttic.core.TICManager;
 import com.fish.live.tencenttic.core.TICVideoRootView;
+import com.fish.live.tencenttic.core.impl.TICReporter;
 import com.flyco.tablayout.SlidingTabLayout;
 import com.gyf.barlibrary.ImmersionBar;
 import com.nucarf.base.ui.mvp.BaseMvpActivity;
@@ -36,12 +37,17 @@ import com.nucarf.base.utils.SharePreUtils;
 import com.nucarf.base.widget.TitleLayout;
 import com.nucarf.base.widget.ViewPagerSlide;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.tencent.imsdk.TIMCallBack;
 import com.tencent.imsdk.TIMElem;
 import com.tencent.imsdk.TIMGroupManager;
 import com.tencent.imsdk.TIMGroupMemberInfo;
+import com.tencent.imsdk.TIMGroupMemberRoleType;
 import com.tencent.imsdk.TIMMessage;
+import com.tencent.imsdk.TIMValueCallBack;
 import com.tencent.imsdk.ext.group.TIMGroupDetailInfo;
+import com.tencent.imsdk.ext.group.TIMGroupSelfInfo;
 import com.tencent.imsdk.v2.V2TIMGroupMemberFullInfo;
+import com.tencent.liteav.basic.log.TXCLog;
 import com.tencent.liteav.demo.superplayer.SuperPlayerDef;
 import com.tencent.liteav.demo.superplayer.SuperPlayerGlobalConfig;
 import com.tencent.liteav.demo.superplayer.SuperPlayerView;
@@ -176,8 +182,8 @@ public class LIvePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
             mUserID = "yuwenming";
             mUserSig = "eJwtzMsKwjAUBNB-yVapt7UPLbhoFuIiLoJSENwUchMutaGkNb7w361tl3NmmA87i1Pg0bGcRQGw5ZhJoe1J08iv*wNtQ9bMZafqqm1JsTyMAeIsTrfrqcFnSw4HT5IkAoBJe2r*loaQwjCetSMzfBfS94Xwbm*uK4mX0murMiEXHcdjCZ6-lTYbfqhvopI79v0Bjpc0Aw__";
         }
-        initTrtc();//主播  或者 观看时看到
         onLoginClick();
+        initTrtc();//主播  或者 观看时看到
     }
 
     //---------trtc--------------
@@ -193,21 +199,7 @@ public class LIvePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
             mTrtcRootView.setUserId(mUserID);
             TXCloudVideoView localVideoView = mTrtcRootView.getCloudVideoViewByIndex(0);
             localVideoView.setUserId(mUserID);
-            playerContent.addView(mTrtcRootView, FrameLayout.LayoutParams.MATCH_PARENT, AutoSizeUtils.dp2px(mContext, 200));
-
-            TIMGroupDetailInfo timGroupDetailInfo = TIMGroupManager.getInstance().queryGroupInfo(mRoomId + "");
-            if (timGroupDetailInfo.getRole() == V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_ROLE_ADMIN || timGroupDetailInfo.getRole() == 400) {
-                //3、开始本地视频图像
-                startLocalVideo(true);
-                //4. 开始音频
-                enableAudioCapture(true);
-            }else {
-                //3、开始本地视频图像
-                startLocalVideo(false);
-                //4. 开始音频
-                enableAudioCapture(false);
-            }
-
+            playerContent.addView(mTrtcRootView, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
         }
     }
 
@@ -262,6 +254,48 @@ public class LIvePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
         });
     }
 
+    private void joinRoom(int mRoomId) {
+        final String desc = "board group";
+        TIMGroupManager.getInstance().applyJoinGroup(mRoomId + "", desc + mRoomId, new TIMCallBack() {
+            @Override
+            public void onError(int errCode, String s) {
+                if (errCode == 10013) { //you are already group member.
+                    TXCLog.i(TAG, "TICManager: joinClassroom 10013 onSuccess");
+                    TICReporter.report(TICReporter.EventId.joinGroup_end);
+                    getUserRoomInfo();
+                }
+            }
+
+            @Override
+            public void onSuccess() {
+                getUserRoomInfo();
+            }
+        });
+    }
+
+    private void getUserRoomInfo() {
+        TIMGroupManager.getInstance().getSelfInfo(mRoomId + "", new TIMValueCallBack<TIMGroupSelfInfo>() {
+            @Override
+            public void onError(int i, String s) {
+                LogUtils.e(TAG, s);
+            }
+
+            @Override
+            public void onSuccess(TIMGroupSelfInfo timGroupSelfInfo) {
+                LogUtils.e(TAG, timGroupSelfInfo.toString());
+                if (timGroupSelfInfo.getRole() == TIMGroupMemberRoleType.ROLE_TYPE_ADMIN || timGroupSelfInfo.getRole() == TIMGroupMemberRoleType.ROLE_TYPE_OWNER) {
+                    startLocalVideo(true);
+                    enableAudioCapture(true);
+                    mTrtcCloud.startPublishing("user_stream_001", TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG);
+                } else {
+                    startLocalVideo(false);
+                    enableAudioCapture(false);
+                }
+
+            }
+        });
+    }
+
     private void initClassRoom() {
         int sdkAppId = 1400474693;
         String userId = "yuwenming";
@@ -282,6 +316,8 @@ public class LIvePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
             public void onSuccess(Object data) {
                 LogUtils.e("创建课堂 成功, 房间号：" + mRoomId);
                 EventBus.getDefault().post(new IMLoginEvent(true));
+                joinRoom(mRoomId);
+
             }
 
             @Override
@@ -289,6 +325,7 @@ public class LIvePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
                 if (errCode == 10021) {
                     LogUtils.e("该课堂已被他人创建，请\"加入课堂\"");
                     EventBus.getDefault().post(new IMLoginEvent(true));
+                    joinRoom(mRoomId);
                 } else if (errCode == 10025) {
                     LogUtils.e("该课堂已创建，请\"加入课堂\"");
                     EventBus.getDefault().post(new IMLoginEvent(true));

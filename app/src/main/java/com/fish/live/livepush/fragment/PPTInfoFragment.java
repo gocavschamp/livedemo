@@ -23,6 +23,7 @@ import com.nucarf.base.utils.StringUtils;
 import com.nucarf.base.utils.ToastUtils;
 import com.tencent.imsdk.TIMElem;
 import com.tencent.imsdk.TIMGroupManager;
+import com.tencent.imsdk.TIMGroupMemberRoleType;
 import com.tencent.imsdk.TIMMessage;
 import com.tencent.imsdk.TIMValueCallBack;
 import com.tencent.imsdk.ext.group.TIMGroupSelfInfo;
@@ -207,7 +208,9 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
             @Override
             public void onSuccess(TIMGroupSelfInfo timGroupSelfInfo) {
                 LogUtils.e(TAG, timGroupSelfInfo.toString());
-                if (timGroupSelfInfo.getRole() == V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_ROLE_ADMIN || timGroupSelfInfo.getRole() == 400) {
+
+                if (timGroupSelfInfo.getRole() ==  TIMGroupMemberRoleType.ROLE_TYPE_ADMIN|| timGroupSelfInfo.getRole() ==  TIMGroupMemberRoleType.ROLE_TYPE_OWNER) {
+
                 } else {
                 }
 
