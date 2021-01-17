@@ -7,49 +7,45 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/ll_message_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@color/color_f5f5f5"
-            android:orientation="horizontal">
 
-            <EditText
+            <TextView
                 android:id="@+id/et_message_input"
-                android:layout_width="0dp"
+                android:clickable="true"
+                android:layout_width="match_parent"
+                android:layout_toLeftOf="@id/btn_send"
                 android:layout_height="34dp"
-                android:layout_weight="4"
-                android:focusableInTouchMode="false"
+                android:layout_alignParentBottom="true"
                 android:gravity="center_vertical|left"
-                android:imeOptions="actionSend"
                 android:singleLine="true"
-                android:text="Test Message on Android"
+                android:background="@drawable/rec_white_stoke_eee_4"
+                android:text="输入消息..."
+                android:paddingLeft="@dimen/dp_25"
                 android:textColor="@color/color_333333"
                 android:textSize="15sp" />
 
             <Button
                 android:id="@+id/btn_send"
-                android:layout_width="0dp"
+                android:layout_alignBottom="@id/et_message_input"
+                android:layout_toLeftOf="@id/btn_more"
+                android:layout_width="@dimen/dp_80"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="发送" />
             <Button
+                android:layout_alignBottom="@id/et_message_input"
+                android:layout_alignParentRight="true"
                 android:id="@+id/btn_more"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/dp_80"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="更多" />
-        </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_log"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_log"
+            android:layout_marginBottom="@dimen/dp_50"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/ll_message_input"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/et_message_input"
+            android:layout_alignParentTop="true"
             android:scrollbars="vertical"
-            android:singleLine="false"
-            android:maxLines="13"
-            android:gravity="bottom" />
+        />
     </RelativeLayout>
 </LinearLayout>

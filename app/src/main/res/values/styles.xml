@@ -8,6 +8,20 @@
         <item name="colorAccent">@color/main_color</item>
         <item name="android:windowBackground">@color/color_eeeeee</item>
     </style>
+    <!-- Input dialog theme. -->
+    <style name="InputDialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:background">#00000000</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="colorControlNormal">@color/main_color</item>
+        <item name="android:textColorHint">@color/color_333333</item>
+        <item name="colorControlActivated">@color/main_color</item>
+    </style>
     <style name="SplashTheme" parent="Theme.MaterialSheetFab.Base">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/transparent</item>

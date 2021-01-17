@@ -29,4 +29,6 @@
     <string name="exchange_protical"> 《转油协议》 </string>
     <string name="check_station"> *转出资金只可在以下油站消费，查看油站 >> </string>
     <string name="app_welcome">欢迎来到app</string>
+    <string name="dialog_input_text_hint">输入内容</string>
+    <string name="send">发送</string>
 </resources>

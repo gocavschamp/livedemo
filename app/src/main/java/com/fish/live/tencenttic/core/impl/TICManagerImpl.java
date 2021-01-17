@@ -36,6 +36,7 @@ import com.tencent.imsdk.TIMTextElem;
 import com.tencent.imsdk.TIMValueCallBack;
 import com.tencent.imsdk.ext.group.TIMGroupSelfInfo;
 import com.tencent.imsdk.v2.V2TIMGroupMemberFullInfo;
+import com.tencent.imsdk.v2.V2TIMMessageManager;
 import com.tencent.liteav.basic.log.TXCLog;
 import com.tencent.teduboard.TEduBoardController;
 import com.tencent.trtc.TRTCCloud;

@@ -364,7 +364,6 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
     @Override
     public void onTICRecvGroupTextMessage(String fromId, String text) {
         LogUtils.e(String.format("[%s]（Group:Custom）说: %s", fromId, text));
-        EventBus.getDefault().post(new MsgEvent(fromId + ":" + text));
 
     }
 
@@ -386,6 +385,7 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
             switch (elem.getType()) {
                 case Text:
                     LogUtils.e("This is Text message.");
+                    EventBus.getDefault().post(message);
                     break;
                 case Custom:
                     LogUtils.e("This is Custom message.");
