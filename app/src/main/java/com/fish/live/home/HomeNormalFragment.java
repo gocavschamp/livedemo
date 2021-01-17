@@ -16,6 +16,7 @@ import com.example.loadingbox.LoadingBox;
 import com.fish.live.R;
 import com.fish.live.home.adapter.HomeNormalAdapter;
 import com.fish.live.home.bean.HomeDataBean;
+import com.fish.live.livepush.LIvePushActivity;
 import com.fish.live.livevideo.LiveVideoActivity;
 import com.fish.live.service.AppService;
 import com.nucarf.base.retrofit.RetrofitUtils;
@@ -105,8 +106,11 @@ public class HomeNormalFragment extends BaseLazyFragment implements OnRefreshLis
         homeAdapter = new HomeNormalAdapter(new ArrayList<HomeDataBean>());
         recycleview.setAdapter(homeAdapter);
         homeAdapter.setOnItemClickListener((adapter, view, position) -> {
-            if(position>=2) {
+            if (position == 2) {
                 UiGoto.startAty(mActivity, LiveVideoActivity.class);
+            } else if (position == 3) {
+                UiGoto.startAty(mActivity, LIvePushActivity.class);
+
             }
 
 

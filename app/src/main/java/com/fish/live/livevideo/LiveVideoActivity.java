@@ -2,17 +2,18 @@ package com.fish.live.livevideo;
 
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.fish.live.Constants;
 import com.fish.live.LiveApplication;
 import com.fish.live.R;
 import com.fish.live.home.bean.IMLoginEvent;
-import com.fish.live.home.bean.MsgEvent;
 import com.fish.live.livevideo.adapter.LivePagerAdapter;
 import com.fish.live.livevideo.presenter.LiveVideoPresenter;
 import com.fish.live.livevideo.view.LiveVideoCotract;
@@ -22,7 +23,6 @@ import com.gyf.barlibrary.ImmersionBar;
 import com.nucarf.base.ui.mvp.BaseMvpActivity;
 import com.nucarf.base.utils.LogUtils;
 import com.nucarf.base.utils.SharePreUtils;
-import com.nucarf.base.utils.ToastUtils;
 import com.nucarf.base.widget.TitleLayout;
 import com.nucarf.base.widget.ViewPagerSlide;
 import com.tencent.imsdk.TIMElem;
@@ -32,9 +32,7 @@ import com.tencent.liteav.demo.superplayer.SuperPlayerGlobalConfig;
 import com.tencent.liteav.demo.superplayer.SuperPlayerView;
 import com.tencent.rtmp.TXLiveBase;
 import com.tencent.rtmp.TXLiveConstants;
-import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.tencent.teduboard.TEduBoardController;
-import com.tencent.trtc.TRTCCloudDef;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -42,6 +40,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import me.jessyan.autosize.utils.AutoSizeUtils;
 
 import static android.view.View.GONE;
@@ -61,6 +61,10 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
     ViewPagerSlide vpMain;
     //    @BindView(R.id.superVodPlayerView)
     SuperPlayerView mSuperPlayerView;
+    @BindView(R.id.tv_timer)
+    TextView tvTimer;
+    @BindView(R.id.tv_subscribe)
+    TextView tvSubscribe;
     private boolean mDefaultVideo;
     private int mVideoCount;
     private boolean mVideoHasPlay;
@@ -252,7 +256,7 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
             View decorView = getWindow().getDecorView();
             if (decorView == null) return;
             if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
-                decorView.setSystemUiVisibility(View.GONE);
+                decorView.setSystemUiVisibility(GONE);
             } else if (Build.VERSION.SDK_INT >= 19) {
                 int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
@@ -529,5 +533,16 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
     @Override
     public void onTICSendOfflineRecordInfo(int code, String desc) {
 
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
+    }
+
+    @OnClick(R.id.tv_subscribe)
+    public void onClick() {
     }
 }

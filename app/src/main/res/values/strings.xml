@@ -31,4 +31,5 @@
     <string name="app_welcome">欢迎来到app</string>
     <string name="dialog_input_text_hint">输入内容</string>
     <string name="send">发送</string>
+    <string name="str_tag_pos">POS</string>
 </resources>

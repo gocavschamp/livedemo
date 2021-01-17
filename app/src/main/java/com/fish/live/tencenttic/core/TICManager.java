@@ -5,6 +5,7 @@ import android.content.Context;
 import com.fish.live.tencenttic.core.impl.TICManagerImpl;
 import com.tencent.imsdk.TIMMessage;
 import com.tencent.teduboard.TEduBoardController;
+import com.tencent.trtc.TRTCCloud;
 
 import java.util.List;
 
@@ -162,7 +163,7 @@ public abstract class TICManager  {
     /**
      * 1.4 获取trtc的接口
      */
-//    public abstract TRTCCloud getTRTCClound();
+    public abstract TRTCCloud getTRTCClound();
 
     /**
      * 1.5 获取board的接口
