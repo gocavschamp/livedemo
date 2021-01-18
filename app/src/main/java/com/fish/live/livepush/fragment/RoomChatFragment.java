@@ -123,7 +123,8 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
         }
         mTicManager = ((LiveApplication) mActivity.getApplication()).getTICManager();
         TIMConversation conversation = TIMManager.getInstance().getConversation(TIMConversationType.Group, "1234");
-        conversation.getMessage(20, null, new TIMValueCallBack<List<TIMMessage>>() {
+        TIMMessage lastMsg = conversation.getLastMsg();
+        conversation.getMessage(20, lastMsg, new TIMValueCallBack<List<TIMMessage>>() {
             @Override
             public void onError(int i, String s) {
                 LogUtils.e("-----room---", s);
@@ -142,8 +143,10 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
                             Collections.reverse(lists);
                             msgAdapter.addData(lists);
                             msgAdapter.notifyDataSetChanged();
-                            rvLog.scrollToPosition(msgAdapter.getData().size() - 1);
-                            rvLog.smoothScrollToPosition(msgAdapter.getData().size() - 1);
+                            if(lists.size()>0) {
+                                rvLog.scrollToPosition(msgAdapter.getData().size() - 1);
+                                rvLog.smoothScrollToPosition(msgAdapter.getData().size() - 1);
+                            }
                         });
             }
         });

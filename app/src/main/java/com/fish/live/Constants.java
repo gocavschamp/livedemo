@@ -67,8 +67,11 @@ public class Constants {
     public static final String PLAYER_VIDEO_ID = "video_id";
 
     //IM
-    public static final int IM_APPID = 1400474693;//IM
+    public static final int IM_APPID = 1400421744;//IM
+    //    public static final int IM_APPID = 1400474693;//IM yuwenming
     public static final String IM_KEY = "6a80c2ac4cfa4b60d597715794d532e0bc48dac132b2f6a47b47d93e93e5d178";//IM
+    public static final String WATCHER_OPEN_CAMERA = "watcher_open_camera";//IM 举手
+    public static final String ALLOW_WATCHER_OPEN_CAMERA = "allow_watcher_open_camera";//IM允许举手
 
     // 点播的信息
     public static final int VOD_APPID = 1304627676;//直播

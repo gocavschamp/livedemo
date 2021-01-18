@@ -1,6 +1,7 @@
 package com.fish.live.service;
 
 
+import com.fish.live.bean.LoginBean;
 import com.nucarf.base.retrofit.logiclayer.BaseResult;
 
 import java.util.ArrayList;
@@ -12,8 +13,10 @@ import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
 
@@ -99,6 +102,12 @@ public interface AppService {
     @POST("Member/getRechargeTmpList")
 //    @POST("http://driver_3.0.0.api.tyidian.nucarf.cn/v3/Member/getRechargeTmpList")
     Observable<BaseResult<ArrayList<String>>> rxGetWaitRechargeList(@QueryMap Map<String, String> baseParam, @FieldMap Map<String, String> request);
+    /**
+     * 获取待领取油款
+     * getRechargeTmp
+     */
+    @GET
+    Observable<BaseResult<LoginBean>> rxLogin(@Url String url, @Query("userID") String userID);
 
 //    /**
 //     * 领取油款

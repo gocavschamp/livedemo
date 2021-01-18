@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.fish.live.Constants;
@@ -104,19 +105,20 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
         titleLayout.setLeftClickListener((v) -> finish());
         titleLayout.setTitleText("直播详情");
         LivePagerAdapter livePagerAdapter = new LivePagerAdapter(getSupportFragmentManager());
-        vpMain.setAdapter(livePagerAdapter);
         ArrayList<String> strings = new ArrayList<>();
         strings.add("简介");
         strings.add("文档");
         strings.add("聊天");
         livePagerAdapter.setData(strings);
-        vpMain.setOffscreenPageLimit(strings.size());
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, AutoSizeUtils.dp2px(mContext, 40));
+        tabLayout.setLayoutParams(layoutParams);
         vpMain.setSlidAble(false);
+        vpMain.setOffscreenPageLimit(strings.size());
+        vpMain.setAdapter(livePagerAdapter);
         tabLayout.setViewPager(vpMain, (String[]) strings.toArray(new String[strings.size()]));
         mSuperPlayerView = new SuperPlayerView(this);
-        playerContent.addView(mSuperPlayerView, FrameLayout.LayoutParams.MATCH_PARENT, AutoSizeUtils.dp2px(mContext, 200));
+        playerContent.addView(mSuperPlayerView, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
         mSuperPlayerView.setPlayerViewCallback(this);
-
     }
 
     @Override
@@ -130,14 +132,10 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
 //        TXLiveBase.setAppID(Constants.VOD_APPID+"");//我的id
         mSuperPlayerView.play(Constants.NORMAL_PLAY_URL);
 
-        if (SharePreUtils.getName(mContext).equals("yuwenming1")) {
-            mUserID = "yuwenming1";
-            mUserSig = "eJwtzNsKgkAUheF3mVtDts7BFLorAknSsshLw0k2HjKdmiR690y9XN*C-0Pi3dF8yZZ4xDaBLMaNmawV3nDk-qllXWGdW-PbZUXaNJgRz2IAzGHCpdMj3w22cnDOuQ0Akyqs-iYsEOBwcOcK5kO821NxfWwuOlkvhYq3kdClCnpWRkV16oy7H1LDD84HGiYr8v0Bc3UzJA__";
-        } else {
-            mUserID = "yuwenming";
-            mUserSig = "eJwtzMsKwjAUBNB-yVapt7UPLbhoFuIiLoJSENwUchMutaGkNb7w361tl3NmmA87i1Pg0bGcRQGw5ZhJoe1J08iv*wNtQ9bMZafqqm1JsTyMAeIsTrfrqcFnSw4HT5IkAoBJe2r*loaQwjCetSMzfBfS94Xwbm*uK4mX0murMiEXHcdjCZ6-lTYbfqhvopI79v0Bjpc0Aw__";
-        }
+        mUserID = SharePreUtils.getName(mContext);
+        mUserSig = SharePreUtils.getjwt_token(mContext);
         onLoginClick();
+
 //        initTrtc();//主播  或者 观看时看到
 
     }
@@ -158,13 +156,6 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
                 LogUtils.e(mUserID + ":登录失败, err:" + errCode + "  msg: " + errMsg);
             }
         });
-    }
-
-    private void initClassRoom() {
-        int sdkAppId = 1400474693;
-        String userId = "yuwenming";
-        String userSig = "eJwtzMsKwjAUBNB-yVapt7UPLbhoFuIiLoJSENwUchMutaGkNb7w361tl3NmmA87i1Pg0bGcRQGw5ZhJoe1J08iv*wNtQ9bMZafqqm1JsTyMAeIsTrfrqcFnSw4HT5IkAoBJe2r*loaQwjCetSMzfBfS94Xwbm*uK4mX0murMiEXHcdjCZ6-lTYbfqhvopI79v0Bjpc0Aw__";
-
     }
 
     /**

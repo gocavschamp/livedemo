@@ -77,14 +77,11 @@
             </RelativeLayout>
         </LinearLayout>
 
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_log"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_above="@id/ll_input"
-            android:layout_alignParentTop="true"
-            android:layout_marginBottom="@dimen/dp_50"
             android:scrollbars="vertical" />
     </RelativeLayout>
 </LinearLayout>

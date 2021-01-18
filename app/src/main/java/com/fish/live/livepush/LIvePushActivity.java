@@ -21,27 +21,40 @@ import com.fish.live.Constants;
 import com.fish.live.LiveApplication;
 import com.fish.live.R;
 import com.fish.live.SplashActivity;
+import com.fish.live.database.db.DaoSession;
 import com.fish.live.home.bean.IMLoginEvent;
 import com.fish.live.livepush.presenter.LivePushPresenter;
 import com.fish.live.livepush.view.LivePushCotract;
 import com.fish.live.livevideo.LiveVideoActivity;
 import com.fish.live.livevideo.adapter.LivePagerAdapter;
+import com.fish.live.search.bean.SearchHistoryBean;
 import com.fish.live.tencenttic.core.TICManager;
 import com.fish.live.tencenttic.core.TICVideoRootView;
 import com.fish.live.tencenttic.core.impl.TICReporter;
 import com.flyco.tablayout.SlidingTabLayout;
 import com.gyf.barlibrary.ImmersionBar;
 import com.nucarf.base.ui.mvp.BaseMvpActivity;
+import com.nucarf.base.utils.DialogTools;
+import com.nucarf.base.utils.DialogUtils;
 import com.nucarf.base.utils.LogUtils;
 import com.nucarf.base.utils.SharePreUtils;
+import com.nucarf.base.utils.ToastUtils;
+import com.nucarf.base.utils.dialog.DialogToolsNew;
+import com.nucarf.base.widget.BottomBar;
 import com.nucarf.base.widget.TitleLayout;
 import com.nucarf.base.widget.ViewPagerSlide;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tencent.imsdk.TIMCallBack;
+import com.tencent.imsdk.TIMCustomElem;
 import com.tencent.imsdk.TIMElem;
+import com.tencent.imsdk.TIMElemType;
+import com.tencent.imsdk.TIMFaceElem;
 import com.tencent.imsdk.TIMGroupManager;
 import com.tencent.imsdk.TIMGroupMemberInfo;
 import com.tencent.imsdk.TIMGroupMemberRoleType;
+import com.tencent.imsdk.TIMGroupSystemElem;
+import com.tencent.imsdk.TIMGroupTipsElem;
+import com.tencent.imsdk.TIMManager;
 import com.tencent.imsdk.TIMMessage;
 import com.tencent.imsdk.TIMValueCallBack;
 import com.tencent.imsdk.ext.group.TIMGroupDetailInfo;
@@ -103,6 +116,7 @@ public class LIvePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
     boolean mEnableAudioRouteSpeaker = true; //扬声器
     boolean mCanRedo = false;
     boolean mCanUndo = false;
+    private boolean isHolder = false;
 
     @Override
     protected int getLayout() {
@@ -144,6 +158,29 @@ public class LIvePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
         vpMain.setOffscreenPageLimit(strings.size());
         vpMain.setSlidAble(false);
         tabLayout.setViewPager(vpMain, (String[]) strings.toArray(new String[strings.size()]));
+        tvSubscribe.setOnClickListener(v -> {
+            if(isHolder) {
+                return;
+            }
+            //举手逻辑
+            TIMMessage timMessage = new TIMMessage();
+            TIMCustomElem timCustomElem = new TIMCustomElem();
+            timCustomElem.setDesc(Constants.WATCHER_OPEN_CAMERA);
+            timMessage.addElement(timCustomElem);
+            mTicManager.sendGroupMessage(timMessage, new TICManager.TICCallback() {
+                @Override
+                public void onSuccess(Object data) {
+                    LogUtils.e("sendGroupMessage##onSuccess##" + data.toString());
+
+                }
+
+                @Override
+                public void onError(String module, int errCode, String errMsg) {
+                    LogUtils.e("sendGroupMessage##onError##" + errMsg);
+
+                }
+            });
+        });
 
     }
 
@@ -175,13 +212,8 @@ public class LIvePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
         mVideoCount = 0;
 
 //        TXLiveBase.setAppID("1253131631");//官方默认id
-        if (SharePreUtils.getName(mContext).equals("yuwenming1")) {
-            mUserID = "yuwenming1";
-            mUserSig = "eJwtzNsKgkAUheF3mVtDts7BFLorAknSsshLw0k2HjKdmiR690y9XN*C-0Pi3dF8yZZ4xDaBLMaNmawV3nDk-qllXWGdW-PbZUXaNJgRz2IAzGHCpdMj3w22cnDOuQ0Akyqs-iYsEOBwcOcK5kO821NxfWwuOlkvhYq3kdClCnpWRkV16oy7H1LDD84HGiYr8v0Bc3UzJA__";
-        } else {
-            mUserID = "yuwenming";
-            mUserSig = "eJwtzMsKwjAUBNB-yVapt7UPLbhoFuIiLoJSENwUchMutaGkNb7w361tl3NmmA87i1Pg0bGcRQGw5ZhJoe1J08iv*wNtQ9bMZafqqm1JsTyMAeIsTrfrqcFnSw4HT5IkAoBJe2r*loaQwjCetSMzfBfS94Xwbm*uK4mX0murMiEXHcdjCZ6-lTYbfqhvopI79v0Bjpc0Aw__";
-        }
+        mUserID = SharePreUtils.getName(mContext);
+        mUserSig = SharePreUtils.getjwt_token(mContext);
         onLoginClick();
         initTrtc();//主播  或者 观看时看到
     }
@@ -284,10 +316,13 @@ public class LIvePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
             public void onSuccess(TIMGroupSelfInfo timGroupSelfInfo) {
                 LogUtils.e(TAG, timGroupSelfInfo.toString());
                 if (timGroupSelfInfo.getRole() == TIMGroupMemberRoleType.ROLE_TYPE_ADMIN || timGroupSelfInfo.getRole() == TIMGroupMemberRoleType.ROLE_TYPE_OWNER) {
+                    isHolder = true;
                     startLocalVideo(true);
                     enableAudioCapture(true);
                     mTrtcCloud.startPublishing("user_stream_001", TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG);
+                    LogUtils.e("----主播推流---");
                 } else {
+                    isHolder = false;
                     startLocalVideo(false);
                     enableAudioCapture(false);
                 }
@@ -434,22 +469,64 @@ public class LIvePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
 
         for (int i = 0; i < message.getElementCount(); i++) {
             TIMElem elem = message.getElement(i);
+            LogUtils.e("This is message.", message.toString());
             switch (elem.getType()) {
                 case Text:
-                    LogUtils.e("This is Text message.");
                     EventBus.getDefault().post(message);
                     break;
                 case Custom:
-                    LogUtils.e("This is Custom message.");
+                    TIMCustomElem timCustomElem = (TIMCustomElem) elem;
+                    if (timCustomElem.getDesc().equals(Constants.WATCHER_OPEN_CAMERA)) {
+                        jushouAlert(message);
+                    } else if (timCustomElem.getDesc().equals(Constants.ALLOW_WATCHER_OPEN_CAMERA)) {
+                        watchOpenCamera();
+                    }
                     break;
                 case GroupTips:
-                    LogUtils.e("This is GroupTips message.");
                     continue;
                 default:
-                    LogUtils.e("This is other message");
                     break;
             }
         }
+    }
+
+    private void watchOpenCamera() {
+        startLocalVideo(true);
+        enableAudioCapture(true);
+        mTrtcCloud.startPublishing(SharePreUtils.getName(mContext) + System.currentTimeMillis(), TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG);
+        LogUtils.e("----主播推流---");
+    }
+
+    private void jushouAlert(TIMMessage message) {
+        DialogUtils.getInstance().showSelectDialog(mContext, message.getSender() + "正在举手是否同意？", "取消", "确定", new DialogUtils.DialogClickListener() {
+            @Override
+            public void confirm() {
+                //举手逻辑
+                TIMMessage timMessage = new TIMMessage();
+                TIMCustomElem timCustomElem = new TIMCustomElem();
+                timCustomElem.setDesc(Constants.ALLOW_WATCHER_OPEN_CAMERA);
+                timMessage.addElement(timCustomElem);
+                mTicManager.sendGroupMessage(timMessage, new TICManager.TICCallback() {
+                    @Override
+                    public void onSuccess(Object data) {
+                        LogUtils.e("sendGroupMessage##onSuccess##" + data.toString());
+
+                    }
+
+                    @Override
+                    public void onError(String module, int errCode, String errMsg) {
+                        LogUtils.e("sendGroupMessage##onError##" + errMsg);
+
+                    }
+                });
+            }
+
+            @Override
+            public void cancel() {
+                ToastUtils.showShort("已拒绝");
+
+            }
+        });
     }
     //---------------------- TICEventListener-----------------
 

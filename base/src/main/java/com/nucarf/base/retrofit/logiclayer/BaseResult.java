@@ -104,7 +104,7 @@ public class BaseResult<T> {
 
     public boolean isSuccessed() {
         try {
-            if (RetrofitConfig.STATUS_NCARF_SUCCESS.equals(errorCode) || "0".equals(errno)) {
+            if (RetrofitConfig.STATUS_NCARF_SUCCESS.equals(errorCode) || "0".equals(errno)||"200".equals(code)) {
                 if (getMessage() instanceof MessageBean) {
                     //第一次成功登陆时返回数据
                     MessageBean messageBean = (MessageBean) getMessage();

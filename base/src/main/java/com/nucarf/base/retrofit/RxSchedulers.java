@@ -104,6 +104,29 @@ public class RxSchedulers {
             }
         };
     }
+    /**
+     * 统一返回结果处理
+     *
+     * @param <T>
+     * @return
+     */
+    public static <T> ObservableTransformer<BaseResult<T>, T> handleResultTemp() {   //compose判断结果
+        return new ObservableTransformer<BaseResult<T>, T>() {
+            @Override
+            public Observable<T> apply(Observable<BaseResult<T>> httpResponseFlowable) {
+                return httpResponseFlowable.flatMap(new Function<BaseResult<T>, Observable<T>>() {
+                    @Override
+                    public Observable<T> apply(BaseResult<T> tGankHttpResponse) {
+                        if (tGankHttpResponse.isSuccessed()) {
+                            return createData(tGankHttpResponse.getData());
+                        } else {
+                            return Observable.error(new Throwable("服务器 error"));
+                        }
+                    }
+                });
+            }
+        };
+    }
 
     /**
      * Observable
