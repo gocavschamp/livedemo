@@ -3,12 +3,11 @@ package com.fish.live.livepush.fragment;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -18,7 +17,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.fish.live.LiveApplication;
 import com.fish.live.R;
-import com.fish.live.home.bean.MsgEvent;
 import com.fish.live.tencenttic.core.TICManager;
 import com.fish.live.widget.TCInputTextMsgDialog;
 import com.leon.lfilepickerlibrary.LFilePicker;
@@ -35,26 +33,20 @@ import com.tencent.imsdk.TIMManager;
 import com.tencent.imsdk.TIMMessage;
 import com.tencent.imsdk.TIMTextElem;
 import com.tencent.imsdk.TIMValueCallBack;
-import com.tencent.imsdk.v2.V2TIMManager;
-import com.tencent.imsdk.v2.V2TIMMessage;
-import com.tencent.imsdk.v2.V2TIMValueCallback;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.reactivex.Observable;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Predicate;
 
 import static android.app.Activity.RESULT_OK;
-import static com.tencent.imsdk.v2.V2TIMMessage.V2TIM_ELEM_TYPE_TEXT;
 
 /**
  * @Description TODO
@@ -63,11 +55,23 @@ import static com.tencent.imsdk.v2.V2TIMMessage.V2TIM_ELEM_TYPE_TEXT;
  */
 public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsgDialog.OnTextSendListener {
     private static final String TYPE = "chat";
+    @BindView(R.id.et_message_input)
+    TextView etMessageInput;
+    @BindView(R.id.btn_send)
+    Button btnSend;
+    @BindView(R.id.btn_more)
+    Button btnMore;
+    @BindView(R.id.btn_pic)
+    Button btnPic;
+    @BindView(R.id.btn_ppt)
+    Button btnPpt;
+    @BindView(R.id.rl_more_layout)
+    RelativeLayout rlMoreLayout;
+    @BindView(R.id.ll_input)
+    LinearLayout llInput;
+    @BindView(R.id.rv_log)
+    RecyclerView rvLog;
     private Unbinder unbinder;
-    private Button send;
-    private Button more;
-    private TextView et_input;
-    private RecyclerView rvlog;
     private TICManager mTicManager;
     private String logMsg = "";
     private static final int REQUESTCODE_FROM_FRAGMENT = 666;
@@ -106,8 +110,8 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
         if (event instanceof TIMMessage) {
             TIMMessage imevent = (TIMMessage) event;
             msgAdapter.addData(imevent);
-            rvlog.scrollToPosition(msgAdapter.getData().size() - 1);
-            rvlog.smoothScrollToPosition(msgAdapter.getData().size() - 1);
+            rvLog.scrollToPosition(msgAdapter.getData().size() - 1);
+            rvLog.smoothScrollToPosition(msgAdapter.getData().size() - 1);
         }
     }
 
@@ -138,8 +142,8 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
                             Collections.reverse(lists);
                             msgAdapter.addData(lists);
                             msgAdapter.notifyDataSetChanged();
-                            rvlog.scrollToPosition(msgAdapter.getData().size() - 1);
-                            rvlog.smoothScrollToPosition(msgAdapter.getData().size() - 1);
+                            rvLog.scrollToPosition(msgAdapter.getData().size() - 1);
+                            rvLog.smoothScrollToPosition(msgAdapter.getData().size() - 1);
                         });
             }
         });
@@ -149,28 +153,10 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
     protected void initView() {
         registerEventBus();
         unbinder = ButterKnife.bind(this, mRootView);
-        send = mActivity.findViewById(R.id.btn_send);
-        more = mActivity.findViewById(R.id.btn_more);
-        et_input = mActivity.findViewById(R.id.et_message_input);
-        rvlog = mActivity.findViewById(R.id.rv_log);
-        ScreenUtil.setRecycleviewLinearLayout(mActivity, rvlog, true);
+        rvLog = mActivity.findViewById(R.id.rv_log);
+        ScreenUtil.setRecycleviewLinearLayout(mActivity, rvLog, true);
         msgAdapter = new MsgAdapter(R.layout.msg_layout);
-        rvlog.setAdapter(msgAdapter);
-        et_input.setOnClickListener(v -> {
-            showInputMsgDialog();
-        });
-        more.setOnClickListener(v -> {
-            new LFilePicker().withSupportFragment(this)
-                    .withRequestCode(REQUESTCODE_FROM_FRAGMENT)
-                    .withTitle("Open From Fragment")
-                    .withMutilyMode(false)
-                    .withChooseMode(true)
-                    .withFileFilter(new String[]{".ppt", ".pptx"})
-                    .withIsGreater(true)
-                    .withFileSize(10 * 1024)
-                    .start();
-
-        });
+        rvLog.setAdapter(msgAdapter);
         mInputTextMsgDialog = new TCInputTextMsgDialog(mActivity, R.style.InputDialog);
         mInputTextMsgDialog.setmOnTextSendListener(this);
 
@@ -208,8 +194,8 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
             @Override
             public void onSuccess(Object data) {
                 msgAdapter.addData((TIMMessage) data);
-                rvlog.scrollToPosition(msgAdapter.getData().size() - 1);
-                rvlog.smoothScrollToPosition(msgAdapter.getData().size() - 1);
+                rvLog.scrollToPosition(msgAdapter.getData().size() - 1);
+                rvLog.smoothScrollToPosition(msgAdapter.getData().size() - 1);
             }
 
             @Override
@@ -230,6 +216,42 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
     public void onTextSend(String msg, boolean tanmuOpen) {
         sendGroupMessage(msg);
 
+    }
+
+    @OnClick({R.id.et_message_input, R.id.btn_more, R.id.btn_pic, R.id.btn_ppt})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.et_message_input:
+                showInputMsgDialog();
+                break;
+            case R.id.btn_more:
+                rlMoreLayout.setVisibility(rlMoreLayout.getVisibility() == View.VISIBLE?View.GONE:View.VISIBLE);
+                break;
+            case R.id.btn_pic:
+                rlMoreLayout.setVisibility(View.GONE);
+                new LFilePicker().withSupportFragment(this)
+                        .withRequestCode(REQUESTCODE_FROM_FRAGMENT)
+                        .withTitle("Open From Fragment")
+                        .withMutilyMode(false)
+                        .withChooseMode(true)
+                        .withFileFilter(new String[]{".png", ".jpg", ".jpg"})
+                        .withIsGreater(true)
+                        .withFileSize(10 * 1024)
+                        .start();
+                break;
+            case R.id.btn_ppt:
+                rlMoreLayout.setVisibility(View.GONE);
+                new LFilePicker().withSupportFragment(this)
+                        .withRequestCode(REQUESTCODE_FROM_FRAGMENT)
+                        .withTitle("Open From Fragment")
+                        .withMutilyMode(false)
+                        .withChooseMode(true)
+                        .withFileFilter(new String[]{".ppt", ".pptx"})
+                        .withIsGreater(true)
+                        .withFileSize(10 * 1024)
+                        .start();
+                break;
+        }
     }
 
     private class MsgAdapter extends BaseQuickAdapter<TIMMessage, BaseViewHolder> {

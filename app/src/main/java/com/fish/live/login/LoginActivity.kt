@@ -16,9 +16,11 @@ class LoginActivity : BaseActivityWithTitle() {
     }
 
     override fun initData() {
+        editTextPhone.setText(SharePreUtils.getName(mContext))
         button.setOnClickListener {
-        val toString = editTextPhone.text.toString();
-            SharePreUtils.setName(this,toString)
-            UiGoto.startAty(mContext, MainActivity::class.java) }
+            val toString = editTextPhone.text.toString();
+            SharePreUtils.setName(this, toString)
+            UiGoto.startAty(mContext, MainActivity::class.java)
+        }
     }
 }
