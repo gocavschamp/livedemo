@@ -237,10 +237,10 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
         super.onResume();
         if (mSuperPlayerView.getPlayerState() == SuperPlayerDef.PlayerState.PAUSE) {
             Log.i(TAG, "onResume state :" + mSuperPlayerView.getPlayerState());
-            mSuperPlayerView.onResume();
-            if (mSuperPlayerView.getPlayerMode() == SuperPlayerDef.PlayerMode.FLOAT) {
-                mSuperPlayerView.switchPlayMode(SuperPlayerDef.PlayerMode.WINDOW);
-            }
+//            mSuperPlayerView.onResume();
+//            if (mSuperPlayerView.getPlayerMode() == SuperPlayerDef.PlayerMode.FLOAT) {
+//                mSuperPlayerView.switchPlayMode(SuperPlayerDef.PlayerMode.WINDOW);
+//            }
         }
         if (mSuperPlayerView.getPlayerMode() == SuperPlayerDef.PlayerMode.FULLSCREEN) {
             //隐藏虚拟按键，并且全屏

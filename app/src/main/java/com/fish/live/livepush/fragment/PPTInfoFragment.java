@@ -11,7 +11,9 @@ import android.widget.TextView;
 import com.fish.live.Constants;
 import com.fish.live.LiveApplication;
 import com.fish.live.R;
+import com.fish.live.bean.BoardPhotoEvent;
 import com.fish.live.home.bean.IMLoginEvent;
+import com.fish.live.photo.bean.PhotoBean;
 import com.fish.live.tencenttic.core.TICClassroomOption;
 import com.fish.live.tencenttic.core.TICManager;
 import com.fish.live.tencenttic.core.impl.TICManagerImpl;
@@ -125,6 +127,15 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
                 transcodeConfig.isStaticPPT = true;
                 mBoard.applyFileTranscode(toUTF8, transcodeConfig);
             }
+        } else if (event instanceof BoardPhotoEvent) {
+            BoardPhotoEvent pptPhoto = (BoardPhotoEvent) event;
+            ArrayList<PhotoBean> photoData = pptPhoto.getData();
+            LogUtils.e("PHOTO --- " + photoData.size());
+            List<String> images = new ArrayList<>();
+            for (PhotoBean p : photoData) {
+                images.add(p.getPath());
+            }
+            mBoard.addImagesFile(images);
         }
     }
 
@@ -206,7 +217,7 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
             public void onSuccess(TIMGroupSelfInfo timGroupSelfInfo) {
                 LogUtils.e(TAG, timGroupSelfInfo.toString());
 
-                if (timGroupSelfInfo.getRole() ==  TIMGroupMemberRoleType.ROLE_TYPE_ADMIN|| timGroupSelfInfo.getRole() ==  TIMGroupMemberRoleType.ROLE_TYPE_OWNER) {
+                if (timGroupSelfInfo.getRole() == TIMGroupMemberRoleType.ROLE_TYPE_ADMIN || timGroupSelfInfo.getRole() == TIMGroupMemberRoleType.ROLE_TYPE_OWNER) {
 
                 } else {
                 }

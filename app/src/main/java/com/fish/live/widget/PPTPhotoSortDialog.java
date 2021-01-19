@@ -76,7 +76,7 @@ public class PPTPhotoSortDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         view = inflater.inflate(R.layout.ppt_phtot_sort_dialog, container);
-        cardBeanArrayList = (ArrayList<PhotoBean>) getArguments().getSerializable("list");
+        cardBeanArrayList =  getArguments().getParcelableArrayList("list");
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
@@ -116,14 +116,10 @@ public class PPTPhotoSortDialog extends DialogFragment {
         mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                for (int i = 0; i < mAdapter.getData().size(); i++) {
-                    mAdapter.getData().get(i).setChoice(position == i);
-                }
+                PhotoBean photoBean = mAdapter.getData().get(position);
+                photoBean.setChoice(photoBean.isChoice());
                 mAdapter.notifyDataSetChanged();
-                if (onDialogClickListener != null) {
-                    onDialogClickListener.onConfirmClick(position);
-                    dismiss();
-                }
+
             }
         });
         recycleview.setAdapter(mAdapter);
@@ -143,13 +139,26 @@ public class PPTPhotoSortDialog extends DialogFragment {
         super.dismiss();
     }
 
-    @OnClick(R.id.tv_close)
-    public void onViewClicked() {
-        dismiss();
+    @OnClick({R.id.tv_close,R.id.tv_sort,R.id.tv_cancle})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.tv_close :
+                if (onDialogClickListener != null) {
+                    onDialogClickListener.onConfirmClick(cardBeanArrayList);
+                    dismiss();
+                }
+                break;
+            case R.id.tv_sort :
+
+                break;
+            case R.id.tv_cancle :
+                dismiss();
+                break;
+        }
     }
 
 
     public interface OnDialogClickListener {
-        void onConfirmClick(int position);
+        void onConfirmClick(ArrayList<PhotoBean> position);
     }
 }

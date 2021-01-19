@@ -8,6 +8,12 @@
         <item name="colorAccent">@color/main_color</item>
         <item name="android:windowBackground">@color/color_eeeeee</item>
     </style>
+    <!--item的按下效果-->
+    <style name="list_item_select">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:background">@drawable/list_item_select</item>
+    </style>
     <!-- Input dialog theme. -->
     <style name="InputDialog">
         <item name="android:windowFrame">@null</item>

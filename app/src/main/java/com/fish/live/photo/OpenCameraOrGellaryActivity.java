@@ -464,8 +464,8 @@ public class OpenCameraOrGellaryActivity extends BaseActivity implements PhotoAl
 
     //确认按钮之后的动作
     private void ensure_action() {
-        EventBus.getDefault().post(new PostPhotoEvent(mSelectedPhotos, true));
         finish();
+        EventBus.getDefault().post(new PostPhotoEvent(mSelectedPhotos, true));
 
     }
 
