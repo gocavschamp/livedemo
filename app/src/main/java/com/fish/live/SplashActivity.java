@@ -78,14 +78,14 @@ public class SplashActivity extends BaseActivity {
                     public void accept(@NonNull Long aLong) throws Exception {
                         tvSkip.setText("跳过" + (3 - aLong));
                         if (aLong == 3) {
-                            if (!SharePreUtils.getjwt_token(mContext).equals("")) {
-                                UiGoto.startAty(mContext, MainActivity.class);
-                                //UiGoto.startAty(mContext, DBActivity.class);
-                                finish();
-                            } else {
+//                            if (!SharePreUtils.getjwt_token(mContext).equals("")) {
+//                                UiGoto.startAty(mContext, MainActivity.class);
+//                                //UiGoto.startAty(mContext, DBActivity.class);
+//                                finish();
+//                            } else {
                                 UiGoto.startAty(mContext, LoginActivity.class);
                                 finish();
-                            }
+//                            }
                         }
                     }
                 });

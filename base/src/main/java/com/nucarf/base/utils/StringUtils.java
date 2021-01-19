@@ -158,6 +158,16 @@ public class StringUtils {
         }
         return sb.toString().toUpperCase(Locale.getDefault());
     }
+    /**
+     * byte[]数组转换为字符串
+     *
+     * @param data 要转换的字节数组
+     * @return 转换后的结果
+     */
+    public static final String byteArrayToString(byte[] data) {
+
+        return new String(data);
+    }
 
     /**
      * 16进制表示的字符串转换为字节数组

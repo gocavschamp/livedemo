@@ -101,7 +101,7 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
         mTicManager.addIMStatusListener(this);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        ImmersionBar.with(this).statusBarDarkFont(false, 0.2f).titleBar(tabLayout).init();
+        ImmersionBar.with(this).statusBarDarkFont(false, 0.2f).titleBar(titleLayout).init();
         titleLayout.setLeftClickListener((v) -> finish());
         titleLayout.setTitleText("直播详情");
         LivePagerAdapter livePagerAdapter = new LivePagerAdapter(getSupportFragmentManager());
@@ -533,7 +533,4 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
         ButterKnife.bind(this);
     }
 
-    @OnClick(R.id.tv_subscribe)
-    public void onClick() {
-    }
 }

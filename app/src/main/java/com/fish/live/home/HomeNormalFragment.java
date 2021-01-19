@@ -16,27 +16,16 @@ import com.example.loadingbox.LoadingBox;
 import com.fish.live.R;
 import com.fish.live.home.adapter.HomeNormalAdapter;
 import com.fish.live.home.bean.HomeDataBean;
-import com.fish.live.livepush.LIvePushActivity;
+import com.fish.live.livepush.LivePushActivity;
 import com.fish.live.livevideo.LiveVideoActivity;
-import com.fish.live.service.AppService;
-import com.nucarf.base.retrofit.RetrofitUtils;
-import com.nucarf.base.retrofit.api.BaseHttp;
-import com.nucarf.base.retrofit.logiclayer.BaseResult;
-import com.nucarf.base.retrofit.logiclayer.HttpCallBack;
 import com.nucarf.base.ui.BaseLazyFragment;
-import com.nucarf.base.utils.AndroidUtil;
-import com.nucarf.base.utils.BaseAppCache;
-import com.nucarf.base.utils.MD5Utils;
 import com.nucarf.base.utils.NetUtils;
-import com.nucarf.base.utils.SharePreUtils;
 import com.nucarf.base.utils.UiGoto;
 
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -109,7 +98,7 @@ public class HomeNormalFragment extends BaseLazyFragment implements OnRefreshLis
             if (position == 2) {
                 UiGoto.startAty(mActivity, LiveVideoActivity.class);
             } else if (position == 3) {
-                UiGoto.startAty(mActivity, LIvePushActivity.class);
+                UiGoto.startAty(mActivity, LivePushActivity.class);
 
             }
 

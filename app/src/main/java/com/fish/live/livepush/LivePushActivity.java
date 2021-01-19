@@ -1,13 +1,10 @@
 package com.fish.live.livepush;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,52 +17,33 @@ import android.widget.Toast;
 import com.fish.live.Constants;
 import com.fish.live.LiveApplication;
 import com.fish.live.R;
-import com.fish.live.SplashActivity;
-import com.fish.live.database.db.DaoSession;
 import com.fish.live.home.bean.IMLoginEvent;
 import com.fish.live.livepush.presenter.LivePushPresenter;
 import com.fish.live.livepush.view.LivePushCotract;
-import com.fish.live.livevideo.LiveVideoActivity;
 import com.fish.live.livevideo.adapter.LivePagerAdapter;
-import com.fish.live.search.bean.SearchHistoryBean;
 import com.fish.live.tencenttic.core.TICManager;
 import com.fish.live.tencenttic.core.TICVideoRootView;
 import com.fish.live.tencenttic.core.impl.TICReporter;
 import com.flyco.tablayout.SlidingTabLayout;
 import com.gyf.barlibrary.ImmersionBar;
 import com.nucarf.base.ui.mvp.BaseMvpActivity;
-import com.nucarf.base.utils.DialogTools;
 import com.nucarf.base.utils.DialogUtils;
 import com.nucarf.base.utils.LogUtils;
 import com.nucarf.base.utils.SharePreUtils;
+import com.nucarf.base.utils.StringUtils;
 import com.nucarf.base.utils.ToastUtils;
-import com.nucarf.base.utils.dialog.DialogToolsNew;
-import com.nucarf.base.widget.BottomBar;
 import com.nucarf.base.widget.TitleLayout;
 import com.nucarf.base.widget.ViewPagerSlide;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tencent.imsdk.TIMCallBack;
 import com.tencent.imsdk.TIMCustomElem;
 import com.tencent.imsdk.TIMElem;
-import com.tencent.imsdk.TIMElemType;
-import com.tencent.imsdk.TIMFaceElem;
 import com.tencent.imsdk.TIMGroupManager;
-import com.tencent.imsdk.TIMGroupMemberInfo;
 import com.tencent.imsdk.TIMGroupMemberRoleType;
-import com.tencent.imsdk.TIMGroupSystemElem;
-import com.tencent.imsdk.TIMGroupTipsElem;
-import com.tencent.imsdk.TIMManager;
 import com.tencent.imsdk.TIMMessage;
 import com.tencent.imsdk.TIMValueCallBack;
-import com.tencent.imsdk.ext.group.TIMGroupDetailInfo;
 import com.tencent.imsdk.ext.group.TIMGroupSelfInfo;
-import com.tencent.imsdk.v2.V2TIMGroupMemberFullInfo;
 import com.tencent.liteav.basic.log.TXCLog;
-import com.tencent.liteav.demo.superplayer.SuperPlayerDef;
-import com.tencent.liteav.demo.superplayer.SuperPlayerGlobalConfig;
-import com.tencent.liteav.demo.superplayer.SuperPlayerView;
-import com.tencent.rtmp.TXLiveBase;
-import com.tencent.rtmp.TXLiveConstants;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.tencent.teduboard.TEduBoardController;
 import com.tencent.trtc.TRTCCloud;
@@ -80,15 +58,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.functions.Consumer;
-import me.jessyan.autosize.utils.AutoSizeUtils;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
+import static com.tencent.trtc.TRTCCloudDef.TRTCRoleAnchor;
+import static com.tencent.trtc.TRTCCloudDef.TRTCRoleAudience;
 
-public class LIvePushActivity extends BaseMvpActivity<LivePushPresenter> implements LivePushCotract.View, TICManager.TICIMStatusListener, TICManager.TICMessageListener, TICManager.TICEventListener {
+public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> implements LivePushCotract.View, TICManager.TICIMStatusListener, TICManager.TICMessageListener, TICManager.TICEventListener {
 
-
-    private final String TAG = LIvePushActivity.this.getClass().getSimpleName();
+    private final String TAG = LivePushActivity.this.getClass().getSimpleName();
     @BindView(R.id.title_layout)
     TitleLayout titleLayout;
     @BindView(R.id.player_content)
@@ -145,7 +121,7 @@ public class LIvePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
         mTicManager.addIMStatusListener(this);
         getPermission();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        ImmersionBar.with(this).statusBarDarkFont(false, 0.2f).titleBar(tabLayout).init();
+        ImmersionBar.with(this).statusBarDarkFont(false, 0.2f).titleBar(titleLayout).init();
         titleLayout.setLeftClickListener((v) -> finish());
         titleLayout.setTitleText("直播详情");
         LivePagerAdapter livePagerAdapter = new LivePagerAdapter(getSupportFragmentManager());
@@ -158,30 +134,8 @@ public class LIvePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
         vpMain.setOffscreenPageLimit(strings.size());
         vpMain.setSlidAble(false);
         tabLayout.setViewPager(vpMain, (String[]) strings.toArray(new String[strings.size()]));
-        tvSubscribe.setOnClickListener(v -> {
-            if(isHolder) {
-                return;
-            }
-            //举手逻辑
-            TIMMessage timMessage = new TIMMessage();
-            TIMCustomElem timCustomElem = new TIMCustomElem();
-            timCustomElem.setDesc(Constants.WATCHER_OPEN_CAMERA);
-            timMessage.addElement(timCustomElem);
-            mTicManager.sendGroupMessage(timMessage, new TICManager.TICCallback() {
-                @Override
-                public void onSuccess(Object data) {
-                    LogUtils.e("sendGroupMessage##onSuccess##" + data.toString());
-
-                }
-
-                @Override
-                public void onError(String module, int errCode, String errMsg) {
-                    LogUtils.e("sendGroupMessage##onError##" + errMsg);
-
-                }
-            });
-        });
-
+        tvSubscribe = findViewById(R.id.tv_subscribe);
+        tvTimer = findViewById(R.id.tv_timer);
     }
 
     @SuppressLint("CheckResult")
@@ -476,10 +430,12 @@ public class LIvePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
                     break;
                 case Custom:
                     TIMCustomElem timCustomElem = (TIMCustomElem) elem;
-                    if (timCustomElem.getDesc().equals(Constants.WATCHER_OPEN_CAMERA)) {
-                        jushouAlert(message);
-                    } else if (timCustomElem.getDesc().equals(Constants.ALLOW_WATCHER_OPEN_CAMERA)) {
-                        watchOpenCamera();
+                    if (StringUtils.byteArrayToString(timCustomElem.getData()).equals(Constants.WATCHER_OPEN_CAMERA)) {
+                        openCameraAlert(message);
+                    } else if (StringUtils.byteArrayToString(timCustomElem.getData()).equals(Constants.ALLOW_WATCHER_OPEN_CAMERA)) {
+                        watcherOpenCamera(true);
+                    }else if(StringUtils.byteArrayToString(timCustomElem.getData()).equals(Constants.STOP_WATCHER_OPEN_CAMERA)) {
+                        watcherOpenCamera(false);
                     }
                     break;
                 case GroupTips:
@@ -490,21 +446,27 @@ public class LIvePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
         }
     }
 
-    private void watchOpenCamera() {
-        startLocalVideo(true);
-        enableAudioCapture(true);
-        mTrtcCloud.startPublishing(SharePreUtils.getName(mContext) + System.currentTimeMillis(), TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG);
+    private void watcherOpenCamera(boolean open) {
+        startLocalVideo(open);
+        enableAudioCapture(open);
+        if(open) {
+            mTicManager.switchRole(TRTCRoleAnchor);
+            mTrtcCloud.startPublishing(SharePreUtils.getName(mContext) + System.currentTimeMillis(), TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG);
+        }else {
+            mTicManager.switchRole(TRTCRoleAudience);
+            mTrtcCloud.stopPublishing();
+        }
         LogUtils.e("----主播推流---");
     }
 
-    private void jushouAlert(TIMMessage message) {
+    private void openCameraAlert(TIMMessage message) {
         DialogUtils.getInstance().showSelectDialog(mContext, message.getSender() + "正在举手是否同意？", "取消", "确定", new DialogUtils.DialogClickListener() {
             @Override
             public void confirm() {
                 //举手逻辑
                 TIMMessage timMessage = new TIMMessage();
                 TIMCustomElem timCustomElem = new TIMCustomElem();
-                timCustomElem.setDesc(Constants.ALLOW_WATCHER_OPEN_CAMERA);
+                timCustomElem.setData(Constants.ALLOW_WATCHER_OPEN_CAMERA.getBytes());
                 timMessage.addElement(timCustomElem);
                 mTicManager.sendGroupMessage(timMessage, new TICManager.TICCallback() {
                     @Override
@@ -673,7 +635,59 @@ public class LIvePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
         ButterKnife.bind(this);
     }
 
-    @OnClick(R.id.tv_subscribe)
-    public void onClick() {
+    @OnClick({R.id.tv_subscribe,R.id.tv_timer})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_subscribe:
+
+                LogUtils.e("---举手---");
+                if (isHolder) {
+                    return;
+                }
+                //举手逻辑
+                TIMMessage timMessage1 = new TIMMessage();
+                TIMCustomElem timCustomElem1 = new TIMCustomElem();
+                timCustomElem1.setData(Constants.WATCHER_OPEN_CAMERA.getBytes());
+                timMessage1.addElement(timCustomElem1);
+                mTicManager.sendGroupMessage(timMessage1, new TICManager.TICCallback() {
+                    @Override
+                    public void onSuccess(Object data) {
+                        LogUtils.e("sendGroupMessage##onSuccess##" + data.toString());
+
+                    }
+
+                    @Override
+                    public void onError(String module, int errCode, String errMsg) {
+                        LogUtils.e("sendGroupMessage##onError##" + errMsg);
+
+                    }
+                });
+                break;
+            case R.id.tv_timer:
+                //收回举手
+                LogUtils.e("---收回举手---");
+                if (!isHolder) {
+                    return;
+                }
+                TIMMessage timMessage = new TIMMessage();
+                TIMCustomElem timCustomElem = new TIMCustomElem();
+                timCustomElem.setData(Constants.STOP_WATCHER_OPEN_CAMERA.getBytes());
+                timMessage.addElement(timCustomElem);
+                mTicManager.sendGroupMessage(timMessage, new TICManager.TICCallback() {
+                    @Override
+                    public void onSuccess(Object data) {
+                        LogUtils.e("sendGroupMessage##onSuccess##" + data.toString());
+
+                    }
+
+                    @Override
+                    public void onError(String module, int errCode, String errMsg) {
+                        LogUtils.e("sendGroupMessage##onError##" + errMsg);
+
+                    }
+                });
+
+                break;
+        }
     }
 }

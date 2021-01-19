@@ -55,7 +55,7 @@ public class TICVideoRootView extends LinearLayout {
     private void showView() {
 
         int screenW = getScreenWidth(mContext);
-        int screenH = dip2px(160);//getScreenHeight(mContext);
+        int screenH = dip2px(200);//getScreenHeight(mContext);
         int margin = dip2px(10);
 
         int grid4W = (screenW - margin * 2) / 3;
