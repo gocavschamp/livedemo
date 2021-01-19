@@ -124,9 +124,6 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
                 TEduBoardController.TEduBoardTranscodeConfig transcodeConfig = new TEduBoardController.TEduBoardTranscodeConfig();
                 transcodeConfig.isStaticPPT = true;
                 mBoard.applyFileTranscode(toUTF8, transcodeConfig);
-
-
-//                mBoard.getFileTranscodeProgress(taskid);
             }
         }
     }

@@ -421,6 +421,7 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
 
     private void handleTimElement(TIMMessage message) {
 
+        String customStr = message.getCustomStr();
         for (int i = 0; i < message.getElementCount(); i++) {
             TIMElem elem = message.getElement(i);
             LogUtils.e("This is message.", message.toString());
@@ -430,11 +431,14 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
                     break;
                 case Custom:
                     TIMCustomElem timCustomElem = (TIMCustomElem) elem;
-                    if (StringUtils.byteArrayToString(timCustomElem.getData()).equals(Constants.WATCHER_OPEN_CAMERA)) {
+                    if (StringUtils.byteArrayToString(timCustomElem.getData()).equals(Constants.WATCHER_OPEN_CAMERA) && isHolder) {
                         openCameraAlert(message);
-                    } else if (StringUtils.byteArrayToString(timCustomElem.getData()).equals(Constants.ALLOW_WATCHER_OPEN_CAMERA)) {
+                    } else if (StringUtils.byteArrayToString(timCustomElem.getData()).equals(Constants.ALLOW_WATCHER_OPEN_CAMERA)
+                            && customStr.equals(SharePreUtils.getName(mContext))
+                    ) {
                         watcherOpenCamera(true);
-                    }else if(StringUtils.byteArrayToString(timCustomElem.getData()).equals(Constants.STOP_WATCHER_OPEN_CAMERA)) {
+                    } else if (StringUtils.byteArrayToString(timCustomElem.getData()).equals(Constants.STOP_WATCHER_OPEN_CAMERA)
+                            && customStr.equals(SharePreUtils.getName(mContext))) {
                         watcherOpenCamera(false);
                     }
                     break;
@@ -449,10 +453,12 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
     private void watcherOpenCamera(boolean open) {
         startLocalVideo(open);
         enableAudioCapture(open);
-        if(open) {
+        if (open) {
+            ToastUtils.show_middle(mContext,"您已上播",1);
             mTicManager.switchRole(TRTCRoleAnchor);
             mTrtcCloud.startPublishing(SharePreUtils.getName(mContext) + System.currentTimeMillis(), TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG);
-        }else {
+        } else {
+            ToastUtils.show_middle(mContext,"您已下播",1);
             mTicManager.switchRole(TRTCRoleAudience);
             mTrtcCloud.stopPublishing();
         }
@@ -466,19 +472,18 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
                 //举手逻辑
                 TIMMessage timMessage = new TIMMessage();
                 TIMCustomElem timCustomElem = new TIMCustomElem();
+                timMessage.setCustomStr(message.getSender());
                 timCustomElem.setData(Constants.ALLOW_WATCHER_OPEN_CAMERA.getBytes());
                 timMessage.addElement(timCustomElem);
                 mTicManager.sendGroupMessage(timMessage, new TICManager.TICCallback() {
                     @Override
                     public void onSuccess(Object data) {
                         LogUtils.e("sendGroupMessage##onSuccess##" + data.toString());
-
                     }
 
                     @Override
                     public void onError(String module, int errCode, String errMsg) {
                         LogUtils.e("sendGroupMessage##onError##" + errMsg);
-
                     }
                 });
             }
@@ -635,7 +640,7 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
         ButterKnife.bind(this);
     }
 
-    @OnClick({R.id.tv_subscribe,R.id.tv_timer})
+    @OnClick({R.id.tv_subscribe, R.id.tv_timer})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_subscribe:
@@ -670,6 +675,7 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
                     return;
                 }
                 TIMMessage timMessage = new TIMMessage();
+                timMessage.setCustomStr(mTrtcRootView.getCloudVideoViewByIndex(1).getUserId());
                 TIMCustomElem timCustomElem = new TIMCustomElem();
                 timCustomElem.setData(Constants.STOP_WATCHER_OPEN_CAMERA.getBytes());
                 timMessage.addElement(timCustomElem);

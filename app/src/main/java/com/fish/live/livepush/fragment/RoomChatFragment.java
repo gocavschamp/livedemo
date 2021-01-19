@@ -11,16 +11,21 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.fish.live.LiveApplication;
 import com.fish.live.R;
+import com.fish.live.photo.OpenCameraOrGellaryActivity;
+import com.fish.live.photo.bean.PhotoBean;
 import com.fish.live.tencenttic.core.TICManager;
+import com.fish.live.widget.PPTPhotoSortDialog;
 import com.fish.live.widget.TCInputTextMsgDialog;
 import com.leon.lfilepickerlibrary.LFilePicker;
 import com.leon.lfilepickerlibrary.utils.Constant;
+import com.nucarf.base.bean.PostPhotoEvent;
 import com.nucarf.base.ui.BaseLazyFragment;
 import com.nucarf.base.utils.GlideUtils;
 import com.nucarf.base.utils.LogUtils;
@@ -37,6 +42,7 @@ import com.tencent.imsdk.TIMValueCallBack;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,6 +51,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.reactivex.Observable;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -77,7 +86,9 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
     private static final int REQUESTCODE_FROM_FRAGMENT = 666;
     private boolean isok;
     private MsgAdapter msgAdapter;
+    private ArrayList<PhotoBean> photoBeanList = new ArrayList<>();
     private TCInputTextMsgDialog mInputTextMsgDialog;
+    private PPTPhotoSortDialog sortDialog;
 
     public RoomChatFragment() {
     }
@@ -102,9 +113,13 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
 
     @Override
     protected void initData() {
+        sortDialog = new PPTPhotoSortDialog();
+        sortDialog.setOnDialogClickListener(position -> {
 
+        });
     }
 
+    @SuppressLint("CheckResult")
     @Subscribe
     public void onEvent(Object event) {
         if (event instanceof TIMMessage) {
@@ -112,6 +127,30 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
             msgAdapter.addData(imevent);
             rvLog.scrollToPosition(msgAdapter.getData().size() - 1);
             rvLog.smoothScrollToPosition(msgAdapter.getData().size() - 1);
+        }else if (event instanceof PostPhotoEvent) {
+                List<String> photoPath = ((PostPhotoEvent) event).getPhotoPath();
+                Observable.fromIterable(photoPath)
+                        .map(new Function<String, PhotoBean>() {
+                            @Override
+                            public PhotoBean apply(@NonNull String s) throws Exception {
+                                PhotoBean photoBean = new PhotoBean();
+                                photoBean.setPath(s);
+                                return photoBean;
+                            }
+                        }).toList()
+                        .subscribe(new Consumer<List<PhotoBean>>() {
+                            @Override
+                            public void accept(List<PhotoBean> photoBeans) throws Exception {
+                                photoBeanList.addAll(photoBeans);
+                                if (sortDialog != null) {
+                                    Bundle args = new Bundle();
+                                    args.putParcelableArrayList("list", photoBeanList);
+                                    sortDialog.setArguments(args);
+                                    sortDialog.setStyle(DialogFragment.STYLE_NO_FRAME, R.style.oilCardDialogStyle);
+                                    sortDialog.show(getFragmentManager(), "oilcard");
+                                }
+                            }
+                        });
         }
     }
 
@@ -244,15 +283,7 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
                 break;
             case R.id.btn_ppt:
                 rlMoreLayout.setVisibility(View.GONE);
-                new LFilePicker().withSupportFragment(this)
-                        .withRequestCode(REQUESTCODE_FROM_FRAGMENT)
-                        .withTitle("Open From Fragment")
-                        .withMutilyMode(false)
-                        .withChooseMode(true)
-                        .withFileFilter(new String[]{".ppt", ".pptx"})
-                        .withIsGreater(true)
-                        .withFileSize(10 * 1024)
-                        .start();
+                OpenCameraOrGellaryActivity.launch(mActivity, RoomChatFragment.class.getSimpleName(), 9, false, 0, 0, 4);
                 break;
         }
     }

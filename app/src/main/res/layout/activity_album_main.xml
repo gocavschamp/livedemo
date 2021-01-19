@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:id="@+id/bottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_50"
+        android:layout_alignEnd="@+id/lrecyclerview"
+        android:layout_alignRight="@+id/lrecyclerview"
+        android:layout_alignParentBottom="true"
+        android:background="@color/color_f5f5f5">
+
+        <TextView
+            android:id="@+id/preview_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_27"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/rec_write_ececec_4"
+            android:gravity="center"
+            android:minWidth="@dimen/dp_50"
+            android:text=""
+            android:textColor="@color/black"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/ensure_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_27"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dp_15"
+            android:background="@drawable/rec_write_ececec_4"
+            android:gravity="center"
+            android:paddingStart="@dimen/dp_3"
+            android:paddingEnd="@dimen/dp_3"
+            android:text="完成"
+            android:textColor="@color/color_666666"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+    <com.nucarf.base.widget.recycleview.LRecyclerView
+        android:id="@+id/lrecyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom"
+        android:layout_margin="@dimen/dp_2"
+        android:overScrollMode="never" />
+
+    <RelativeLayout
+        android:id="@+id/top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center_vertical"
+        android:background="@color/color_f6f6f6">
+
+        <TextView
+            android:id="@+id/include_left_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:drawableLeft="@mipmap/icon_arrow_black_back"
+            android:gravity="center_vertical"
+            android:minWidth="@dimen/dp_40"
+            android:paddingLeft="@dimen/px_15"
+            android:text="返回"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/phtoto_album_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/px_40"
+                android:gravity="center_vertical"
+                android:text="相机胶卷"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:layout_marginLeft="@dimen/px_15" />
+
+            <ImageView
+                android:id="@+id/arrow_iv"
+                android:visibility="visible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:rotation="90"
+                android:src="@mipmap/icon_arrow_black_back" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/folder_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom"
+        android:layout_below="@id/top_layout"
+        android:background="@color/color_b3b3b3"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/folder_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_300"
+            android:background="@color/white"
+            android:overScrollMode="never" />
+    </RelativeLayout>
+
+</RelativeLayout>
