@@ -134,6 +134,14 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
 
         mUserID = SharePreUtils.getName(mContext);
         mUserSig = SharePreUtils.getjwt_token(mContext);
+        //my申请的id
+        if (SharePreUtils.getName(mContext).equals("yuwenming1")) {
+            mUserID = "yuwenming1";
+            mUserSig = "eJwtzNsKgkAUheF3mVtDts7BFLorAknSsshLw0k2HjKdmiR690y9XN*C-0Pi3dF8yZZ4xDaBLMaNmawV3nDk-qllXWGdW-PbZUXaNJgRz2IAzGHCpdMj3w22cnDOuQ0Akyqs-iYsEOBwcOcK5kO821NxfWwuOlkvhYq3kdClCnpWRkV16oy7H1LDD84HGiYr8v0Bc3UzJA__";
+        } else {
+            mUserID = "yuwenming";
+            mUserSig = "eJwtzMsKwjAUBNB-yVapt7UPLbhoFuIiLoJSENwUchMutaGkNb7w361tl3NmmA87i1Pg0bGcRQGw5ZhJoe1J08iv*wNtQ9bMZafqqm1JsTyMAeIsTrfrqcFnSw4HT5IkAoBJe2r*loaQwjCetSMzfBfS94Xwbm*uK4mX0murMiEXHcdjCZ6-lTYbfqhvopI79v0Bjpc0Aw__";
+        }
         onLoginClick();
 
 //        initTrtc();//主播  或者 观看时看到

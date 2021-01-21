@@ -24,5 +24,6 @@ public class PhotoSortAdapter extends BaseItemDraggableAdapter<PhotoBean, BaseVi
     protected void convert(BaseViewHolder helper, PhotoBean item) {
         ImageView iv_pic = helper.getView(R.id.iv_pic);
         GlideUtils.load(mContext,item.getPath(),R.mipmap.ic_launcher,iv_pic);
+        helper.addOnClickListener(R.id.tv_delete);
     }
 }

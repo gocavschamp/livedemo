@@ -76,7 +76,7 @@ public class PPTPhotoSortDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         view = inflater.inflate(R.layout.ppt_phtot_sort_dialog, container);
-        cardBeanArrayList =  getArguments().getParcelableArrayList("list");
+        cardBeanArrayList = getArguments().getParcelableArrayList("list");
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
@@ -90,7 +90,7 @@ public class PPTPhotoSortDialog extends DialogFragment {
     public void initData() {
         recycleview.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         recycleview.setItemAnimator(new DefaultItemAnimator());
-        mAdapter = new PhotoSortAdapter(R.layout.photo_sort_item_layout,cardBeanArrayList);
+        mAdapter = new PhotoSortAdapter(R.layout.photo_sort_item_layout, cardBeanArrayList);
         ItemDragAndSwipeCallback itemDragAndSwipeCallback = new ItemDragAndSwipeCallback(mAdapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(itemDragAndSwipeCallback);
         itemTouchHelper.attachToRecyclerView(recycleview);
@@ -113,13 +113,11 @@ public class PPTPhotoSortDialog extends DialogFragment {
         // 开启拖拽
         mAdapter.enableDragItem(itemTouchHelper, R.id.ll_content, true);
         mAdapter.setOnItemDragListener(onItemDragListener);
-        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+        mAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
             @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                PhotoBean photoBean = mAdapter.getData().get(position);
-                photoBean.setChoice(photoBean.isChoice());
+            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                mAdapter.remove(position);
                 mAdapter.notifyDataSetChanged();
-
             }
         });
         recycleview.setAdapter(mAdapter);
@@ -139,19 +137,19 @@ public class PPTPhotoSortDialog extends DialogFragment {
         super.dismiss();
     }
 
-    @OnClick({R.id.tv_close,R.id.tv_sort,R.id.tv_cancle})
+    @OnClick({R.id.tv_close, R.id.tv_sort, R.id.tv_cancle})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.tv_close :
+            case R.id.tv_close:
                 if (onDialogClickListener != null) {
                     onDialogClickListener.onConfirmClick(cardBeanArrayList);
                     dismiss();
                 }
                 break;
-            case R.id.tv_sort :
+            case R.id.tv_sort:
 
                 break;
-            case R.id.tv_cancle :
+            case R.id.tv_cancle:
                 dismiss();
                 break;
         }

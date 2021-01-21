@@ -132,10 +132,17 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
             ArrayList<PhotoBean> photoData = pptPhoto.getData();
             LogUtils.e("PHOTO --- " + photoData.size());
             List<String> images = new ArrayList<>();
+            mBoard.reset();
             for (PhotoBean p : photoData) {
                 images.add(p.getPath());
+                LogUtils.e("PHOTO --- current board--" +  mBoard.getCurrentBoard());
+                mBoard.addBoard(p.getPath()+"--");
+                LogUtils.e("PHOTO --- add   current  board--" +  mBoard.getCurrentBoard());
+                mBoard.addImageElement(p.getPath());
+                mBoard.nextBoard();
+//                mBoard.setBackgroundImage(p.getPath(),TEduBoardController.TEduBoardImageFitMode.TEDU_BOARD_IMAGE_FIT_MODE_CENTER);
             }
-            mBoard.addImagesFile(images);
+//            mBoard.addImagesFile(images);
         }
     }
 
@@ -269,7 +276,7 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
                 llPageControl.setVisibility(llPageControl.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
                 break;
             case R.id.last_page:
-                mBoard.prevStep();
+                mBoard.prevBoard();
                 currentIndex--;
                 if (currentIndex < 0) {
                     currentIndex = 0;
@@ -285,7 +292,7 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
                 this.totalPage.setText(totalPage1 + "/" + currentIndex);
                 break;
             case R.id.next_page:
-                mBoard.nextStep();
+                mBoard.nextBoard();
                 if (currentIndex >= mRomotCurrentIndex) {
                     return;
                 }
