@@ -1,5 +1,6 @@
 package com.fish.live.livepush.fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -39,11 +40,14 @@ import org.greenrobot.eventbus.Subscribe;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
 
 import static com.nucarf.base.utils.BaseAppCache.getApplication;
 
@@ -110,6 +114,7 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
         return R.layout.live_ppt_layout;
     }
 
+    @SuppressLint("CheckResult")
     @Subscribe
     public void onEvent(Object event) {
         if (event instanceof IMLoginEvent) {
@@ -133,15 +138,21 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
             LogUtils.e("PHOTO --- " + photoData.size());
             List<String> images = new ArrayList<>();
             mBoard.reset();
-            for (PhotoBean p : photoData) {
-                images.add(p.getPath());
-                LogUtils.e("PHOTO --- current board--" +  mBoard.getCurrentBoard());
-                mBoard.addBoard(p.getPath()+"--");
-                LogUtils.e("PHOTO --- add   current  board--" +  mBoard.getCurrentBoard());
-                mBoard.addImageElement(p.getPath());
-                mBoard.nextBoard();
+            Observable.fromIterable(photoData)
+                    .delay(2, TimeUnit.SECONDS)
+                    .subscribe(photoBean -> {
+                        mBoard.setBackgroundImage(photoBean.getPath(), TEduBoardController.TEduBoardImageFitMode.TEDU_BOARD_IMAGE_FIT_MODE_CENTER);
+                        mBoard.addBoard(photoBean.getPath() + "--");
+                        LogUtils.e("PHOTO --- add   current  board--" + mBoard.getCurrentBoard());
+                    });
+//            for (PhotoBean p : photoData) {
+//                images.add(p.getPath());
+//                LogUtils.e("PHOTO --- current board--" +  mBoard.getCurrentBoard());
 //                mBoard.setBackgroundImage(p.getPath(),TEduBoardController.TEduBoardImageFitMode.TEDU_BOARD_IMAGE_FIT_MODE_CENTER);
-            }
+//                LogUtils.e("PHOTO --- add   current  board--" +  mBoard.getCurrentBoard());
+////                mBoard.addImageElement(p.getPath());
+//                mBoard.addBoard(p.getPath()+"--");
+//            }
 //            mBoard.addImagesFile(images);
         }
     }
@@ -608,7 +619,7 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
 
         @Override
         public void onTEBSetBackgroundImage(final String url) {
-            Log.e(TAG, "onTEBSetBackgroundImage:" + url);
+            Log.e(TAG, mActivityRef.get().mBoard.getCurrentBoard() + "--onTEBSetBackgroundImage:" + url);
         }
 
         @Override
