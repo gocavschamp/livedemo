@@ -2,7 +2,12 @@ package com.fish.live.livepush.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -34,7 +39,9 @@ import com.nucarf.base.utils.ScreenUtil;
 import com.nucarf.base.widget.CircleImageView;
 import com.tencent.imsdk.TIMConversation;
 import com.tencent.imsdk.TIMConversationType;
+import com.tencent.imsdk.TIMElem;
 import com.tencent.imsdk.TIMElemType;
+import com.tencent.imsdk.TIMImageElem;
 import com.tencent.imsdk.TIMManager;
 import com.tencent.imsdk.TIMMessage;
 import com.tencent.imsdk.TIMTextElem;
@@ -130,15 +137,16 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
                 photoBean.setPath(s);
                 photoBeanList.add(photoBean);
             }
-            rlMoreLayout.postDelayed(() -> {
-                if (sortDialog != null) {
-                    Bundle args = new Bundle();
-                    args.putParcelableArrayList("list", photoBeanList);
-                    sortDialog.setArguments(args);
-                    sortDialog.setStyle(DialogFragment.STYLE_NO_FRAME, R.style.oilCardDialogStyle);
-                    sortDialog.show(getFragmentManager(), "photo");
-                }
-            }, 500);
+            sendGroupPicMessage(photoPath.get(0));
+//            rlMoreLayout.postDelayed(() -> {
+//                if (sortDialog != null) {
+//                    Bundle args = new Bundle();
+//                    args.putParcelableArrayList("list", photoBeanList);
+//                    sortDialog.setArguments(args);
+//                    sortDialog.setStyle(DialogFragment.STYLE_NO_FRAME, R.style.oilCardDialogStyle);
+//                    sortDialog.show(getFragmentManager(), "photo");
+//                }
+//            }, 500);
 
         }
     }
@@ -165,7 +173,7 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
                 LogUtils.e("-----room--", timMessages.size() + "");
                 isok = true;
                 Observable.fromIterable(timMessages)
-                        .filter(v -> v.getElement(0).getType() == TIMElemType.Text)
+                        .filter(v -> v.getElement(0).getType() == TIMElemType.Text || v.getElement(0).getType() == TIMElemType.Image)
                         .toList()
                         .subscribe(lists -> {
                             Collections.reverse(lists);
@@ -240,6 +248,28 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
         });
     }
 
+    private void sendGroupPicMessage(final String msg) {
+        TIMMessage timMessage = new TIMMessage();
+        TIMImageElem timImageElem = new TIMImageElem();
+        timImageElem.setPath(msg);
+        timMessage.addElement(timImageElem);
+
+        mTicManager.sendGroupMessage(timMessage, new TICManager.TICCallback() {
+            @Override
+            public void onSuccess(Object data) {
+                msgAdapter.addData((TIMMessage) data);
+                rvLog.scrollToPosition(msgAdapter.getData().size() - 1);
+                rvLog.smoothScrollToPosition(msgAdapter.getData().size() - 1);
+            }
+
+            @Override
+            public void onError(String module, int errCode, String errMsg) {
+                LogUtils.e("sendGroupMessage##onError##" + errMsg);
+
+            }
+        });
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -295,18 +325,43 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
             CircleImageView head_mine = helper.getView(R.id.head_mine);
             TextView tv_mine_text = helper.getView(R.id.tv_mine_text);
             TextView tv_other_name = helper.getView(R.id.tv_other_name);
-            TIMTextElem textElem = (TIMTextElem) item.getElement(0);
+            TIMElem element = item.getElement(0);
+            if (element.getType() == TIMElemType.Text) {
+                TIMTextElem textElem = (TIMTextElem) element;
+                if (item.isSelf()) {
+                    tv_mine_text.setText(textElem.getText() + "");
+                } else {
+                    tv_other_text.setText(textElem.getText() + "");
+                }
+            } else if (element.getType() == TIMElemType.Image) {
+                TIMImageElem imageElem = (TIMImageElem) element;
+                if(!TextUtils.isEmpty(imageElem.getPath())) {
+                    Bitmap bitmap = BitmapFactory.decodeFile(imageElem.getPath());
+                    float width = bitmap.getWidth();
+                    float height = bitmap.getHeight();
+                    float size = width / height;
+                    float screenWidth = ScreenUtil.getScreenWidth(mActivity);
+                    float hei = screenWidth / 2 / size;
+                    Drawable drawable = new BitmapDrawable(bitmap);
+                    if (item.isSelf()) {
+                        tv_mine_text.setBackground(drawable);
+                        ScreenUtil.setRelativeLayoutParams(tv_mine_text, (int) (screenWidth / 2), (int) hei);
+                    } else {
+                        tv_other_text.setBackground(drawable);
+                        ScreenUtil.setRelativeLayoutParams(tv_other_text, (int) (screenWidth / 2), (int) hei);
+                    }
+                }
+            }
+
             if (item.isSelf()) {
                 rl_mine.setVisibility(View.VISIBLE);
                 rl_other.setVisibility(View.GONE);
                 tv_mine_name.setText("我");
-                tv_mine_text.setText(textElem.getText() + "");
                 GlideUtils.load(mContext, item.getSenderFaceUrl() + "", R.mipmap.ic_launcher, head_mine);
             } else {
                 rl_mine.setVisibility(View.GONE);
                 rl_other.setVisibility(View.VISIBLE);
                 tv_other_name.setText(item.getSender() + "");
-                tv_other_text.setText(textElem.getText() + "");
                 GlideUtils.load(mContext, item.getSenderFaceUrl() + "", R.mipmap.ic_launcher, head_other);
             }
         }
