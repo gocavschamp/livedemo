@@ -1283,5 +1283,10 @@ public class TICManagerImpl extends TICManager {
         public void onTEBAddElement(String s, String s1) {
 
         }
+
+        @Override
+        public void onTEBDeleteElement(List<String> list) {
+
+        }
     }
 }

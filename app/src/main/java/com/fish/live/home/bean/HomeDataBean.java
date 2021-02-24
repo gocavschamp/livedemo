@@ -15,6 +15,7 @@ public class HomeDataBean implements Serializable, MultiItemEntity {
 
     public static final int ONE = 1;//banner
     public static final int TWO = 2;//近期直播
+    public static final int THREE = 3;//近期直播
     private int itemType;
     private String title;
     private String url;

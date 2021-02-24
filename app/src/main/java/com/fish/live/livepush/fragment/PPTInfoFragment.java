@@ -634,6 +634,11 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
         }
 
         @Override
+        public void onTEBDeleteElement(List<String> list) {
+
+        }
+
+        @Override
         public void onTEBBackgroundH5StatusChanged(String boardId, String url, int status) {
             Log.e(TAG, "onTEBBackgroundH5StatusChanged:" + boardId + " url:" + boardId + " status:" + status);
         }

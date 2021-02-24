@@ -152,6 +152,9 @@ public class MainActivity extends BaseMvpActivity<MianPresenter> implements Main
         cardFilterPopupWindow.setOnItemClickListener(new CardFilterPopupWindow.OnItemClickListener() {
             @Override
             public void clickItem(int position) {
+                for (int i = 0; i < list.size(); i++) {
+                    list.get(i).setChoice(i==position);
+                }
 //                category = filterlist.get(position).getCategory();
 //                tvOilType.setText(filterlist.get(position).getCategory_name());
 //                getCardList();

@@ -1,6 +1,7 @@
 package com.fish.live.home.adapter;
 
 import android.util.Log;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -30,6 +31,7 @@ public class HomeNormalAdapter extends BaseMultiItemQuickAdapter<HomeDataBean, B
         try {
             addItemType(HomeDataBean.ONE, R.layout.home_banner_layout);
             addItemType(HomeDataBean.TWO, R.layout.home_live_layout);
+            addItemType(HomeDataBean.THREE, R.layout.home_live_layout);
         } catch (Exception ex) {
             Log.d("tag", ex.getMessage());
         }
@@ -51,6 +53,16 @@ public class HomeNormalAdapter extends BaseMultiItemQuickAdapter<HomeDataBean, B
                 break;
             case HomeDataBean.TWO:
                 helper.setGone(R.id.ll_top, helper.getLayoutPosition() == 1);
+                TextView tv_title_name = helper.getView(R.id.tv_title_name);
+                TextView tv_more_info = helper.getView(R.id.tv_more_info);
+                tv_title_name.setText("近期直播");
+                helper.addOnClickListener(R.id.tv_more_info);
+                break;
+            case HomeDataBean.THREE:
+                helper.setGone(R.id.ll_top, getData().get(helper.getLayoutPosition() - 1).getItemType() == HomeDataBean.TWO);
+                TextView tv_title_name1 = helper.getView(R.id.tv_title_name);
+                tv_title_name1.setText("精彩推荐");
+                helper.addOnClickListener(R.id.tv_more_info);
                 break;
         }
     }

@@ -18,6 +18,8 @@ import com.fish.live.home.adapter.HomeNormalAdapter;
 import com.fish.live.home.bean.HomeDataBean;
 import com.fish.live.livepush.LivePushActivity;
 import com.fish.live.livevideo.LiveVideoActivity;
+import com.fish.live.search.RecommentLiveSearchActivity;
+import com.fish.live.search.ResentLiveSearchActivity;
 import com.nucarf.base.ui.BaseLazyFragment;
 import com.nucarf.base.utils.NetUtils;
 import com.nucarf.base.utils.UiGoto;
@@ -99,10 +101,19 @@ public class HomeNormalFragment extends BaseLazyFragment implements OnRefreshLis
                 UiGoto.startAty(mActivity, LiveVideoActivity.class);
             } else if (position == 3) {
                 UiGoto.startAty(mActivity, LivePushActivity.class);
-
             }
+        });
+        homeAdapter.setOnItemChildClickListener((adapter, view, position) -> {
+            switch (view.getId()) {
+                case R.id.tv_more_info:
 
-
+                    if (homeAdapter.getData().get(position).getItemType() == HomeDataBean.TWO) {
+                        UiGoto.startAty(mActivity, ResentLiveSearchActivity.class);
+                    } else {
+                        UiGoto.startAty(mActivity, RecommentLiveSearchActivity.class);
+                    }
+                    break;
+            }
         });
         swipeToLoadLayout.setLoadMoreEnabled(false);
         swipeToLoadLayout.setOnRefreshListener(this);
@@ -200,21 +211,23 @@ public class HomeNormalFragment extends BaseLazyFragment implements OnRefreshLis
                             mPage++;
                             total_count = 100;
                             List<HomeDataBean> homeDataBeans = new ArrayList<>();
-                            ArrayList<String> banners = new ArrayList<>();
-                            banners.add("");
-                            banners.add("");
-                            banners.add("");
-                            banners.add("");
-                            banners.add("");
-                            banners.add("");
-                            HomeDataBean homeDataBean = new HomeDataBean(1);
-                            homeDataBean.setBanners(banners);
-                            homeDataBeans.add(homeDataBean);
-                            homeDataBeans.add(new HomeDataBean(2));
-                            homeDataBeans.add(new HomeDataBean(2));
-                            homeDataBeans.add(new HomeDataBean(2));
-                            homeDataBeans.add(new HomeDataBean(2));
-                            homeDataBeans.add(new HomeDataBean(2));
+                            if (!isLoadMore) {
+                                ArrayList<String> banners = new ArrayList<>();
+                                banners.add("");
+                                banners.add("");
+                                banners.add("");
+                                banners.add("");
+                                banners.add("");
+                                banners.add("");
+                                HomeDataBean homeDataBean = new HomeDataBean(1);
+                                homeDataBean.setBanners(banners);
+                                homeDataBeans.add(homeDataBean);
+                            }
+                            homeDataBeans.add(new HomeDataBean(isLoadMore ? 3 : 2));
+                            homeDataBeans.add(new HomeDataBean(isLoadMore ? 3 : 2));
+                            homeDataBeans.add(new HomeDataBean(isLoadMore ? 3 : 2));
+                            homeDataBeans.add(new HomeDataBean(isLoadMore ? 3 : 2));
+                            homeDataBeans.add(new HomeDataBean(isLoadMore ? 3 : 2));
                             if (isLoadMore) {
                                 homeAdapter.addData(homeDataBeans);
                             } else {

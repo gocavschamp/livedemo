@@ -75,6 +75,7 @@ public class SearchActivity extends BaseActivity implements OnTabSelectListener,
         resultRecommentAdapter = new SearchResultAdapter(R.layout.live_list_item_layout);
         rvResult.setAdapter(resultAdapter);
         tabLayout.setOnTabSelectListener(this);
+        tabLayout.setVisibility(View.GONE);
         tabLayout.setTabData(new String[]{"推荐","全部直播"});
         input.addTextChangedListener(this);
         historyAdapter.setOnItemChildClickListener((adapter, view, position) -> {
