@@ -154,6 +154,23 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
     @Override
     protected void onVisible() {
         super.onVisible();
+
+    }
+
+    @Override
+    protected void initView() {
+        registerEventBus();
+        unbinder = ButterKnife.bind(this, mRootView);
+        rvLog = mActivity.findViewById(R.id.rv_log);
+        ScreenUtil.setRecycleviewLinearLayout(mActivity, rvLog, true);
+        msgAdapter = new MsgAdapter(R.layout.msg_layout);
+        rvLog.setAdapter(msgAdapter);
+        mInputTextMsgDialog = new TCInputTextMsgDialog(mActivity, R.style.InputDialog);
+        mInputTextMsgDialog.setmOnTextSendListener(this);
+        sortDialog = new PPTPhotoSortDialog();
+        sortDialog.setOnDialogClickListener(data -> {
+            EventBus.getDefault().post(new BoardPhotoEvent(data));
+        });
         if (isok) {
             return;
         }
@@ -186,23 +203,6 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
                         });
             }
         });
-    }
-
-    @Override
-    protected void initView() {
-        registerEventBus();
-        unbinder = ButterKnife.bind(this, mRootView);
-        rvLog = mActivity.findViewById(R.id.rv_log);
-        ScreenUtil.setRecycleviewLinearLayout(mActivity, rvLog, true);
-        msgAdapter = new MsgAdapter(R.layout.msg_layout);
-        rvLog.setAdapter(msgAdapter);
-        mInputTextMsgDialog = new TCInputTextMsgDialog(mActivity, R.style.InputDialog);
-        mInputTextMsgDialog.setmOnTextSendListener(this);
-        sortDialog = new PPTPhotoSortDialog();
-        sortDialog.setOnDialogClickListener(data -> {
-            EventBus.getDefault().post(new BoardPhotoEvent(data));
-        });
-
     }
 
     /**

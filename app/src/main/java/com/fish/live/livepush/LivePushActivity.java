@@ -18,6 +18,8 @@ import com.fish.live.Constants;
 import com.fish.live.LiveApplication;
 import com.fish.live.R;
 import com.fish.live.home.bean.IMLoginEvent;
+import com.fish.live.livepush.fragment.PPTInfoFragment;
+import com.fish.live.livepush.fragment.RoomChatFragment;
 import com.fish.live.livepush.presenter.LivePushPresenter;
 import com.fish.live.livepush.view.LivePushCotract;
 import com.fish.live.livevideo.adapter.LivePagerAdapter;
@@ -69,6 +71,8 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
     TitleLayout titleLayout;
     @BindView(R.id.player_content)
     FrameLayout playerContent;
+    @BindView(R.id.ppt_content)
+    FrameLayout pptContent;
     @BindView(R.id.tab_layout)
     SlidingTabLayout tabLayout;
     @BindView(R.id.vp_main)
@@ -127,8 +131,8 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
         LivePagerAdapter livePagerAdapter = new LivePagerAdapter(getSupportFragmentManager());
         vpMain.setAdapter(livePagerAdapter);
         ArrayList<String> strings = new ArrayList<>();
-        strings.add("简介");
-        strings.add("文档");
+//        strings.add("简介");
+//        strings.add("文档");
         strings.add("聊天");
         livePagerAdapter.setData(strings);
         vpMain.setOffscreenPageLimit(strings.size());
@@ -136,6 +140,10 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
         tabLayout.setViewPager(vpMain, (String[]) strings.toArray(new String[strings.size()]));
         tvSubscribe = findViewById(R.id.tv_subscribe);
         tvTimer = findViewById(R.id.tv_timer);
+        PPTInfoFragment pptInfoFragment = PPTInfoFragment.newInstance("");
+        getSupportFragmentManager().beginTransaction().add(R.id.ppt_content,pptInfoFragment);
+
+
     }
 
     @SuppressLint("CheckResult")

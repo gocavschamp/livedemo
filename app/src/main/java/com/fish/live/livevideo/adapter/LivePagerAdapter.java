@@ -23,6 +23,9 @@ public class LivePagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
+                if(data.size() == 1) {
+                    return RoomChatFragment.newInstance(data.get(position));
+                }
                 return HostInfoFragment.newInstance(data.get(position));
             case 1:
                 if(data.size() == 2) {

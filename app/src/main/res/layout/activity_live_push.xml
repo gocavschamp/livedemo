@@ -14,11 +14,11 @@
        />
 
     <FrameLayout
-        android:id="@+id/player_content"
+        android:id="@+id/ppt_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/title_layout"
-        android:background="@color/black"
+        android:background="@color/white"
         android:minHeight="@dimen/dp_200">
 
         <!--        <com.tencent.liteav.demo.superplayer.SuperPlayerView-->
@@ -27,10 +27,24 @@
         <!--            android:layout_height="match_parent" />-->
 
     </FrameLayout>
+    <FrameLayout
+        android:id="@+id/player_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ppt_content"
+        android:background="@color/black"
+        android:minHeight="@dimen/dp_80">
 
+        <!--        <com.tencent.liteav.demo.superplayer.SuperPlayerView-->
+        <!--            android:id="@+id/superVodPlayerView"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent" />-->
+
+    </FrameLayout>
     <com.flyco.tablayout.SlidingTabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="@dimen/dp_40"
         android:layout_below="@id/player_content"
         android:layout_marginTop="@dimen/dp_1"
