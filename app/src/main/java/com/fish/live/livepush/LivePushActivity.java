@@ -141,7 +141,7 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
         tvSubscribe = findViewById(R.id.tv_subscribe);
         tvTimer = findViewById(R.id.tv_timer);
         PPTInfoFragment pptInfoFragment = PPTInfoFragment.newInstance("");
-        getSupportFragmentManager().beginTransaction().add(R.id.ppt_content,pptInfoFragment);
+        getSupportFragmentManager().beginTransaction().add(R.id.ppt_content,pptInfoFragment).commit();
 
 
     }
