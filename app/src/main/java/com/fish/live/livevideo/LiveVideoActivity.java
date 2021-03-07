@@ -176,7 +176,7 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
      */
     public void onCreateClsssroomClick() {
         mTicManager.addIMMessageListener(this);
-        mTicManager.addEventListener(this);
+//        mTicManager.addEventListener(this);//音视频监听
         final int scence = TICManager.TICClassScene.TIC_CLASS_SCENE_VIDEO_CALL; //如果使用大房间，请使用 TIC_CLASS_SCENE_LIVE
         mRoomId = 11100;
         mTicManager.createClassroom(mRoomId, scence, new TICManager.TICCallback() {
@@ -413,6 +413,10 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
             switch (elem.getType()) {
                 case Text:
                      LogUtils.e(TAG,"This is Text message.");
+                    EventBus.getDefault().post(message);
+                    break;
+                case Image:
+                     LogUtils.e(TAG,"This is image message.");
                     EventBus.getDefault().post(message);
                     break;
                 case Custom:

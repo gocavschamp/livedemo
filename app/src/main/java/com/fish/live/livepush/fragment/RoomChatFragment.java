@@ -8,10 +8,12 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -53,6 +55,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -327,7 +331,6 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
         public MsgAdapter(int layout) {
             super(layout);
         }
-
         @Override
         protected void convert(BaseViewHolder helper, TIMMessage item) {
             RelativeLayout rl_other = helper.getView(R.id.rl_other);
@@ -338,6 +341,8 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
             CircleImageView head_mine = helper.getView(R.id.head_mine);
             TextView tv_mine_text = helper.getView(R.id.tv_mine_text);
             TextView tv_other_name = helper.getView(R.id.tv_other_name);
+            ImageView tv_other_image = helper.getView(R.id.tv_other_image);
+            ImageView tv_mine_image = helper.getView(R.id.tv_mine_image);
             TIMElem element = item.getElement(0);
             if (element.getType() == TIMElemType.Text) {
                 TIMTextElem textElem = (TIMTextElem) element;
@@ -346,28 +351,30 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
                 } else {
                     tv_other_text.setText(textElem.getText() + "");
                 }
+                helper.setGone(R.id.tv_other_image,false);
+                helper.setGone(R.id.tv_mine_image,false);
             } else if (element.getType() == TIMElemType.Image) {
+                helper.setGone(R.id.tv_other_text,false);
+                helper.setGone(R.id.tv_mine_text,false);
                 TIMImageElem imageElem = (TIMImageElem) element;
-                if (!TextUtils.isEmpty(imageElem.getPath())) {
-                    Bitmap bitmap = BitmapFactory.decodeFile(imageElem.getPath());
-                    float width = bitmap.getWidth();
-                    float height = bitmap.getHeight();
-                    float size = width / height;
-                    float screenWidth = ScreenUtil.getScreenWidth(mActivity);
-                    float hei = screenWidth / 2 / size;
-                    Drawable drawable = new BitmapDrawable(bitmap);
-                    if (item.isSelf()) {
-                        tv_mine_text.setBackground(drawable);
-                        ScreenUtil.setRelativeLayoutParams(tv_mine_text, (int) (screenWidth / 2), (int) hei);
+                LogUtils.e("iamge--1-",imageElem.toString());
+                LogUtils.e("iamge--2-",""+imageElem.getImageList().get(0).getUrl());
+
+                float height = imageElem.getImageList().get(0).getHeight();
+                float width = imageElem.getImageList().get(0).getWidth();
+                float l = width / height;
+                if (item.isSelf()) {
+                        GlideUtils.load(mContext, imageElem.getImageList().get(0).getUrl(),tv_mine_image);
                     } else {
-                        tv_other_text.setBackground(drawable);
-                        ScreenUtil.setRelativeLayoutParams(tv_other_text, (int) (screenWidth / 2), (int) hei);
+                        GlideUtils.load(mContext, imageElem.getImageList().get(0).getUrl(),tv_other_image);
                     }
-                }else {
+                float screenWidth = ScreenUtil.getScreenWidth(mActivity);
+                ScreenUtil.setRelativeLayoutParams(tv_mine_image, (int) (screenWidth / 2), (int) (screenWidth / 2/l));
+                ScreenUtil.setRelativeLayoutParams(tv_other_image, (int) (screenWidth / 2),  (int) (screenWidth / 2/l));
 
-                }
+//                tv_mine_image.setScaleType(ImageView.ScaleType.FIT_XY);
+//                tv_other_image.setScaleType(ImageView.ScaleType.FIT_XY);
             }
-
             if (item.isSelf()) {
                 rl_mine.setVisibility(View.VISIBLE);
                 rl_other.setVisibility(View.GONE);

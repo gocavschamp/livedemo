@@ -44,6 +44,21 @@
             tools:text="发送一个信息啦啦啦啦啦啦啦啦"
             android:textColor="@color/color_333333"
             android:textSize="13sp" />
+        <ImageView
+            android:id="@+id/tv_other_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/head_other"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_15"
+            android:layout_marginBottom="@dimen/dp_15"
+            android:layout_marginTop="@dimen/dp_5"
+            android:scaleType="centerInside"
+            android:elevation="@dimen/dp_1"
+            android:layout_toRightOf="@id/head_other"
+            android:background="@drawable/rec_white_stoke_eee_4"
+            android:padding="@dimen/dp_10"
+          />
     </RelativeLayout>
 
     <RelativeLayout
@@ -84,6 +99,20 @@
             tools:text="发送一个信息啦啦啦啦啦啦啦啦"
             android:textColor="@color/color_333333"
             android:textSize="13sp" />
+        <ImageView
+            android:id="@+id/tv_mine_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/head_mine"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginBottom="@dimen/dp_15"
+            android:scaleType="centerInside"
+            android:elevation="@dimen/dp_1"
+            android:layout_toLeftOf="@id/head_mine"
+            android:background="@drawable/rec_white_stoke_eee_4"
+            android:padding="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_15"
+           />
     </RelativeLayout>
 
 </RelativeLayout>
