@@ -15,10 +15,12 @@ import com.fish.live.Constants;
 import com.fish.live.LiveApplication;
 import com.fish.live.R;
 import com.fish.live.home.bean.IMLoginEvent;
+import com.fish.live.home.bean.RoomJoinEvent;
 import com.fish.live.livevideo.adapter.LivePagerAdapter;
 import com.fish.live.livevideo.presenter.LiveVideoPresenter;
 import com.fish.live.livevideo.view.LiveVideoCotract;
 import com.fish.live.tencenttic.core.TICManager;
+import com.fish.live.tencenttic.core.impl.TICReporter;
 import com.flyco.tablayout.SlidingTabLayout;
 import com.gyf.barlibrary.ImmersionBar;
 import com.nucarf.base.ui.mvp.BaseMvpActivity;
@@ -26,8 +28,11 @@ import com.nucarf.base.utils.LogUtils;
 import com.nucarf.base.utils.SharePreUtils;
 import com.nucarf.base.widget.TitleLayout;
 import com.nucarf.base.widget.ViewPagerSlide;
+import com.tencent.imsdk.TIMCallBack;
 import com.tencent.imsdk.TIMElem;
+import com.tencent.imsdk.TIMGroupManager;
 import com.tencent.imsdk.TIMMessage;
+import com.tencent.liteav.basic.log.TXCLog;
 import com.tencent.liteav.demo.superplayer.SuperPlayerDef;
 import com.tencent.liteav.demo.superplayer.SuperPlayerGlobalConfig;
 import com.tencent.liteav.demo.superplayer.SuperPlayerView;
@@ -135,13 +140,13 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
         mUserID = SharePreUtils.getName(mContext);
         mUserSig = SharePreUtils.getjwt_token(mContext);
         //my申请的id
-        if (SharePreUtils.getName(mContext).equals("yuwenming1")) {
-            mUserID = "yuwenming1";
-            mUserSig = "eJwtzNsKgkAUheF3mVtDts7BFLorAknSsshLw0k2HjKdmiR690y9XN*C-0Pi3dF8yZZ4xDaBLMaNmawV3nDk-qllXWGdW-PbZUXaNJgRz2IAzGHCpdMj3w22cnDOuQ0Akyqs-iYsEOBwcOcK5kO821NxfWwuOlkvhYq3kdClCnpWRkV16oy7H1LDD84HGiYr8v0Bc3UzJA__";
-        } else {
-            mUserID = "yuwenming";
-            mUserSig = "eJwtzMsKwjAUBNB-yVapt7UPLbhoFuIiLoJSENwUchMutaGkNb7w361tl3NmmA87i1Pg0bGcRQGw5ZhJoe1J08iv*wNtQ9bMZafqqm1JsTyMAeIsTrfrqcFnSw4HT5IkAoBJe2r*loaQwjCetSMzfBfS94Xwbm*uK4mX0murMiEXHcdjCZ6-lTYbfqhvopI79v0Bjpc0Aw__";
-        }
+//        if (SharePreUtils.getName(mContext).equals("yuwenming1")) {
+//            mUserID = "yuwenming1";
+//            mUserSig = "eJwtzNsKgkAUheF3mVtDts7BFLorAknSsshLw0k2HjKdmiR690y9XN*C-0Pi3dF8yZZ4xDaBLMaNmawV3nDk-qllXWGdW-PbZUXaNJgRz2IAzGHCpdMj3w22cnDOuQ0Akyqs-iYsEOBwcOcK5kO821NxfWwuOlkvhYq3kdClCnpWRkV16oy7H1LDD84HGiYr8v0Bc3UzJA__";
+//        } else {
+//            mUserID = "yuwenming";
+//            mUserSig = "eJwtzMsKwjAUBNB-yVapt7UPLbhoFuIiLoJSENwUchMutaGkNb7w361tl3NmmA87i1Pg0bGcRQGw5ZhJoe1J08iv*wNtQ9bMZafqqm1JsTyMAeIsTrfrqcFnSw4HT5IkAoBJe2r*loaQwjCetSMzfBfS94Xwbm*uK4mX0murMiEXHcdjCZ6-lTYbfqhvopI79v0Bjpc0Aw__";
+//        }
         onLoginClick();
 
 //        initTrtc();//主播  或者 观看时看到
@@ -155,13 +160,13 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
         mTicManager.login(mUserID, mUserSig, new TICManager.TICCallback() {
             @Override
             public void onSuccess(Object data) {
-                LogUtils.e(mUserID + ":登录成功");
+                LogUtils.e(TAG,mUserID + ":登录成功");
                 onCreateClsssroomClick();
             }
 
             @Override
             public void onError(String module, int errCode, String errMsg) {
-                LogUtils.e(mUserID + ":登录失败, err:" + errCode + "  msg: " + errMsg);
+                 LogUtils.e(TAG,mUserID + ":登录失败, err:" + errCode + "  msg: " + errMsg);
             }
         });
     }
@@ -173,36 +178,56 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
         mTicManager.addIMMessageListener(this);
         mTicManager.addEventListener(this);
         final int scence = TICManager.TICClassScene.TIC_CLASS_SCENE_VIDEO_CALL; //如果使用大房间，请使用 TIC_CLASS_SCENE_LIVE
-        mRoomId = 1234;
+        mRoomId = 11100;
         mTicManager.createClassroom(mRoomId, scence, new TICManager.TICCallback() {
             @Override
             public void onSuccess(Object data) {
-                LogUtils.e("创建课堂 成功, 房间号：" + mRoomId);
-                EventBus.getDefault().post(new IMLoginEvent(true));
+                 LogUtils.e(TAG,"创建课堂 成功, 房间号：" + mRoomId);
+                EventBus.getDefault().post(new RoomJoinEvent(true));
             }
 
             @Override
             public void onError(String module, int errCode, String errMsg) {
                 if (errCode == 10021) {
-                    LogUtils.e("该课堂已被他人创建，请\"加入课堂\"");
-                    EventBus.getDefault().post(new IMLoginEvent(true));
+                     LogUtils.e(TAG,"该课堂已被他人创建，请\"加入课堂\"");
+                    joinRoom(mRoomId);
                 } else if (errCode == 10025) {
-                    LogUtils.e("该课堂已创建，请\"加入课堂\"");
-                    EventBus.getDefault().post(new IMLoginEvent(true));
+                     LogUtils.e(TAG,"该课堂已创建，请\"加入课堂\"");
+                    joinRoom(mRoomId);
                 } else {
-                    LogUtils.e("创建课堂失败, 房间号：" + mRoomId + " err:" + errCode + " msg:" + errMsg);
+                     LogUtils.e(TAG,"创建课堂失败, 房间号：" + mRoomId + " err:" + errCode + " msg:" + errMsg);
                 }
 
             }
         });
     }
+    private void joinRoom(int mRoomId) {
+        final String desc = "board group";
+        TIMGroupManager.getInstance().applyJoinGroup(mRoomId + "", desc + mRoomId, new TIMCallBack() {
+            @Override
+            public void onError(int errCode, String s) {
+                if (errCode == 10013) { //you are already group member.
+                    TXCLog.i(TAG, "TICManager: joinClassroom 10013 onSuccess");
+                    EventBus.getDefault().post(new RoomJoinEvent(true));
+                    TICReporter.report(TICReporter.EventId.joinGroup_end);
+//                    getUserRoomInfo();
+                }
+            }
 
+            @Override
+            public void onSuccess() {
+//                getUserRoomInfo();
+                TXCLog.i(TAG, "TICManager: joinClassroom  onSuccess");
+                EventBus.getDefault().post(new RoomJoinEvent(true));
+            }
+        });
+    }
     public void onDestroyClassroomClick(View v) {
 
         mTicManager.destroyClassroom(mRoomId, new TICManager.TICCallback() {
             @Override
             public void onSuccess(Object o) {
-                LogUtils.e("销毁课堂成功: " + mRoomId);
+                 LogUtils.e(TAG,"销毁课堂成功: " + mRoomId);
 
                 TEduBoardController board = mTicManager.getBoardController();
                 if (board != null)
@@ -211,7 +236,7 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
 
             @Override
             public void onError(String s, int errCode, String errMsg) {
-                LogUtils.e("销毁课堂失败: " + mRoomId + " err:" + errCode + " msg:" + errMsg);
+                 LogUtils.e(TAG,"销毁课堂失败: " + mRoomId + " err:" + errCode + " msg:" + errMsg);
             }
         });
     }
@@ -223,11 +248,11 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
 
         String roomInputId = mRoomId + "";
         if (TextUtils.isEmpty(roomInputId) || !TextUtils.isDigitsOnly(roomInputId)) {
-            LogUtils.e("创建课堂失败, 房间号为空或者非数字:" + roomInputId);
+             LogUtils.e(TAG,"创建课堂失败, 房间号为空或者非数字:" + roomInputId);
             return;
         }
         mRoomId = Integer.valueOf(roomInputId);
-        LogUtils.e("正在进入课堂，请稍等。。。");
+         LogUtils.e(TAG,"正在进入课堂，请稍等。。。");
     }
 
     @Override
@@ -356,23 +381,23 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
     // ------------ FROM TICMessageListener ---------------------
     @Override
     public void onTICRecvTextMessage(String fromId, String text) {
-        LogUtils.e(String.format("[%s]（C2C）说: %s", fromId, text));
+         LogUtils.e(TAG,String.format("[%s]（C2C）说: %s", fromId, text));
     }
 
     @Override
     public void onTICRecvCustomMessage(String fromId, byte[] data) {
-        LogUtils.e(String.format("[%s]（C2C:Custom）说: %s", fromId, new String(data)));
+         LogUtils.e(TAG,String.format("[%s]（C2C:Custom）说: %s", fromId, new String(data)));
     }
 
     @Override
     public void onTICRecvGroupTextMessage(String fromId, String text) {
-        LogUtils.e(String.format("[%s]（Group:Custom）说: %s", fromId, text));
+         LogUtils.e(TAG,String.format("[%s]（Group:Custom）说: %s", fromId, text));
 
     }
 
     @Override
     public void onTICRecvGroupCustomMessage(String fromUserId, byte[] data) {
-        LogUtils.e(String.format("[%s]（Group:Custom）说: %s", fromUserId, new String(data)));
+         LogUtils.e(TAG,String.format("[%s]（Group:Custom）说: %s", fromUserId, new String(data)));
     }
 
     @Override
@@ -387,17 +412,17 @@ public class LiveVideoActivity extends BaseMvpActivity<LiveVideoPresenter> imple
             TIMElem elem = message.getElement(i);
             switch (elem.getType()) {
                 case Text:
-                    LogUtils.e("This is Text message.");
+                     LogUtils.e(TAG,"This is Text message.");
                     EventBus.getDefault().post(message);
                     break;
                 case Custom:
-                    LogUtils.e("This is Custom message.");
+                     LogUtils.e(TAG,"This is Custom message.");
                     break;
                 case GroupTips:
-                    LogUtils.e("This is GroupTips message.");
+                     LogUtils.e(TAG,"This is GroupTips message.");
                     continue;
                 default:
-                    LogUtils.e("This is other message");
+                     LogUtils.e(TAG,"This is other message");
                     break;
             }
         }

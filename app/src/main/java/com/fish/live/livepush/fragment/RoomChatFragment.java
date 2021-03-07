@@ -24,6 +24,8 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.fish.live.LiveApplication;
 import com.fish.live.R;
 import com.fish.live.bean.BoardPhotoEvent;
+import com.fish.live.home.bean.IMLoginEvent;
+import com.fish.live.home.bean.RoomJoinEvent;
 import com.fish.live.photo.OpenCameraOrGellaryActivity;
 import com.fish.live.photo.bean.PhotoBean;
 import com.fish.live.tencenttic.core.TICManager;
@@ -95,6 +97,7 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
     private ArrayList<PhotoBean> photoBeanList = new ArrayList<>();
     private TCInputTextMsgDialog mInputTextMsgDialog;
     private PPTPhotoSortDialog sortDialog;
+    private int mRoomId;
 
     public RoomChatFragment() {
     }
@@ -125,7 +128,12 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
     @SuppressLint("CheckResult")
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(Object event) {
-        if (event instanceof TIMMessage) {
+        if (event instanceof RoomJoinEvent) {
+            RoomJoinEvent imevent = (RoomJoinEvent) event;
+            if (imevent.isLogin()) {
+                getRoomHistory();
+            }
+        } else if (event instanceof TIMMessage) {
             TIMMessage imevent = (TIMMessage) event;
             msgAdapter.addData(imevent);
             rvLog.scrollToPosition(msgAdapter.getData().size() - 1);
@@ -174,20 +182,25 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
         if (isok) {
             return;
         }
+        mRoomId = 11100;
         mTicManager = ((LiveApplication) mActivity.getApplication()).getTICManager();
-        TIMConversation conversation = TIMManager.getInstance().getConversation(TIMConversationType.Group, "1234");
+    }
+
+    private void getRoomHistory() {
+        mRoomId = 11100;
+        TIMConversation conversation = TIMManager.getInstance().getConversation(TIMConversationType.Group, mRoomId + "");
         TIMMessage lastMsg = conversation.getLastMsg();
         conversation.getMessage(20, lastMsg, new TIMValueCallBack<List<TIMMessage>>() {
             @Override
             public void onError(int i, String s) {
-                LogUtils.e("-----room---", s);
+                LogUtils.e("--history---onError---", s);
                 isok = true;
             }
 
             @SuppressLint("CheckResult")
             @Override
             public void onSuccess(List<TIMMessage> timMessages) {
-                LogUtils.e("-----room--", timMessages.size() + "");
+                LogUtils.e("--history---onSuccess--", timMessages.size() + "");
                 isok = true;
                 Observable.fromIterable(timMessages)
                         .filter(v -> v.getElement(0).getType() == TIMElemType.Text || v.getElement(0).getType() == TIMElemType.Image)
@@ -335,7 +348,7 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
                 }
             } else if (element.getType() == TIMElemType.Image) {
                 TIMImageElem imageElem = (TIMImageElem) element;
-                if(!TextUtils.isEmpty(imageElem.getPath())) {
+                if (!TextUtils.isEmpty(imageElem.getPath())) {
                     Bitmap bitmap = BitmapFactory.decodeFile(imageElem.getPath());
                     float width = bitmap.getWidth();
                     float height = bitmap.getHeight();
@@ -350,6 +363,8 @@ public class RoomChatFragment extends BaseLazyFragment implements TCInputTextMsg
                         tv_other_text.setBackground(drawable);
                         ScreenUtil.setRelativeLayoutParams(tv_other_text, (int) (screenWidth / 2), (int) hei);
                     }
+                }else {
+
                 }
             }
 

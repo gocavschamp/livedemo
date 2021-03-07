@@ -18,6 +18,7 @@ import com.fish.live.Constants;
 import com.fish.live.LiveApplication;
 import com.fish.live.R;
 import com.fish.live.home.bean.IMLoginEvent;
+import com.fish.live.home.bean.RoomJoinEvent;
 import com.fish.live.livepush.fragment.PPTInfoFragment;
 import com.fish.live.livepush.fragment.RoomChatFragment;
 import com.fish.live.livepush.presenter.LivePushPresenter;
@@ -255,6 +256,7 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
             public void onError(int errCode, String s) {
                 if (errCode == 10013) { //you are already group member.
                     TXCLog.i(TAG, "TICManager: joinClassroom 10013 onSuccess");
+                    EventBus.getDefault().post(new RoomJoinEvent(true));
                     TICReporter.report(TICReporter.EventId.joinGroup_end);
                     getUserRoomInfo();
                 }
@@ -263,6 +265,7 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
             @Override
             public void onSuccess() {
                 getUserRoomInfo();
+                EventBus.getDefault().post(new RoomJoinEvent(true));
             }
         });
     }
@@ -282,7 +285,7 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
                     startLocalVideo(true);
                     enableAudioCapture(true);
                     mTrtcCloud.startPublishing("user_stream_001", TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG);
-                    LogUtils.e("----主播推流---");
+                     LogUtils.e(TAG,"----主播推流---");
                 } else {
                     isHolder = false;
                     startLocalVideo(false);
@@ -307,12 +310,12 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
         mTicManager.addIMMessageListener(this);
         mTicManager.addEventListener(this);
         final int scence = TICManager.TICClassScene.TIC_CLASS_SCENE_VIDEO_CALL; //如果使用大房间，请使用 TIC_CLASS_SCENE_LIVE
-        mRoomId = 1234;
+        mRoomId = 11100;
         mTicManager.createClassroom(mRoomId, scence, new TICManager.TICCallback() {
             @Override
             public void onSuccess(Object data) {
-                LogUtils.e("创建课堂 成功, 房间号：" + mRoomId);
-                EventBus.getDefault().post(new IMLoginEvent(true));
+                 LogUtils.e(TAG,"创建课堂 成功, 房间号：" + mRoomId);
+//                EventBus.getDefault().post(new IMLoginEvent(true));
                 joinRoom(mRoomId);
 
             }
@@ -320,14 +323,15 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
             @Override
             public void onError(String module, int errCode, String errMsg) {
                 if (errCode == 10021) {
-                    LogUtils.e("该课堂已被他人创建，请\"加入课堂\"");
-                    EventBus.getDefault().post(new IMLoginEvent(true));
+                     LogUtils.e(TAG,"该课堂已被他人创建，请\"加入课堂\"");
+//                    EventBus.getDefault().post(new IMLoginEvent(true));
                     joinRoom(mRoomId);
                 } else if (errCode == 10025) {
-                    LogUtils.e("该课堂已创建，请\"加入课堂\"");
-                    EventBus.getDefault().post(new IMLoginEvent(true));
+                     LogUtils.e(TAG,"该课堂已创建，请\"加入课堂\"");
+//                    EventBus.getDefault().post(new IMLoginEvent(true));
+                    joinRoom(mRoomId);
                 } else {
-                    LogUtils.e("创建课堂失败, 房间号：" + mRoomId + " err:" + errCode + " msg:" + errMsg);
+                     LogUtils.e(TAG,"创建课堂失败, 房间号：" + mRoomId + " err:" + errCode + " msg:" + errMsg);
                 }
 
             }
@@ -339,7 +343,7 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
         mTicManager.destroyClassroom(mRoomId, new TICManager.TICCallback() {
             @Override
             public void onSuccess(Object o) {
-                LogUtils.e("销毁课堂成功: " + mRoomId);
+                 LogUtils.e(TAG,"销毁课堂成功: " + mRoomId);
 
                 TEduBoardController board = mTicManager.getBoardController();
                 if (board != null)
@@ -348,7 +352,7 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
 
             @Override
             public void onError(String s, int errCode, String errMsg) {
-                LogUtils.e("销毁课堂失败: " + mRoomId + " err:" + errCode + " msg:" + errMsg);
+                 LogUtils.e(TAG,"销毁课堂失败: " + mRoomId + " err:" + errCode + " msg:" + errMsg);
             }
         });
     }
@@ -360,11 +364,11 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
 
         String roomInputId = mRoomId + "";
         if (TextUtils.isEmpty(roomInputId) || !TextUtils.isDigitsOnly(roomInputId)) {
-            LogUtils.e("创建课堂失败, 房间号为空或者非数字:" + roomInputId);
+             LogUtils.e(TAG,"创建课堂失败, 房间号为空或者非数字:" + roomInputId);
             return;
         }
         mRoomId = Integer.valueOf(roomInputId);
-        LogUtils.e("正在进入课堂，请稍等。。。");
+         LogUtils.e(TAG,"正在进入课堂，请稍等。。。");
     }
 
     @Override
@@ -402,23 +406,23 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
     // ------------ FROM TICMessageListener ---------------------
     @Override
     public void onTICRecvTextMessage(String fromId, String text) {
-        LogUtils.e(String.format("[%s]（C2C）说: %s", fromId, text));
+         LogUtils.e(TAG,String.format("[%s]（C2C）说: %s", fromId, text));
     }
 
     @Override
     public void onTICRecvCustomMessage(String fromId, byte[] data) {
-        LogUtils.e(String.format("[%s]（C2C:Custom）说: %s", fromId, new String(data)));
+         LogUtils.e(TAG,String.format("[%s]（C2C:Custom）说: %s", fromId, new String(data)));
     }
 
     @Override
     public void onTICRecvGroupTextMessage(String fromId, String text) {
-        LogUtils.e(String.format("[%s]（Group:Custom）说: %s", fromId, text));
+         LogUtils.e(TAG,String.format("[%s]（Group:Custom）说: %s", fromId, text));
 
     }
 
     @Override
     public void onTICRecvGroupCustomMessage(String fromUserId, byte[] data) {
-        LogUtils.e(String.format("[%s]（Group:Custom）说: %s", fromUserId, new String(data)));
+         LogUtils.e(TAG,String.format("[%s]（Group:Custom）说: %s", fromUserId, new String(data)));
     }
 
     @Override
@@ -432,7 +436,7 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
         String customStr = message.getCustomStr();
         for (int i = 0; i < message.getElementCount(); i++) {
             TIMElem elem = message.getElement(i);
-            LogUtils.e("This is message.", message.toString());
+             LogUtils.e(TAG,"This is message."+ message.toString());
             switch (elem.getType()) {
                 case Text:
                     EventBus.getDefault().post(message);
@@ -470,7 +474,7 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
             mTicManager.switchRole(TRTCRoleAudience);
             mTrtcCloud.stopPublishing();
         }
-        LogUtils.e("----主播推流---");
+         LogUtils.e(TAG,"----主播推流---");
     }
 
     private void openCameraAlert(TIMMessage message) {
@@ -486,12 +490,12 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
                 mTicManager.sendGroupMessage(timMessage, new TICManager.TICCallback() {
                     @Override
                     public void onSuccess(Object data) {
-                        LogUtils.e("sendGroupMessage##onSuccess##" + data.toString());
+                         LogUtils.e(TAG,"sendGroupMessage##onSuccess##" + data.toString());
                     }
 
                     @Override
                     public void onError(String module, int errCode, String errMsg) {
-                        LogUtils.e("sendGroupMessage##onError##" + errMsg);
+                         LogUtils.e(TAG,"sendGroupMessage##onError##" + errMsg);
                     }
                 });
             }
@@ -559,7 +563,7 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
                 if (renderView != null) {
                     renderView.setVisibility(View.VISIBLE);
                 }
-                LogUtils.e(user + " join.");
+                 LogUtils.e(TAG,user + " join.");
             }
         }
     }
@@ -576,7 +580,7 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
             final String userID_Sub = user.equals(mUserID) ? mUserID : user + TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SUB;
             mTrtcCloud.stopRemoteSubStreamView(userID_Sub);
             mTrtcRootView.onMemberLeave(userID_Sub);
-            LogUtils.e(user + " quit.");
+             LogUtils.e(TAG,user + " quit.");
         }
     }
 
@@ -593,7 +597,7 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
         mTicManager.quitClassroom(false, new TICManager.TICCallback() {
             @Override
             public void onSuccess(Object data) {
-                LogUtils.e("onForceOffline##quitClassroom#onSuccess: " + data);
+                 LogUtils.e(TAG,"onForceOffline##quitClassroom#onSuccess: " + data);
 //                Intent intent = new Intent(TICClassMainActivity.this, TICLoginActivity.class);
 //                startActivity(intent);
                 finish();
@@ -601,7 +605,7 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
 
             @Override
             public void onError(String module, int errCode, String errMsg) {
-                LogUtils.e("onForceOffline##quitClassroom#onError: errCode = " + errCode + "  description " + errMsg);
+                 LogUtils.e(TAG,"onForceOffline##quitClassroom#onError: errCode = " + errCode + "  description " + errMsg);
             }
         });
     }
@@ -653,7 +657,7 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
         switch (view.getId()) {
             case R.id.tv_subscribe:
 
-                LogUtils.e("---举手---");
+                 LogUtils.e(TAG,"---举手---");
                 if (isHolder) {
                     return;
                 }
@@ -665,20 +669,20 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
                 mTicManager.sendGroupMessage(timMessage1, new TICManager.TICCallback() {
                     @Override
                     public void onSuccess(Object data) {
-                        LogUtils.e("sendGroupMessage##onSuccess##" + data.toString());
+                         LogUtils.e(TAG,"sendGroupMessage##onSuccess##" + data.toString());
 
                     }
 
                     @Override
                     public void onError(String module, int errCode, String errMsg) {
-                        LogUtils.e("sendGroupMessage##onError##" + errMsg);
+                         LogUtils.e(TAG,"sendGroupMessage##onError##" + errMsg);
 
                     }
                 });
                 break;
             case R.id.tv_timer:
                 //收回举手
-                LogUtils.e("---收回举手---");
+                 LogUtils.e(TAG,"---收回举手---");
                 if (!isHolder) {
                     return;
                 }
@@ -690,13 +694,13 @@ public class LivePushActivity extends BaseMvpActivity<LivePushPresenter> impleme
                 mTicManager.sendGroupMessage(timMessage, new TICManager.TICCallback() {
                     @Override
                     public void onSuccess(Object data) {
-                        LogUtils.e("sendGroupMessage##onSuccess##" + data.toString());
+                         LogUtils.e(TAG,"sendGroupMessage##onSuccess##" + data.toString());
 
                     }
 
                     @Override
                     public void onError(String module, int errCode, String errMsg) {
-                        LogUtils.e("sendGroupMessage##onError##" + errMsg);
+                         LogUtils.e(TAG,"sendGroupMessage##onError##" + errMsg);
 
                     }
                 });

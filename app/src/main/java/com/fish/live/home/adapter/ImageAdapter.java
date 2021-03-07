@@ -48,7 +48,7 @@ public class ImageAdapter extends BannerAdapter<String, ImageHolder> {
 //        holder.imageView.setImageResource(data.imageRes);
         //通过图片加载器实现圆角，你也可以自己使用圆角的imageview，实现圆角的方法很多，自己尝试哈
         Glide.with(holder.itemView)
-                .load(data)
+                .load("https://pics3.baidu.com/feed/1e30e924b899a9016d606d0fcf072d730308f5c8.jpeg?token=0589927e0d10f1b5092e2b16f29d2483&s=0E71218C678A20E640B7C68A0300C09D")
                 .apply(RequestOptions.bitmapTransform(new RoundedCorners(30)))
                 .into(holder.imageView);
     }

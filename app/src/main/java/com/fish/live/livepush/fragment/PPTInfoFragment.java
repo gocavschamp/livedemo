@@ -14,6 +14,7 @@ import com.fish.live.LiveApplication;
 import com.fish.live.R;
 import com.fish.live.bean.BoardPhotoEvent;
 import com.fish.live.home.bean.IMLoginEvent;
+import com.fish.live.home.bean.RoomJoinEvent;
 import com.fish.live.photo.bean.PhotoBean;
 import com.fish.live.tencenttic.core.TICClassroomOption;
 import com.fish.live.tencenttic.core.TICManager;
@@ -117,8 +118,8 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
     @SuppressLint("CheckResult")
     @Subscribe
     public void onEvent(Object event) {
-        if (event instanceof IMLoginEvent) {
-            IMLoginEvent imevent = (IMLoginEvent) event;
+        if (event instanceof RoomJoinEvent) {
+            RoomJoinEvent imevent = (RoomJoinEvent) event;
             if (imevent.isLogin()) {
                 joinClass();
 //                getUserRoomInfo();
@@ -192,7 +193,7 @@ public class PPTInfoFragment extends BaseLazyFragment implements TICManager.TICI
      * 进入课堂
      */
     private void joinClass() {
-        mRoomId = 1234;
+        mRoomId = 11100;
         //1、设置白板的回调
         mBoardCallback = new MyBoardCallback(this);
         mBoard = mTicManager.getBoardController();
